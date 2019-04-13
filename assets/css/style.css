@@ -1,0 +1,545 @@
+* {
+	font-family: 'Montserrat', sans serif;
+	font-size: 1em;
+	color: #222;
+}
+
+html, body, main {
+	height: 100%;
+	width: 100%;
+  	font-size: 13px;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: #F2F2F2;
+}
+
+main {
+	padding-top: 80px;
+	margin-bottom: 150px;
+}
+
+a {
+	color: #222;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #222;
+	text-decoration: none;
+}
+
+/* =========================== fonts =================================== */
+
+.merriweather {
+	font-family: 'Merriweather', serif;
+}
+
+/* =========================== buttons ================================== */
+
+.btn {
+	border-radius: 0 !important;
+	padding: 5px 15px;
+	border: 1px solid #dee2e6;
+}
+
+.btn-primary {
+	background-color: #86bc42;
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus {
+	background-color: #86bc42 !important;
+}
+
+/* =========================== General Style ============================ */
+
+.primary-color {
+	color: #EB2025;
+}
+
+.nav-tabs .nav-link {
+	font-weight: bold;
+	vertical-align: bottom;
+	height: 100%;
+}
+
+.btn-primary i{
+	color: white !important;
+}
+
+/*.form-group .form-control {
+	border-radius: 0;
+	padding: 15px;
+}
+
+.form-group select.form-control,
+.form-group input.form-control-file {
+	height: 64px !important;
+}*/
+
+
+
+/* =========================== pages ==================================== */
+
+.page-title {
+	border-left: 4px solid #222;
+	padding-left: 5px;
+	color: #86bc42;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.pagination .page-item.active .page-link {
+	background-color: #86bc42;
+	border-color: transparent;
+}
+
+.page-link {
+	color: #222;
+}
+
+.content-container {
+	background-color: #fff;
+	border-radius: 10px;
+	padding: 20px;
+}
+
+/* =========================== header =================================== */
+
+header {
+	background-color: #fff;
+	height: 50px;
+	width: 100%;
+	padding: 10px;
+	box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+	-webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000000;
+}
+
+.header-icon {
+	font-size: 1.5em;
+}
+
+.header-icon.coin {
+	color: #DAA520;
+}
+
+.header-divider {
+	font-size: 1.5em;
+	color: lightgray;
+}
+
+.partner-logo-img {
+	position: relative;
+	top: -3px;
+}
+
+.profile-menu {
+	text-decoration: none;
+	color: #222;
+	transition: 0.3s;
+}
+
+.profile-menu:hover {
+	text-decoration: none;
+	color: #EB2025;
+}
+
+
+
+.dropdown-item {
+	font-size: 1em;
+	padding: 1.1rem;
+}
+
+.fa-chevron-down {
+	position: relative;
+	height: 10px;
+	width: 10px;
+}
+
+.fa-chevron-down:before {
+	position: absolute;
+	top: -3px;
+}
+
+
+aside {
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 270px;
+	background-color: #242833;
+	z-index: 1000001;
+}
+
+.sidebar-header {
+	height: 50px;
+	background-color: #86bc42;
+	padding: 5px;
+}
+
+.sidebar-item {
+	color: #7B7B7B;
+	text-transform: uppercase;
+	background-color: transparent;
+	padding: 1.25rem;
+}
+
+.sidebar-item i {
+	color: #7B7B7B;
+}
+
+.list-group-item-action:focus, .list-group-item-action:hover {
+	background-color: #191B25;
+	color: #7B7B7B;
+}
+
+.list-group-item-action.active:focus, .list-group-item-action.active:hover {
+	background-color: #191B25;
+	color: #fff;
+}
+
+.sidebar-item.active {
+	background-color: #191B25;
+	border-right: 6px solid #86bc42;
+	border-bottom-color: transparent;
+	border-top-color: transparent;
+}
+
+.sidebar-item.active i {
+	color: #86bc42;
+}
+
+.sidebar-toggler {
+	cursor: pointer;
+}
+
+
+/* ============================= campaign =============================== */
+
+.tab-pane {
+	background-color: #fff;
+}
+
+.current span.number {
+	color: #fff;
+}
+
+.radio-container {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 100px;
+  /*align-items: center;*/
+  /*height: 100vh;*/
+}
+
+.radio-tile-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.radio-tile-group .input-container {
+  position: relative;
+  height: 10rem;
+  width: 10rem;
+  margin: 0.5rem;
+}
+.radio-tile-group .input-container .radio-button {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+.radio-tile-group .input-container .radio-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #EB2025;
+  border-radius: 5px;
+  padding: 1rem;
+  transition: -webkit-transform 300ms ease;
+  transition: transform 300ms ease;
+  transition: transform 300ms ease, -webkit-transform 300ms ease;
+}
+.radio-tile-group .input-container .icon svg {
+  fill: #EB2025;
+  width: 3rem;
+  height: 3rem;
+}
+.radio-tile-group .input-container .radio-tile-label {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #EB2025;
+}
+.radio-tile-group .input-container .radio-button:checked + .radio-tile {
+  background-color: #EB2025;
+  border: 2px solid #EB2025;
+  color: white;
+  -webkit-transform: scale(1.1, 1.1);
+          transform: scale(1.1, 1.1);
+}
+.radio-tile-group .input-container .radio-button:checked + .radio-tile .icon svg {
+  fill: white;
+  background-color: #EB2025;
+}
+.radio-tile-group .input-container .radio-button:checked + .radio-tile .radio-tile-label {
+  color: white;
+  background-color: #EB2025;
+}
+
+.wizard-container {
+	background-color: #fff;
+}
+
+.target-des {
+	border-left: 4px solid #EB2025;
+	padding-left: 10px;
+}
+
+/* ================================ purchase credits ===================== */
+
+.card {
+	position: relative;
+	padding-bottom: 80px;
+	border-radius: 15px;
+	overflow: hidden;
+	border: 0;
+	transition: 0.3s;
+}
+
+.card:hover {
+	box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+	-webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+}
+
+.card-logo {
+	height: 0;
+	padding-bottom: 100%;
+	position: relative;
+}
+
+.card-logo > img {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 70%;	
+}
+
+.card:hover .card-logo {
+	/*transform: rotate(360deg);*/
+}
+
+.card-logo > span {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 4em;
+}
+
+.card-footer {
+	background-color: #EB2025;
+	color: #fff;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding-top: 20px;
+}
+
+.card-footer > span {
+	position: absolute;
+	top: -16px;
+	left: 50%;
+	width: 50%;
+	transform: translateX(-50%);
+	background-color: #DAA520;
+	border-radius: 30px;
+	color: #fff;
+	padding: 5px 10px;
+}
+
+
+/* Custom, iPhone Retina */ 
+@media only screen and (min-width : 321px) {
+
+}
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (min-width : 480px) {
+
+}
+
+/* col-sm media query*/
+@media only screen and (min-width : 576px) {
+
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px) {
+	header {
+		padding-left: 290px;
+	}
+
+	main {
+		padding-right: 30px;
+		padding-left: 300px;
+	}
+
+	.dropdown-menu {
+		transform: translate3d(70px, 16px, 0px) !important;
+	}
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px) {
+
+}
+
+/*==========  Non-Mobile First Method  ==========*/
+
+/* Large Devices, Wide Screens */
+@media only screen and (max-width : 1199px) {
+
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width : 991px) {
+	aside, main, header {
+		transition: 0.3s;
+	}
+
+	aside {
+		transform: translateX(-271px);
+	}
+
+	main {
+		padding-right: 10px;
+		padding-left: 10px;
+	}
+
+	.sidebar-toggler {
+		z-index: 100000000000;
+	}
+
+	.sidebar-toggle aside {
+		transform: translateX(0) !important;
+	}
+
+	.sidebar-toggle main,
+	.sidebar-toggle header {
+		margin-left: 270px;
+	}
+
+	.sidebar-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+
+	.sidebar-toggle .sidebar-overlay {
+		left: 270px;
+		z-index: 100000000;
+		background-color: rgba(0,0,0,0.5);
+	}
+
+	.dropdown-menu {
+		transform: translate3d(-100px, 16px, 0px) !important;
+	}
+
+}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width : 767px) {
+
+}
+
+/* col-sm media query*/
+@media only screen and (max-width : 575px) {
+
+}
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (max-width : 479px) {
+	.nav-tabs .nav-link {
+		font-size: 10px;
+	}
+}
+
+@media only screen and (max-width : 374px) {
+	.nav-tabs .nav-link {
+		font-size: 8px;
+	}
+}
+
+/* Custom, iPhone Retina */ 
+@media only screen and (max-width : 320px) {
+
+}
+
+
+#transparent-cover{
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100vh;
+	width: 100%;
+	background-color: rgba(100,100,100,.8);
+	z-index: 9999;
+	display:table;
+}
+
+.cover-inside{
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+	color: #E3E3E2;
+	font-size: 30px;
+	font-weight: normal !important;
+}
+
+.cover-inside label img {
+	width: 20px;
+}
+
+#current-activity{
+	font-size: 20px;
+	font-weight: 100 !important;
+	color: white;
+}
+
+.hidden{
+	display: none !important;
+}
+
+#i_merchant_name{
+	font-weight: 800;
+	color: black;
+}

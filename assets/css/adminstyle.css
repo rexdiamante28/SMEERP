@@ -1,0 +1,76 @@
+
+.card {
+	overflow: hidden;
+}
+
+.home-card {
+	position: relative;
+	overflow: hidden;
+	padding-bottom: 80px !important;
+	/*border: 7px solid #a7cb35;*/
+}
+
+.home-card h6 {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	font-size: 15px;
+	padding: 15px !important;
+}
+
+.card-hover:hover {
+	-webkit-box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+    outline: 0;
+}
+
+.page {
+	background: transparent;
+}
+
+.page .card .card-header-title {
+	font-size: 13px;
+}
+
+.page .card small {
+	font-size: 10px;
+}
+
+.option-check {
+	transition: 0.3s;
+}
+
+.option-check > i {
+	color: white;
+	display: none;
+	position: absolute;
+	left: -33px;
+	top: 35%;
+	/*transform: translateY(-50%);*/
+}
+
+.card-option:hover .option-check > i {
+	display: block !important;
+}
+
+
+div.dataTables_wrapper div.dataTables_filter
+{
+  display: none !important;
+}
+
+a button{
+	height: 41px !important;
+}
+
+td {
+	font-size: 12px !important;
+}
+
+td button, td a{
+	padding: 3px 5px !important;
+	color: white !important;
+	margin-top: 5px;
+	font-size: 12px !important;
+}
