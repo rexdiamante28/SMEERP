@@ -27,7 +27,7 @@ date_default_timezone_set('Asia/Manila');
 */
 /*$config['base_url'] = 'http://35.173.0.77/dev/paypanda/';*/
 //$config['base_url'] = 'http://lotto.cloudpandaph.com/';
-$config['base_url'] = 'http://localhost/smerp/';
+$config['base_url'] = 'http://localhost/smeerp/';
 
 /*
 |--------------------------------------------------------------------------

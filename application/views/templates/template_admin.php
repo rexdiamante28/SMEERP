@@ -35,7 +35,7 @@
     ?>
 
 </head>
-<body data-base_url="<?=base_url();?>">
+<body <body id="template_body" data-base_url="<?= base_url(); ?>" data-token_name="<?= $this->security->get_csrf_token_name(); ?>" data-token_value="<?= $this->security->get_csrf_hash(); ?>">
 	<!-- <div class="sidebar-overlay"></div> -->
 	<?php $this->load->view('includes/cover'); ?>
 	<header class="d-flex align-items-center">

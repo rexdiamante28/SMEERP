@@ -1,15 +1,14 @@
 <?php 
-class Model_company extends CI_Model {
+class Model_industry extends CI_Model {
 
-	public function create_save($name,$description,$industry)
+	public function create($project_id,$role_name)
 	{
-		$query="insert into erp_companies (name,description,industry,created,updated,status)
-		values (?,?,?,?,?,?)";
+		$query="insert into app_project_roles (project,role,created,updated,status)
+		values (?,?,?,?,?)";
 
 		$args = array(
-			$name,
-			$description,
-			$industry,
+			$project_id,
+			$role_name,
 			date('Y-m-d H:i:s'),
 			date('Y-m-d H:i:s'),
 			1
@@ -17,21 +16,12 @@ class Model_company extends CI_Model {
 
 		if($this->db->query($query,$args))
 		{
-			$response = array(
-				'success' => true,
-				'message' => 'Company added',
-				'id' => en_dec('en',$this->db->insert_id())
-			);
+			return true;
 		}
 		else
 		{
-			$response = array(
-				'success' => false,
-				'message' => 'Unable to add company. Please try again.'
-			);
+			return false;
 		}
-
-		return $response;
 	}
 
 	public function table_view($read_args)
@@ -79,41 +69,29 @@ class Model_company extends CI_Model {
 
 	public function read($id)
 	{
-		$query="select * from erp_companies where id = ? ";
+		$query="select * from app_project_roles where id = ? ";
 
 		return $this->db->query($query,$id)->row_array();
 	}
 
-	public function update_save($name,$description,$industry,$id)
+	public function update($role_id,$role_name)
 	{
-		$query="update erp_companies set name = ?, description = ?, industry = ?, updated = ?
-		 where id = ?";
+		$query="update app_project_roles set role  = ?, updated = ? where id = ?";
 
 		$args = array(
-			$name,
-			$description,
-			$industry,
-			date('Y-m-d H:i:s'),
-			$id
+			$role_name,
+			date('Y-m-d'),
+			$role_id
 		);
 
 		if($this->db->query($query,$args))
 		{
-			$response = array(
-				'success' => true,
-				'message' => 'Company updated',
-				'id' => en_dec('en',$id)
-			);
+			return true;
 		}
 		else
 		{
-			$response = array(
-				'success' => false,
-				'message' => 'Unable to add company. Please try again.'
-			);
+			return false;
 		}
-
-		return $response;
 	}
 
 	public function delete($id)
@@ -160,18 +138,11 @@ class Model_company extends CI_Model {
 		
 	}
 
-	public function get_categoories()
+	public function get_active()
 	{
-		$query="select * from app_project_categories where status = 1";
+		$query="select * from erp_industries where status = 1";
 
 		return $this->db->query($query)->result_array();
-	}
-
-	public function get_project_roles($id)
-	{
-		$query="select * from app_project_roles where project = ? and status = 1";
-
-		return $this->db->query($query,$id)->result_array();
 	}
 
 }

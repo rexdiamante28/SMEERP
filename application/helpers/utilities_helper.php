@@ -117,3 +117,32 @@ function deny_access()
 
     echo json_encode($response);
 }
+
+
+function display_val_text($form_empty,$value)
+{
+	if(!$form_empty)
+	{
+		return $value;
+	}
+	else
+	{
+		return "";
+	}
+}
+
+
+function display_val_select($form_empty,$value,$current_option)
+{
+	if(!$form_empty)
+	{
+		if($value==$current_option)
+		{
+			return "selected";
+		}
+	}
+	else
+	{
+		return "";
+	}
+}
