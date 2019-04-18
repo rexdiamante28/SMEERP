@@ -6,14 +6,14 @@ $(document).ready(function(){
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-	$('#company_create_btn').click(function(){
-		$('#company_create_form')[0].reset();
-		$('#company_create_modal').modal();
+	$('#industry_create_btn').click(function(){
+		$('#industry_create_form')[0].reset();
+		$('#industry_create_modal').modal();
 	});
 
 
 
-	$('#company_create_form').submit(function(e){
+	$('#industry_create_form').submit(function(e){
 
 		showCover("Saving...");
 
@@ -26,9 +26,9 @@ $(document).ready(function(){
 
 		var endpoint = form.data('create_url');
 
-		if($('#company_primary').val()!='0')
+		if($('#industry_primary').val()!='0')
 		{
-			form_data.append('company_primary',$('#company_primary').val());
+			form_data.append('industry_primary',$('#industry_primary').val());
 			endpoint = form.data('update_url');
 		}
 
@@ -49,9 +49,9 @@ $(document).ready(function(){
 	  			if(json_data.success)
 	  			{
 	  				sys_toast_success(json_data.message);
-	  				$('#company_create_form')[0].reset();
-	  				$('#company_create_modal').modal('hide');
-	  				load_companies();
+	  				$('#industry_create_form')[0].reset();
+	  				$('#industry_create_modal').modal('hide');
+	  				load_industries();
 	  			}
 	  			else
 	  			{

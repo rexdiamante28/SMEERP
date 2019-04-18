@@ -872,13 +872,6 @@ function refreshStepNavigation(wizard, options, state, oldIndex)
 
     currentOrNewStepAnchor.prepend(currentInfo).parent()._selectAria().removeClass("done")._enableAria();
     stepTitles.eq(state.currentIndex).addClass("current").next(".body").addClass("current");
-    // stepTitles.eq(state.currentIndex).next(".body").each(function () {
-    //     var bodyHeight = $(this).height();
-    //     var padding = $(this).innerHeight() - bodyHeight; 
-    //     bodyHeight += padding;
-    //     $(this).after('<div class="' + options.clearFixCssClass + '"></div>');
-    //     $(this).parent().animate({ height: bodyHeight }, "slow");
-    // });
 }
 
 /**
@@ -1004,7 +997,7 @@ function render(wizard, options, state)
         orientation = getValidEnumValue(stepsOrientation, options.stepsOrientation),
         verticalCssClass = (orientation === stepsOrientation.vertical) ? " vertical" : "",
         contentWrapper = $(wrapperTemplate.format(options.contentContainerTag, "content " + options.clearFixCssClass, wizard.html())),
-        stepsWrapper = $(wrapperTemplate.format(options.stepsContainerTag, "steps " + options.clearFixCssClass, "<ul role=\"tablist\" class=\"wizard-list w-100 d-flex justify-content-between\"></ul>")),
+        stepsWrapper = $(wrapperTemplate.format(options.stepsContainerTag, "steps " + options.clearFixCssClass, "<ul role=\"tablist\"></ul>")),
         stepTitles = contentWrapper.children(options.headerTag),
         stepContents = contentWrapper.children(options.bodyTag);
 
@@ -1062,12 +1055,8 @@ function renderPagination(wizard, options, state)
     if (options.enablePagination)
     {
         var pagination = "<{0} class=\"actions {1}\"><ul role=\"menu\" aria-label=\"{2}\">{3}</ul></{0}>",
-            buttonTemplate = "<li><a href=\"#{0}\" role=\"menuitem\" class=\"btn btn-secondary\">{1}</a></li>",
+            buttonTemplate = "<li><a href=\"#{0}\" role=\"menuitem\">{1}</a></li>",
             buttons = "";
-
-         // var pagination = "",
-         //    buttonTemplate = "",
-         //    buttons = "";
 
         if (!options.forceMoveForward)
         {
@@ -1720,8 +1709,7 @@ var defaults = $.fn.steps.defaults = {
      * @default "<span class=\"number\">#index#.</span> #title#"
      * @for defaults
      **/
-
-    titleTemplate: "<span class=\"number\">#index#</span> #title#",
+    titleTemplate: "<span class=\"number\">#index#.</span> #title#",
 
     /**
      * The loading template which will be used to create the loading animation.
@@ -2052,4 +2040,3 @@ var defaults = $.fn.steps.defaults = {
     }
 };
 })(jQuery);
-

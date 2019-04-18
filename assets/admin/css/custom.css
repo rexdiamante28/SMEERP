@@ -1111,7 +1111,7 @@ select {
 }
 
 select.form-control:not([size]):not([multiple]) {
-    height: calc(2.25rem + 5px);
+    height: calc(2.25rem + 15px);
     padding: 0px 10.125px;
 }
 

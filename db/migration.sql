@@ -1,0 +1,1 @@
+ALTER TABLE `pp_transactions` ADD `mobile_number` VARCHAR(20) NULL AFTER `name`;

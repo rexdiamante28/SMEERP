@@ -8,7 +8,7 @@
 	<!-- <link href="https://fonts.googleapis.com/css?family=Poiret+One|Baloo|Passion+One" rel="stylesheet"> -->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 	<link href="<?=base_url('assets/css/lux.bootstrap.min.css'); ?>" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="<?=base_url('assets/css/webstyle.css'); ?>">
+	<link rel="stylesheet" type="text/css" href="<?=base_url('assets/css/style.css'); ?>">
 	<link rel="shortcut icon" type="image/png" href="<?=base_url('assets/img/logo-panda.png'); ?>"/>
 	<link rel="stylesheet" type="text/css" href="<?=base_url('assets/css/app/app.css'); ?>">
 

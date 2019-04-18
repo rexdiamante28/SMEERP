@@ -16,9 +16,9 @@
                                             <div class="border-top-gray">
                                                 <div class="row">
                                                     <div class="col-lg-12">
-                                                        <form id="company_search_form">
+                                                        <form id="industry_search_form">
                                                             <div class="input-group">
-                                                            <input type="text" name="searchtext" class="form-control form-control-sm capitalize" placeholder="Search" id="company_searchtext">
+                                                            <input type="text" name="searchtext" class="form-control form-control-sm capitalize" placeholder="Search" id="industry_searchtext">
                                                             <button class="input-group-btn btn-sm btn btn-primary btn-auto no-margin" type="submit" id="search_trigger_btn">
                                                                 <i class="fa fa-search no-margin"></i>
                                                             </button>
@@ -26,7 +26,7 @@
                                                                 if($this->loginstate->get_access()['overall_access']==1)
                                                                 {
                                                                     ?>
-                                                                        <button type="button" class="input-group-btn btn-sm btn btn-primary btn-auto no-margin" id="company_create_btn">
+                                                                        <button type="button" class="input-group-btn btn-sm btn btn-primary btn-auto no-margin" id="industry_create_btn">
                                                                             <i class="fa fa-plus"></i>
                                                                             Add New
                                                                         </button>
@@ -47,7 +47,6 @@
                                             <tr>
                                                 <th>Name</th>
                                                 <th>Description</th>
-                                                <th>Industry</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>

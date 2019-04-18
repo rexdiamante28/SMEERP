@@ -4,10 +4,10 @@ $(document).ready(function(){
     ////////////////////////////////////////////////////////////////Data Loading///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	load_companies = function() {
+	load_industries = function() {
 
 		var data = {
-			"search_string" : $('#company_searchtext').val()
+			"search_string" : $('#industry_searchtext').val()
 		};
 		
 		dataTable = $('#company-table-grid').DataTable({
@@ -15,7 +15,7 @@ $(document).ready(function(){
 			"serverSide": true,
 			responsive: true,
 			"ajax":{
-				url:base_url+"app/company/table_data", // json datasource
+				url:base_url+"app/industry/table_data", // json datasource
 				type: "get",  // method  , by default get
 				data: data,
 				beforeSend:function(data){
@@ -35,19 +35,19 @@ $(document).ready(function(){
 				}
 			},
 			"columnDefs": [
-			   { orderable: false, "targets": [ 3 ] },
-			   { className: "text-center", "targets": [ 3 ] }
+			   { orderable: false, "targets": [ 2 ] },
+			   { className: "text-center", "targets": [ 2 ] }
 			 ]
 		});
 	}
 
 
-	load_companies();
+	load_industries();
 
 
-	$('#company_search_form').submit(function(e){
+	$('#industry_search_form').submit(function(e){
 		e.preventDefault();
-		load_companies();
+		load_industries();
 	});
 
 
@@ -56,26 +56,24 @@ $(document).ready(function(){
     ////////////////////////////////////////////////////////////////Specific Data Loading///////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	$(document).delegate('.company_btn_view','click',function(e){
+	$(document).delegate('.industry_btn_view','click',function(e){
 		showCover('Loading data...');
 		$.ajax({
 	        type:'get',
-	        url:base_url+'app/company/read/'+e.currentTarget.id,
+	        url:base_url+'app/industry/read/'+e.currentTarget.id,
 	        data:'',
 	        success:function(data){
 	        	hideCover();
 	        	var json_data = JSON.parse(data);
 	        	console.log(json_data);
 
-	        	$('#company_create_form')[0].reset();
+	        	$('#industry_create_form')[0].reset();
 
-				$('#company_primary').val(json_data.id);
-				$('#company_name').val(json_data.name);
-				$('#company_description').val(json_data.description);
-				$('#company_industry').val(json_data.industry);
+				$('#industry_primary').val(json_data.id);
+				$('#industry_name').val(json_data.name);
+				$('#industry_description').val(json_data.description);
 
-
-				$('#company_create_modal').modal();
+				$('#industry_create_modal').modal();
 				
 
 	        },
@@ -91,7 +89,7 @@ $(document).ready(function(){
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////Specific Data Deleting/////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	$(document).delegate('.company_btn_delete','click',function(e){
+	$(document).delegate('.industry_btn_delete','click',function(e){
 
 		var id = e.currentTarget.id;
 
@@ -100,7 +98,7 @@ $(document).ready(function(){
 				showCover('Deleting data...');
 				$.ajax({
 			        type:'get',
-			        url:base_url+'app/company/delete/'+id,
+			        url:base_url+'app/industry/delete/'+id,
 			        data:'',
 			        success:function(data){
 			        	hideCover();
@@ -109,7 +107,7 @@ $(document).ready(function(){
 			        	if(json_data.success)
 			        	{
 			        		sys_toast_success(json_data.message);
-			        		load_companies();
+			        		load_industries();
 			        	}
 			        	else
 			        	{

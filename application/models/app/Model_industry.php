@@ -1,14 +1,18 @@
 <?php 
 class Model_industry extends CI_Model {
 
-	public function create($project_id,$role_name)
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////Default functions start////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public function create($name,$description)
 	{
-		$query="insert into app_project_roles (project,role,created,updated,status)
+		$query="insert into erp_industries (name,description,created,updated,status)
 		values (?,?,?,?,?)";
 
 		$args = array(
-			$project_id,
-			$role_name,
+			$name,
+			$description,
 			date('Y-m-d H:i:s'),
 			date('Y-m-d H:i:s'),
 			1
@@ -16,15 +20,24 @@ class Model_industry extends CI_Model {
 
 		if($this->db->query($query,$args))
 		{
-			return true;
+			$response = array(
+				'success' => true,
+				'message' => 'Industry added',
+				'id' => en_dec('en',$this->db->insert_id())
+			);
 		}
 		else
 		{
-			return false;
+			$response = array(
+				'success' => false,
+				'message' => 'Unable to add industry. Please try again.'
+			);
 		}
+
+		return $response;
 	}
 
-	public function table_view($read_args)
+	public function table_data($read_args)
 	{
 		$columns = array( 
             0 => 'id',
@@ -37,12 +50,11 @@ class Model_industry extends CI_Model {
 		$totalData = 0;
 		$totalFiltered = 0;
 
-		$query="select a.*, b.name as industry_name from erp_companies as a left join erp_industries as b on a.industry = b.id where a.status = 1 ";
+		$query="select * from erp_industries where status = 1 ";
 
 		if($read_args['search_string']!='')
 		{
-			$query.=" and ( a.name like '%".$read_args['search_string']."%' or a.description like '%".$read_args['search_string']."%') or 
-			b.name like '%".$read_args['search_string']."%'";
+			$query.=" and (name like '%".$read_args['search_string']."%' or description like '%".$read_args['search_string']."%')";
 		}
 
 		$totalData = $this->db->query($query)->num_rows();
@@ -69,74 +81,75 @@ class Model_industry extends CI_Model {
 
 	public function read($id)
 	{
-		$query="select * from app_project_roles where id = ? ";
+		$query="select * from erp_industries where id = ? ";
 
 		return $this->db->query($query,$id)->row_array();
 	}
 
-	public function update($role_id,$role_name)
+	public function update($name,$description,$id)
 	{
-		$query="update app_project_roles set role  = ?, updated = ? where id = ?";
+		$query="update erp_industries set name = ?, description = ?, updated = ?
+		 where id = ?";
 
 		$args = array(
-			$role_name,
-			date('Y-m-d'),
-			$role_id
+			$name,
+			$description,
+			date('Y-m-d H:i:s'),
+			$id
 		);
 
 		if($this->db->query($query,$args))
 		{
-			return true;
+			$response = array(
+				'success' => true,
+				'message' => 'Industry updated',
+				'id' => en_dec('en',$id)
+			);
 		}
 		else
 		{
-			return false;
+			$response = array(
+				'success' => false,
+				'message' => 'Unable to update industry. Please try again.'
+			);
 		}
+
+		return $response;
 	}
 
 	public function delete($id)
 	{
-		// only delete role that are not in use
-
-		$query = "select * from app_project_contributors where role = ? and status = 1";
-
-		$result = $this->db->query($query,$id);
-
-		if($result->num_rows()>0)
+		$query="update erp_industries set status = 0 where id = ?";
+		
+		if($this->db->query($query,$id))
 		{
 			$response = array(
-				'status' => false,
-				'message' => "Role is currenty in use. It cannot be deleted."
+				'status' => true,
+				'message' => "Industry deleted."
 			);
 
 			return $response;
 		}
 		else
 		{
-			$query="update app_project_roles set status = 0 where id = ?";
-		
-			if($this->db->query($query,$id))
-			{
-				$response = array(
-					'status' => true,
-					'message' => "Role deleted."
-				);
+			$response = array(
+				'status' => false,
+				'message' => "Something went wrong. Please try again."
+			);
 
-				return $response;
-			}
-			else
-			{
-				$response = array(
-					'status' => false,
-					'message' => "Something went wrong. Please try again."
-				);
-
-				return $response;
-			}
+			return $response;
 		}
 
-		
 	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////Default functions end//////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////Additional functions start//////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public function get_active()
 	{
@@ -144,5 +157,10 @@ class Model_industry extends CI_Model {
 
 		return $this->db->query($query)->result_array();
 	}
+
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////Additional functions end////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
