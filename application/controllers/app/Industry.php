@@ -57,93 +57,104 @@ class Industry extends CI_Controller {
     public function create()
     {
 
-        $validation = array(
-            array('industry_name','Industry Name','required|max_length[100]|min_length[1]|is_unique[erp_companies.name]'),
-            array('industry_description','Industry Description','max_length[5000]|min_length[1]')
-        );
+        $this->loginstate->login_state_check();
 
-        foreach ($validation as $value) {
-            $this->form_validation->set_rules($value[0],$value[1],$value[2]);
-        }
-
-        if ($this->form_validation->run() == FALSE)
+        if($this->loginstate->get_access()['overall_access']==1)
         {
+
+            $validation = array(
+                array('industry_name','Industry Name','required|max_length[100]|min_length[1]|is_unique[erp_companies.name]'),
+                array('industry_description','Industry Description','max_length[5000]|min_length[1]')
+            );
+
+            foreach ($validation as $value) {
+                $this->form_validation->set_rules($value[0],$value[1],$value[2]);
+            }
+
+            if ($this->form_validation->run() == FALSE)
+            {
+                    $response['environment']    =   ENVIRONMENT;
+                    $response['success']        =   false;
+                    $response['message']        =   validation_errors();
+                    $response['csrf_name']      =   $this->security->get_csrf_token_name();
+                    $response['csrf_hash']      =   $this->security->get_csrf_hash();
+
+                    echo json_encode($response);
+            }
+            else
+            {
+                $result = $this->model_industry ->create(
+                    $this->input->post('industry_name'),
+                    $this->input->post('industry_description'),
+                    en_dec('dec',$this->input->post('company_industry'))
+                );
+
                 $response['environment']    =   ENVIRONMENT;
-                $response['success']        =   false;
-                $response['message']        =   validation_errors();
-                $response['csrf_name']      =   $this->security->get_csrf_token_name();
+                $response['success']        =   $result['success'];
+                $response['message']        =   $result['message'];
+                $response['id']             =   $result['id'];
                 $response['csrf_hash']      =   $this->security->get_csrf_hash();
 
                 echo json_encode($response);
-        }
-        else
-        {
-            $result = $this->model_industry ->create(
-                $this->input->post('industry_name'),
-                $this->input->post('industry_description'),
-                en_dec('dec',$this->input->post('company_industry'))
-            );
-
-            $response['environment']    =   ENVIRONMENT;
-            $response['success']        =   $result['success'];
-            $response['message']        =   $result['message'];
-            $response['id']             =   $result['id'];
-            $response['csrf_hash']      =   $this->security->get_csrf_hash();
-
-            echo json_encode($response);
+            }
         }
     }
 
     public function update()
     {
+        $this->loginstate->login_state_check();
 
-        $validation = array(
-            array('industry_primary','ID','required|max_length[100]|min_length[1]'),
-            array('industry_description','Industry Description','max_length[5000]|min_length[1]'),
-        );
-
-        $id = en_dec('dec',$this->input->post('industry_primary'));
-
-        $industry = $this->model_industry->read($id);    
-
-        if($industry['name']==$this->input->post('industry_name'))
+        if($this->loginstate->get_access()['overall_access']==1)
         {
-            array_push($validation,array('industry_name','Industry Name','required|max_length[100]|min_length[1]'));
-        }
-        else
-        {
-            array_push($validation,array('industry_name','Industry Name','required|max_length[100]|min_length[1]|is_unique[erp_industries.name]'));
-        }
 
-        foreach ($validation as $value) {
-            $this->form_validation->set_rules($value[0],$value[1],$value[2]);
-        }
+            $validation = array(
+                array('industry_primary','ID','required|max_length[100]|min_length[1]'),
+                array('industry_description','Industry Description','max_length[5000]|min_length[1]'),
+            );
 
-        if ($this->form_validation->run() == FALSE)
-        {
+            $id = en_dec('dec',$this->input->post('industry_primary'));
+
+            $industry = $this->model_industry->read($id);    
+
+            if($industry['name']==$this->input->post('industry_name'))
+            {
+                array_push($validation,array('industry_name','Industry Name','required|max_length[100]|min_length[1]'));
+            }
+            else
+            {
+                array_push($validation,array('industry_name','Industry Name','required|max_length[100]|min_length[1]|is_unique[erp_industries.name]'));
+            }
+
+            foreach ($validation as $value) {
+                $this->form_validation->set_rules($value[0],$value[1],$value[2]);
+            }
+
+            if ($this->form_validation->run() == FALSE)
+            {
+                    $response['environment']    =   ENVIRONMENT;
+                    $response['success']        =   false;
+                    $response['message']        =   validation_errors();
+                    $response['csrf_name']      =   $this->security->get_csrf_token_name();
+                    $response['csrf_hash']      =   $this->security->get_csrf_hash();
+
+                    echo json_encode($response);
+            }
+            else
+            {
+                $result = $this->model_industry->update(
+                    $this->input->post('industry_name'),
+                    $this->input->post('industry_description'),
+                    $id
+                );
+
                 $response['environment']    =   ENVIRONMENT;
-                $response['success']        =   false;
-                $response['message']        =   validation_errors();
-                $response['csrf_name']      =   $this->security->get_csrf_token_name();
+                $response['success']        =   $result['success'];
+                $response['message']        =   $result['message'];
+                $response['id']             =   $result['id'];
                 $response['csrf_hash']      =   $this->security->get_csrf_hash();
 
                 echo json_encode($response);
-        }
-        else
-        {
-            $result = $this->model_industry->update(
-                $this->input->post('industry_name'),
-                $this->input->post('industry_description'),
-                $id
-            );
-
-            $response['environment']    =   ENVIRONMENT;
-            $response['success']        =   $result['success'];
-            $response['message']        =   $result['message'];
-            $response['id']             =   $result['id'];
-            $response['csrf_hash']      =   $this->security->get_csrf_hash();
-
-            echo json_encode($response);
+            }
         }
     }
 

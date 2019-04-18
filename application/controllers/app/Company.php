@@ -60,96 +60,108 @@ class Company extends CI_Controller {
     public function create()
     {
 
-        $validation = array(
-            array('company_name','Company Name','required|max_length[100]|min_length[1]|is_unique[erp_companies.name]'),
-            array('company_description','Company Description','max_length[5000]|min_length[1]'),
-            array('company_industry','Company Industry','required|max_length[100]|min_length[1]')
-        );
+        $this->loginstate->login_state_check();
 
-        foreach ($validation as $value) {
-            $this->form_validation->set_rules($value[0],$value[1],$value[2]);
-        }
-
-        if ($this->form_validation->run() == FALSE)
+        if($this->loginstate->get_access()['overall_access']==1)
         {
+            $validation = array(
+                array('company_name','Company Name','required|max_length[100]|min_length[1]|is_unique[erp_companies.name]'),
+                array('company_description','Company Description','max_length[5000]|min_length[1]'),
+                array('company_industry','Company Industry','required|max_length[100]|min_length[1]')
+            );
+
+            foreach ($validation as $value) {
+                $this->form_validation->set_rules($value[0],$value[1],$value[2]);
+            }
+
+            if ($this->form_validation->run() == FALSE)
+            {
+                    $response['environment']    =   ENVIRONMENT;
+                    $response['success']        =   false;
+                    $response['message']        =   validation_errors();
+                    $response['csrf_name']      =   $this->security->get_csrf_token_name();
+                    $response['csrf_hash']      =   $this->security->get_csrf_hash();
+
+                    echo json_encode($response);
+            }
+            else
+            {
+                $result = $this->model_company->create(
+                    $this->input->post('company_name'),
+                    $this->input->post('company_description'),
+                    en_dec('dec',$this->input->post('company_industry'))
+                );
+
                 $response['environment']    =   ENVIRONMENT;
-                $response['success']        =   false;
-                $response['message']        =   validation_errors();
-                $response['csrf_name']      =   $this->security->get_csrf_token_name();
+                $response['success']        =   $result['success'];
+                $response['message']        =   $result['message'];
+                $response['id']             =   $result['id'];
                 $response['csrf_hash']      =   $this->security->get_csrf_hash();
 
                 echo json_encode($response);
-        }
-        else
-        {
-            $result = $this->model_company->create(
-                $this->input->post('company_name'),
-                $this->input->post('company_description'),
-                en_dec('dec',$this->input->post('company_industry'))
-            );
+            }
 
-            $response['environment']    =   ENVIRONMENT;
-            $response['success']        =   $result['success'];
-            $response['message']        =   $result['message'];
-            $response['id']             =   $result['id'];
-            $response['csrf_hash']      =   $this->security->get_csrf_hash();
-
-            echo json_encode($response);
         }
     }
 
     public function update()
     {
 
-        $validation = array(
-            array('company_primary','ID','required|max_length[100]|min_length[1]'),
-            array('company_description','Company Description','max_length[5000]|min_length[1]'),
-            array('company_industry','Company Industry','required|max_length[100]|min_length[1]')
-        );
+        $this->loginstate->login_state_check();
 
-        $id = en_dec('dec',$this->input->post('company_primary'));
-
-        $company = $this->model_company->read($id);    
-
-        if($company['name']==$this->input->post('company_name'))
+        if($this->loginstate->get_access()['overall_access']==1)
         {
-            array_push($validation,array('company_name','Company Name','required|max_length[100]|min_length[1]'));
-        }
-        else
-        {
-            array_push($validation,array('company_name','Company Name','required|max_length[100]|min_length[1]|is_unique[erp_companies.name]'));
-        }
 
-        foreach ($validation as $value) {
-            $this->form_validation->set_rules($value[0],$value[1],$value[2]);
-        }
+            $validation = array(
+                array('company_primary','ID','required|max_length[100]|min_length[1]'),
+                array('company_description','Company Description','max_length[5000]|min_length[1]'),
+                array('company_industry','Company Industry','required|max_length[100]|min_length[1]')
+            );
 
-        if ($this->form_validation->run() == FALSE)
-        {
+            $id = en_dec('dec',$this->input->post('company_primary'));
+
+            $company = $this->model_company->read($id);    
+
+            if($company['name']==$this->input->post('company_name'))
+            {
+                array_push($validation,array('company_name','Company Name','required|max_length[100]|min_length[1]'));
+            }
+            else
+            {
+                array_push($validation,array('company_name','Company Name','required|max_length[100]|min_length[1]|is_unique[erp_companies.name]'));
+            }
+
+            foreach ($validation as $value) {
+                $this->form_validation->set_rules($value[0],$value[1],$value[2]);
+            }
+
+            if ($this->form_validation->run() == FALSE)
+            {
+                    $response['environment']    =   ENVIRONMENT;
+                    $response['success']        =   false;
+                    $response['message']        =   validation_errors();
+                    $response['csrf_name']      =   $this->security->get_csrf_token_name();
+                    $response['csrf_hash']      =   $this->security->get_csrf_hash();
+
+                    echo json_encode($response);
+            }
+            else
+            {
+                $result = $this->model_company->update(
+                    $this->input->post('company_name'),
+                    $this->input->post('company_description'),
+                    en_dec('dec',$this->input->post('company_industry')),
+                    $id
+                );
+
                 $response['environment']    =   ENVIRONMENT;
-                $response['success']        =   false;
-                $response['message']        =   validation_errors();
-                $response['csrf_name']      =   $this->security->get_csrf_token_name();
+                $response['success']        =   $result['success'];
+                $response['message']        =   $result['message'];
+                $response['id']             =   $result['id'];
                 $response['csrf_hash']      =   $this->security->get_csrf_hash();
 
                 echo json_encode($response);
-        }
-        else
-        {
-            $result = $this->model_company->update(
-                $this->input->post('company_name'),
-                $this->input->post('company_description'),
-                en_dec('dec',$this->input->post('company_industry')),
-                $id
-            );
-
-            $response['environment']    =   ENVIRONMENT;
-            $response['success']        =   $result['success'];
-            $response['message']        =   $result['message'];
-            $response['id']             =   $result['id'];
-            $response['csrf_hash']      =   $this->security->get_csrf_hash();
-
-            echo json_encode($response);
+            }
         }
     }
 
