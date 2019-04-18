@@ -51,7 +51,7 @@ function validate_strong_password(password){
 // Sidebar Functionality
 // ------------------------------------------------------ //
 
-$("#menu-toggle").click(function(e){
+$(".menu-toggle").click(function(e){
 	e.preventDefault();
 	$("#sideNav").toggleClass("sidebar-toggle");
 	$("#overlay").toggleClass("overlay-toggle");	

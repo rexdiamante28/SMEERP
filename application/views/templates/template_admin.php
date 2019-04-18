@@ -51,14 +51,15 @@
                     <div class="container-fluid">
                         <div class="navbar-holder d-flex align-items-center justify-content-between w-100">
                             <div class="navbar-header">
-                                <a href="#" id="menu-toggle" class="d-inline d-xl-none"><i class="fa fa-bars fa-lg mr-2"></i></a>
+                                <a href="#" id="menu-toggle" class="d-inline d-xl-none menu-toggle"><i class="fa fa-bars fa-lg mr-2"></i></a>
                                 <a href="<?= base_url(); ?>app/dashboard/" class="navbar-brand">
                                     <div class="brand-text brand-big d-none m-l-sm">
-                                        <img src="<?= base_url();?>assets/img/cplogo.svg" height="20px">
+                                        <!-- <img src="<?= base_url();?>assets/img/cplogo.svg" height="20px"> -->
+                                        <h3 class="font-weight-bold mb-0">WELCOME TO THE DASHBOARD</h3>
                                     </div>
                                     <div class="brand-text brand-small">
-                                        <img src="<?= base_url();?>assets/img/cplogo.svg" class="img-small_panda">
-                                        <strong>CLOUD PANDA</strong>
+                                        <!-- <img src="<?= base_url();?>assets/img/cplogo.svg" class="img-small_panda"> -->
+                                        <strong>SMEERP</strong>
                                     </div>
                                 </a>
                             </div>
@@ -71,9 +72,11 @@
             </header>
                 <div class="page-content d-flex align-items-stretch"> 
                     <nav id="sideNav" class="side-navbar sidebar-fixed position-fixed">
-                        <div class="sidebar-header d-flex align-items-center">
-                            <div class="avatar">
-                                <img src="<?= base_url();?>assets/uploads/avatars/<?= $this->session->avatar; ?>" alt="..." class="img-fluid rounded-circle">
+                        <i class="fa fa-times fa-lg menu-toggle close-icon d-xl-none" aria-hidden="true"></i>
+                        <div class="sidebar-header d-flex">
+                            <div class="avatar d-flex align-items-center justify-content-center">
+                                <!-- <img src="<?= base_url();?>assets/uploads/avatars/<?= $this->session->avatar; ?>" alt="..." class="img-fluid rounded-circle"> -->
+                                <h1 class="user-first-letter"><?= substr($this->session->username, 0, 1) ?></h1>
                             </div>
                             <div class="title">
                                 <h1 class="h4">Logged in as: </h1>

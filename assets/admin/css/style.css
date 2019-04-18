@@ -250,7 +250,7 @@ div nav.navbar {
 	z-index: 1;
 	background-color: #fff;
 	padding: 1.5rem;
-	padding-top: 60px;
+	/* padding-top: 60px; */
 
 }
 .sidebar-fixed .list-group .active {

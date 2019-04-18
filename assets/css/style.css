@@ -1,3 +1,14 @@
+:root {
+	/* INDIGO */
+		/* --main-color: #3f51b5;  */
+	/* DEEP PURPLE */
+		--main-color: #5e35b1; 
+	/* CYAN */
+		/* --main-color: #00b8d4;  */
+	/* PINK */
+		/* --main-color: #f50057;  */
+}
+
 html, body {
 	height: 100%;
 	width: 100%;
@@ -182,6 +193,97 @@ a:hover {
 	border-left: 2px solid #F7F7F9;
 }
 
+/* ===================================================================================================================
+
+		GENERAL LAYOUT
+
+   =================================================================================================================== */
+
+nav.side-navbar {
+	background-color: #242833;
+}
+
+a.list-group-item {
+	background-color: transparent;
+	color: #777 !important;
+}
+
+nav.side-navbar .title h1 {
+	color: #fff;
+}
+
+nav.side-navbar ul li.active a {
+	/* background-color: #191B25 !important; */
+	background-color: var(--main-color) !important;
+	color: #fff !important;
+	/* border-right: 4px solid red; */
+	border-top-right-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+	border-top-left-radius: 30px !important;
+	border-bottom-left-radius: 30px !important;
+}
+
+a.list-group-item i {
+	color: #777 !important;
+}
+
+.sidebar-fixed {
+	padding-right: 0 !important;
+	z-index: 1001 !important;
+}
+
+.main-bg {
+	background-color: var(--main-color) !important;
+}
+
+.card-option {
+	border-left: 10px solid var(--main-color) !important;
+}
+
+.card {
+	border-radius: 30px !important;
+}
+
+.option-check {
+	display: none;
+}
+
+.modal-header {
+	background-color: var(--main-color) !important;
+}
+
+.btn-primary {
+	background-color: var(--main-color) !important;
+}
+
+.sidebar-header {
+	padding-top: 10px !important;
+}
+
+.avatar {
+	border-radius: 50%;
+	border: 2px solid var(--main-color);
+}
+
+.user-first-letter {
+	color: #fff;
+	font-size: 30px;
+	text-transform: uppercase;
+	margin-bottom: 0 !important;
+}
+
+#sideNav {
+	position: relative;
+}
+
+.close-icon {
+	position: absolute;
+	top: 30px;
+	right: 20px;
+	cursor: pointer;
+}
+
+
 @media only screen and (max-width: 600px) {
     .content-container.right {
 		border-left: 0px solid #999;
@@ -341,6 +443,12 @@ table.table {
 .confirm-container {
 	margin-top: 25px;
 	margin-top: 0px;
+}
+
+@media only screen and (min-width: 1201px) {
+	div nav.navbar {
+		padding-left: 280px;
+	}
 }
 
 @media only screen and (min-width : 992px) {
