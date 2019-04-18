@@ -36,9 +36,9 @@ class Model_company extends CI_Model {
 
 	public function table_data($read_args)
 	{
-		$columns = array( 
-            0 => 'id',
-            1 => 'name',
+		$columns = array(
+            0 => 'name',
+            1 => 'description',
             2 => 'industry'
         );
 
