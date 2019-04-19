@@ -25,6 +25,7 @@
 							<div class="form-group">
 								<label for="exampleInputPassword1">Password</label>
 								<input type="password" class="form-control" name="password">
+								<a class="text-right" href="">Forgot Password?</a>
 							</div>
 							<button type="submit" class="btn btn-primary btn-block">Sign In</button>
 						</fieldset>
