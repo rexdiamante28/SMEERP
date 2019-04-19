@@ -9,7 +9,7 @@
                             {
                                 ?>
                                     <div class="col-md-6">
-                                        <a href="<?= base_url('app/account/view/'.$id); ?>" class="w-100">
+                                        <a href="<?= base_url('app/account/view/'); ?>" class="w-100">
                                             <div class="card card-option card-hover white p-3 mb-3 w-100">
                                                 <div class="option-check"><i class="fa fa-hand-o-right fa-lg"></i></div>
                                                 <div class="card-header-title font-weight-bold">Profile</div>
@@ -27,7 +27,7 @@
                             {
                                 ?>
                                     <div class="col-md-6">
-                                        <a href="<?= base_url('app/account/change_password/'.$id); ?>" class="w-100">
+                                        <a href="<?= base_url('app/account/change_password/'); ?>" class="w-100">
                                             <div class="card card-option card-hover white p-3 mb-3 w-100">
                                                 <div class="option-check"><i class="fa fa-hand-o-right fa-lg"></i></div>
                                                 <div class="card-header-title font-weight-bold">Change Password</div>

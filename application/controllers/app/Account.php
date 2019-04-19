@@ -35,21 +35,19 @@ class Account extends CI_Controller {
         }
     }
 
-    public function view($id)
+    public function view()
     {
-        $id = en_dec('dec',$id);
-
         $this->loginstate->login_state_check();
 
         if($this->loginstate->get_access()['overall_access']==1)
         {
-            $profile = $this->model_account->read($id);
+            $profile = $this->model_account->read($this->session->user_id);
 
             $page_title = $profile['first_name']." ".$profile['middle_name']." ".$profile['last_name'];
 
             $sub_data['breadcrumb'] = array(
                 array('',base_url('app/account/'),'Account'),
-                array('',base_url('app/account/view/'.en_dec('en',$id)),'Profile'),
+                array('',base_url('app/account/view/'),'Profile'),
                 // array('active','', $page_title),
             );
 
@@ -143,21 +141,19 @@ class Account extends CI_Controller {
         }
     }
 
-    public function change_password($id){
-
-        $id = en_dec('dec',$id);
+    public function change_password(){
 
         $this->loginstate->login_state_check();
 
         if($this->loginstate->get_access()['overall_access']==1)
         {
-            $profile = $this->model_account->read($id);
+            $profile = $this->model_account->read($this->session->user_id);
 
             $page_title = $profile['first_name']." ".$profile['middle_name']." ".$profile['last_name'];
 
             $sub_data['breadcrumb'] = array(
                 array('',base_url('app/account/'),'Account'),
-                array('',base_url('app/account/change_password/'.en_dec('en',$id)),'Change Password'),
+                array('',base_url('app/account/change_password/'),'Change Password'),
                 // array('active','', $page_title),
             );
 
