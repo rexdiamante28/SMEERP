@@ -1,19 +1,37 @@
 <?php 
-class Model_company extends CI_Model {
+class Model_item_category extends CI_Model {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////Default functions start////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public function create($name,$description,$industry)
-	{
-		$query="insert into erp_companies (name,description,industry,created,updated,status)
-		values (?,?,?,?,?,?)";
+	public function create($company,$parent,$name)
+	{	
+
+		$category_string = "";
+
+		if($parent!="0")
+		{
+			$category_string = $this->read($parent)['category_string'];
+		}
+
+		if($category_string!="")
+		{
+			$category_string = $category_string.' / '.$name;
+		}
+		else
+		{
+			$category_string = $name;
+		}
+
+		$query="insert into erp_item_categories (company,name,parent_category,category_string,created,updated,status)
+		values (?,?,?,?,?,?,?)";
 
 		$args = array(
+			$company,
 			$name,
-			$description,
-			$industry,
+			$parent,
+			$category_string,
 			date('Y-m-d H:i:s'),
 			date('Y-m-d H:i:s'),
 			1
@@ -23,7 +41,7 @@ class Model_company extends CI_Model {
 		{
 			$response = array(
 				'success' => true,
-				'message' => 'Company added',
+				'message' => 'item category added',
 				'id' => en_dec('en',$this->db->insert_id())
 			);
 		}
@@ -31,7 +49,7 @@ class Model_company extends CI_Model {
 		{
 			$response = array(
 				'success' => false,
-				'message' => 'Unable to add company. Please try again.'
+				'message' => 'Unable to add item category. Please try again.'
 			);
 		}
 
@@ -41,9 +59,8 @@ class Model_company extends CI_Model {
 	public function table_data($read_args)
 	{
 		$columns = array(
-            0 => 'name',
-            1 => 'description',
-            2 => 'industry'
+            0 => 'b.name',
+            1 => 'a.category_string'
         );
 
 
@@ -51,12 +68,13 @@ class Model_company extends CI_Model {
 		$totalData = 0;
 		$totalFiltered = 0;
 
-		$query="select a.*, b.name as industry_name from erp_companies as a left join erp_industries as b on a.industry = b.id where a.status = 1 ";
+		$query="select a.id, a.category_string, b.name as company from erp_item_categories as a left join erp_companies as b on a.company = b.id
+		where a.status = 1 ";
 
 		if($read_args['search_string']!='')
 		{
-			$query.=" and ( a.name like '%".$read_args['search_string']."%' or a.description like '%".$read_args['search_string']."%') or 
-			b.name like '%".$read_args['search_string']."%'";
+			$query.=" and ( a.name like '%".$read_args['search_string']."%' or a.category_string like '%".$read_args['search_string']."%' or 
+			b.name like '%".$read_args['search_string']."%' )";
 		}
 
 		$totalData = $this->db->query($query)->num_rows();
@@ -83,20 +101,37 @@ class Model_company extends CI_Model {
 
 	public function read($id)
 	{
-		$query="select * from erp_companies where id = ? ";
+		$query="select * from erp_item_categories where id = ? ";
 
 		return $this->db->query($query,$id)->row_array();
 	}
 
-	public function update($name,$description,$industry,$id)
+	public function update($company,$parent,$name,$id)
 	{
-		$query="update erp_companies set name = ?, description = ?, industry = ?, updated = ?
+		$category_string = "";
+
+		if($parent!="0")
+		{
+			$category_string = $this->read($parent)['category_string'];
+		}
+
+		if($category_string!="")
+		{
+			$category_string = $category_string.' / '.$name;
+		}
+		else
+		{
+			$category_string = $name;
+		}
+
+		$query="update erp_item_categories set company = ?, parent_category = ?, name = ?, category_string = ?, updated = ?
 		 where id = ?";
 
 		$args = array(
+			$company,
+			$parent,
 			$name,
-			$description,
-			$industry,
+			$category_string,
 			date('Y-m-d H:i:s'),
 			$id
 		);
@@ -105,7 +140,7 @@ class Model_company extends CI_Model {
 		{
 			$response = array(
 				'success' => true,
-				'message' => 'Company updated',
+				'message' => 'item category updated',
 				'id' => en_dec('en',$id)
 			);
 		}
@@ -113,7 +148,7 @@ class Model_company extends CI_Model {
 		{
 			$response = array(
 				'success' => false,
-				'message' => 'Unable to update company. Please try again.'
+				'message' => 'Unable to update item category. Please try again.'
 			);
 		}
 
@@ -122,13 +157,13 @@ class Model_company extends CI_Model {
 
 	public function delete($id)
 	{
-		$query="update erp_companies set status = 0 where id = ?";
+		$query="update erp_item_categories set status = 0 where id = ?";
 		
 		if($this->db->query($query,$id))
 		{
 			$response = array(
 				'status' => true,
-				'message' => "Company deleted."
+				'message' => "item category deleted."
 			);
 
 			return $response;
@@ -155,13 +190,12 @@ class Model_company extends CI_Model {
 	///////////////////////////////////////////////////////////Additional functions start//////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public function get_active()
+	public function get_company_categories($id)
 	{
-		$query="select * from erp_companies where status = 1";
+		$query="select * from erp_item_categories where status = 1 and company = ?";
 
-		return $this->db->query($query)->result_array();
-	}
-
+		return $this->db->query($query,$id);
+	}	
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////Additional functions end////////////////////////////////////////////////////////////////
