@@ -19,7 +19,7 @@ class Inventory extends CI_Controller {
             $page_title = "Inventory";
 
             $sub_data['breadcrumb'] = array(
-                array('',base_url('app/general'),$page_title),
+                array('',base_url('app/inventory'),$page_title),
             );
 
             $sub_data['breadcrumb'] = $this->load->view("common/breadcrumb",$sub_data,true);

@@ -1,5 +1,5 @@
 <?php
-class Item_category extends CI_Controller {
+class Item_unit extends CI_Controller {
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -8,8 +8,8 @@ class Item_category extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('app/model_item_category');
         $this->load->model('app/model_company');
+        $this->load->model('app/model_item_unit');
     }
 
     public function index()
@@ -23,7 +23,7 @@ class Item_category extends CI_Controller {
 
         if($this->loginstate->get_access()['overall_access']==1)
         {
-            $page_title = "Item categories";
+            $page_title = "Item units";
 
             $sub_data['breadcrumb'] = array(
                 array('',base_url('app/inventory/'),'Inventory'),
@@ -37,14 +37,14 @@ class Item_category extends CI_Controller {
             $form_data['companies']  = $this->model_company->get_active();
 
             $forms = array(
-                $this->load->view('app/item_category/form_view',$form_data,true)
+                $this->load->view('app/item_unit/form_view',$form_data,true)
             );
 
             $data = array(
-                'view' => $this->load->view("app/item_category/table_view",$sub_data,true),
+                'view' => $this->load->view("app/item_unit/table_view",$sub_data,true),
                 'title' => $page_title,
                 'add_css' => array(),
-                'add_js' =>  array('assets/js/app/item_category/main.js','assets/js/app/item_category/create.js'),
+                'add_js' =>  array('assets/js/app/item_unit/main.js','assets/js/app/item_unit/create.js'),
                 'forms' => $forms
             );
              
@@ -65,9 +65,9 @@ class Item_category extends CI_Controller {
         if($this->loginstate->get_access()['overall_access']==1)
         {
             $validation = array(
-                array('item_category_company','Company','required|max_length[100]|min_length[1]'),
-                array('item_category_category','Parent Category','max_length[100]|min_length[1]'),
-                array('item_category_name','Category Name','required|max_length[45]|min_length[1]|is_unique[erp_item_categories.name]')
+                array('item_unit_company','Company','required|max_length[100]|min_length[1]'),
+                array('item_unit_description','Description','max_length[100]|min_length[1]'),
+                array('item_unit_name','Unit Name','required|max_length[45]|min_length[1]')
             );
 
             foreach ($validation as $value) {
@@ -86,10 +86,10 @@ class Item_category extends CI_Controller {
             }
             else
             {
-                $result = $this->model_item_category->create(
-                    en_dec('dec',$this->input->post('item_category_company')),
-                    $this->input->post('item_category_category')=="0" ? 0 : en_dec('dec',$this->input->post('item_category_category')) ,
-                    $this->input->post('item_category_name')
+                $result = $this->model_item_unit->create(
+                    en_dec('dec',$this->input->post('item_unit_company')),
+                    $this->input->post('item_unit_name'),
+                    $this->input->post('item_unit_description')
                 );
 
                 $response['environment']    =   ENVIRONMENT;
@@ -111,25 +111,14 @@ class Item_category extends CI_Controller {
 
         if($this->loginstate->get_access()['overall_access']==1)
         {
-
             $validation = array(
-                array('item_category_primary','ID','required|max_length[100]|min_length[1]'),
-                array('item_category_company','Company','required|max_length[100]|min_length[1]'),
-                array('item_category_category','Parent Category','max_length[100]|min_length[1]'),
+                array('item_unit_primary','ID','required|max_length[100]|min_length[1]'),
+                array('item_unit_company','Company','required|max_length[100]|min_length[1]'),
+                array('item_unit_description','Description','max_length[100]|min_length[1]'),
+                array('item_unit_name','Unit Name','required|max_length[45]|min_length[1]')
             );
 
-            $id = en_dec('dec',$this->input->post('item_category_primary'));
-
-            $item_category = $this->model_item_category->read($id);    
-
-            if($item_category['name']==$this->input->post('item_category_name'))
-            {
-                array_push($validation,array('item_category_name','item_category Name','required|max_length[45]|min_length[1]'));
-            }
-            else
-            {
-                array_push($validation,array('item_category_name','Category Name','required|max_length[45]|min_length[1]|is_unique[erp_item_categories.name]'));
-            }
+            $id = en_dec('dec',$this->input->post('item_unit_primary'));
 
             foreach ($validation as $value) {
                 $this->form_validation->set_rules($value[0],$value[1],$value[2]);
@@ -147,10 +136,10 @@ class Item_category extends CI_Controller {
             }
             else
             {
-                $result = $this->model_item_category->update(
-                    en_dec('dec',$this->input->post('item_category_company')),
-                    $this->input->post('item_category_category')=="0" ? 0 : en_dec('dec',$this->input->post('item_category_category')),
-                    $this->input->post('item_category_name'),
+                $result = $this->model_item_unit->update(
+                    en_dec('dec',$this->input->post('item_unit_company')),
+                    $this->input->post('item_unit_name'),
+                    $this->input->post('item_unit_description'),
                     $id
                 );
 
@@ -179,7 +168,7 @@ class Item_category extends CI_Controller {
                'search_string' => $get_data['search_string']
             );
 
-            $result = $this->model_item_category->table_data($read_args);
+            $result = $this->model_item_unit->table_data($read_args);
 
             $data = [];
 
@@ -187,10 +176,11 @@ class Item_category extends CI_Controller {
 
                 $nestedData = array();
                 $nestedData[] = $row["company"];
-                $nestedData[] = $row["category_string"];
+                $nestedData[] = $row["name"];
+                $nestedData[] = $row["description"];
                 $nestedData[] = '
-                    <button class="btn btn-primary item_category_btn_view" id="'.en_dec('en',$row['id']).'"> view</button>
-                    <button class="btn btn-danger item_category_btn_delete" id="'.en_dec('en',$row['id']).'"> remove</button>
+                    <button class="btn btn-primary item_unit_btn_view" id="'.en_dec('en',$row['id']).'"> view</button>
+                    <button class="btn btn-danger item_unit_btn_delete" id="'.en_dec('en',$row['id']).'"> remove</button>
                 ';
 
                   $data[] = $nestedData;
@@ -218,11 +208,10 @@ class Item_category extends CI_Controller {
 
         if($this->loginstate->get_access()['overall_access'] == 1)
         {
-            $item_category = $this->model_item_category->read($id);
-            $item_category['id'] = en_dec('en',$item_category['id']);
-            $item_category['company'] = en_dec('en',$item_category['company']);
-            $item_category['parent_category'] = $item_category['parent_category']=="0" ? "0" : en_dec('en',$item_category['parent_category']);
-            echo json_encode($item_category);
+            $item_unit = $this->model_item_unit->read($id);
+            $item_unit['id'] = en_dec('en',$item_unit['id']);
+            $item_unit['company'] = en_dec('en',$item_unit['company']);
+            echo json_encode($item_unit);
         }
     }   
 
@@ -232,7 +221,7 @@ class Item_category extends CI_Controller {
 
         if($this->loginstate->get_access()['overall_access'] == 1)
         {
-            $result = $this->model_item_category->delete($id);
+            $result = $this->model_item_unit->delete($id);
 
             $response = array(
                 'success' => $result['status'],
@@ -253,33 +242,6 @@ class Item_category extends CI_Controller {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////Additional functions start//////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public function get_company_categories($id)
-    {
-        $id = en_dec('dec',$id);
-
-        if($this->loginstate->get_access()['overall_access'] == 1)
-        {
-            $item_categories = $this->model_item_category->get_company_categories($id);
-
-            if($item_categories->num_rows()>0)
-            {
-                $item_categories = $item_categories->result_array();
-
-                for($a = 0; $a < count($item_categories); $a++)
-                {
-                    $item_categories[$a]['id'] = en_dec('en',$item_categories[$a]['id']);
-                }
-            }
-            else
-            {
-                $item_categories = $item_categories->result_array();
-            }
-
-            echo json_encode($item_categories);
-        }
-    }
-
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////Additional functions end////////////////////////////////////////////////////////////////
