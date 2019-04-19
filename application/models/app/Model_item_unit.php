@@ -1,38 +1,59 @@
 <?php 
-class Model_company extends CI_Model {
+class Model_item_unit extends CI_Model {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////Default functions start////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public function create($name,$description,$industry)
-	{
-		$query="insert into erp_companies (name,description,industry,created,updated,status)
-		values (?,?,?,?,?,?)";
+	public function create($company,$name,$description)
+	{	
+
+		$query="select * from erp_item_units where name = ? and company = ? and status = 1";
 
 		$args = array(
 			$name,
-			$description,
-			$industry,
-			date('Y-m-d H:i:s'),
-			date('Y-m-d H:i:s'),
-			1
+			$company
 		);
 
-		if($this->db->query($query,$args))
+		$result = $this->db->query($query,$args);
+
+		if($result->num_rows()>0)
 		{
 			$response = array(
-				'success' => true,
-				'message' => 'Company added',
-				'id' => en_dec('en',$this->db->insert_id())
+				'success' => false,
+				'message' => '"'.$name.'" already exists',
+				'id' => ''
 			);
 		}
 		else
 		{
-			$response = array(
-				'success' => false,
-				'message' => 'Unable to add company. Please try again.'
+			$query="insert into erp_item_units (company,name,description,created,updated,status)
+			values (?,?,?,?,?,?)";
+
+			$args = array(
+				$company,
+				$name,
+				$description,
+				date('Y-m-d H:i:s'),
+				date('Y-m-d H:i:s'),
+				1
 			);
+
+			if($this->db->query($query,$args))
+			{
+				$response = array(
+					'success' => true,
+					'message' => 'item unit added',
+					'id' => en_dec('en',$this->db->insert_id())
+				);
+			}
+			else
+			{
+				$response = array(
+					'success' => false,
+					'message' => 'Unable to add item unit. Please try again.'
+				);
+			}
 		}
 
 		return $response;
@@ -41,9 +62,9 @@ class Model_company extends CI_Model {
 	public function table_data($read_args)
 	{
 		$columns = array(
-            0 => 'name',
-            1 => 'description',
-            2 => 'industry'
+            0 => 'b.name',
+            1 => 'a.name',
+            2 => 'a.description'
         );
 
 
@@ -51,12 +72,13 @@ class Model_company extends CI_Model {
 		$totalData = 0;
 		$totalFiltered = 0;
 
-		$query="select a.*, b.name as industry_name from erp_companies as a left join erp_industries as b on a.industry = b.id where a.status = 1 ";
+		$query="select a.id, a.name, a.description, b.name as company from erp_item_units as a left join erp_companies as b on a.company = b.id
+		where a.status = 1 ";
 
 		if($read_args['search_string']!='')
 		{
-			$query.=" and ( a.name like '%".$read_args['search_string']."%' or a.description like '%".$read_args['search_string']."%') or 
-			b.name like '%".$read_args['search_string']."%'";
+			$query.=" and ( a.name like '%".$read_args['search_string']."%' or a.description like '%".$read_args['search_string']."%' or 
+			b.name like '%".$read_args['search_string']."%' )";
 		}
 
 		$totalData = $this->db->query($query)->num_rows();
@@ -83,38 +105,60 @@ class Model_company extends CI_Model {
 
 	public function read($id)
 	{
-		$query="select * from erp_companies where id = ? ";
+		$query="select * from erp_item_units where id = ? ";
 
 		return $this->db->query($query,$id)->row_array();
 	}
 
-	public function update($name,$description,$industry,$id)
+	public function update($company,$name,$description,$id)
 	{
-		$query="update erp_companies set name = ?, description = ?, industry = ?, updated = ?
-		 where id = ?";
+		$query="select * from erp_item_units where name = ? and company = ? and status = 1 and id != ?";
 
 		$args = array(
 			$name,
-			$description,
-			$industry,
-			date('Y-m-d H:i:s'),
+			$company,
 			$id
 		);
 
-		if($this->db->query($query,$args))
+		$result = $this->db->query($query,$args);
+
+		if($result->num_rows()>0)
 		{
 			$response = array(
-				'success' => true,
-				'message' => 'Company updated',
-				'id' => en_dec('en',$id)
+				'success' => false,
+				'message' => '"'.$name.'" already exists',
+				'id' => ''
 			);
 		}
 		else
 		{
-			$response = array(
-				'success' => false,
-				'message' => 'Unable to update company. Please try again.'
+
+			$query="update erp_item_units set company = ?, name = ?, description = ?, updated = ?
+			 where id = ?";
+
+			$args = array(
+				$company,
+				$name,
+				$description,
+				date('Y-m-d H:i:s'),
+				$id
 			);
+
+			if($this->db->query($query,$args))
+			{
+				$response = array(
+					'success' => true,
+					'message' => 'item unit updated',
+					'id' => en_dec('en',$id)
+				);
+			}
+			else
+			{
+				$response = array(
+					'success' => false,
+					'message' => 'Unable to update item unit. Please try again.'
+				);
+			}
 		}
 
 		return $response;
@@ -122,13 +166,13 @@ class Model_company extends CI_Model {
 
 	public function delete($id)
 	{
-		$query="update erp_companies set status = 0 where id = ?";
+		$query="update erp_item_units set status = 0 where id = ?";
 		
 		if($this->db->query($query,$id))
 		{
 			$response = array(
 				'status' => true,
-				'message' => "Company deleted."
+				'message' => "item unit deleted."
 			);
 
 			return $response;
@@ -154,13 +198,6 @@ class Model_company extends CI_Model {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////Additional functions start//////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public function get_active()
-	{
-		$query="select * from erp_companies where status = 1";
-
-		return $this->db->query($query)->result_array();
-	}
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

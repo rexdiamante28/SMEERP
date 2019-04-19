@@ -980,6 +980,7 @@ span.select2-selection.select2-selection--single {
     border-right:1px solid #e6e6e6 !important;
     border-top:1px solid #e6e6e6 !important;
     padding-left:15px;
+    padding-top: 5px;
 }
 
 .no_border_radius{
@@ -1168,7 +1169,6 @@ input.form-control {
 span.select2.select2-container.select2-container--default {
     border: 1px solid #e6e6e6;
     border-radius: 0;
-    padding: 0px 10.125px;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
@@ -1238,7 +1238,7 @@ span {
 }
 
 .select2 {
-    width: calc(100% - 45px) !important;
+    width: 100% !important;
     margin-left: 0; 
 }
 
