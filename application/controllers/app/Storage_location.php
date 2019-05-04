@@ -1,5 +1,5 @@
 <?php
-class Company extends CI_Controller {
+class Storage_location extends CI_Controller {
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -8,8 +8,8 @@ class Company extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
+        $this->load->model('app/model_storage_location');
         $this->load->model('app/model_company');
-        $this->load->model('app/model_industry');
     }
 
     public function index()
@@ -23,10 +23,10 @@ class Company extends CI_Controller {
 
         if($this->loginstate->get_access()['overall_access']==1)
         {
-            $page_title = "Companies";
+            $page_title = "Storage Locations";
 
             $sub_data['breadcrumb'] = array(
-                array('',base_url('app/general/'),'General'),
+                array('',base_url('app/inventory/'),'Inventory'),
                 array('active','', $page_title),
             );
 
@@ -34,17 +34,17 @@ class Company extends CI_Controller {
 
             //get all active industries
 
-            $form_data['industries']  = $this->model_industry->get_active();
+            $form_data['companies']  = $this->model_company->get_active();
 
             $forms = array(
-                $this->load->view('app/company/form_view',$form_data,true)
+                $this->load->view('app/storage_location/form_view',$form_data,true)
             );
 
             $data = array(
-                'view' => $this->load->view("app/company/table_view",$sub_data,true),
+                'view' => $this->load->view("app/storage_location/table_view",$sub_data,true),
                 'title' => $page_title,
                 'add_css' => array(),
-                'add_js' =>  array('assets/js/app/company/main.js','assets/js/app/company/create.js'),
+                'add_js' =>  array('assets/js/app/storage_location/main.js','assets/js/app/storage_location/create.js'),
                 'forms' => $forms
             );
              
@@ -59,15 +59,15 @@ class Company extends CI_Controller {
 
     public function create()
     {
-
         $this->loginstate->login_state_check();
 
         if($this->loginstate->get_access()['overall_access']==1)
         {
             $validation = array(
-                array('company_name','Company Name','required|max_length[100]|min_length[1]|is_unique[erp_companies.name]'),
-                array('company_description','Company Description','max_length[5000]|min_length[1]'),
-                array('company_industry','Company Industry','required|max_length[100]|min_length[1]')
+                array('storage_location_company','Company','required|max_length[100]|min_length[1]'),
+                array('storage_location_branch','Branch','required|max_length[100]|min_length[1]'),
+                array('storage_location_parent_location','Parent Location','max_length[100]|min_length[1]'),
+                array('storage_location_name','Storage Location Name','required|max_length[45]|min_length[1]|is_unique[erp_item_categories.name]')
             );
 
             foreach ($validation as $value) {
@@ -86,10 +86,11 @@ class Company extends CI_Controller {
             }
             else
             {
-                $result = $this->model_company->create(
-                    $this->input->post('company_name'),
-                    $this->input->post('company_description'),
-                    en_dec('dec',$this->input->post('company_industry'))
+                $result = $this->model_storage_location->create(
+                    en_dec('dec',$this->input->post('storage_location_company')),
+                    en_dec('dec',$this->input->post('storage_location_branch')),
+                    $this->input->post('storage_location_parent_location')=="0" ? 0 : en_dec('dec',$this->input->post('storage_location_parent_location')) ,
+                    $this->input->post('storage_location_name')
                 );
 
                 $response['environment']    =   ENVIRONMENT;
@@ -106,30 +107,21 @@ class Company extends CI_Controller {
 
     public function update()
     {
-
+        
         $this->loginstate->login_state_check();
 
         if($this->loginstate->get_access()['overall_access']==1)
         {
 
             $validation = array(
-                array('company_primary','ID','required|max_length[100]|min_length[1]'),
-                array('company_description','Company Description','max_length[5000]|min_length[1]'),
-                array('company_industry','Company Industry','required|max_length[100]|min_length[1]')
+                array('storage_location_primary','ID','required|max_length[100]|min_length[1]'),
+                array('storage_location_company','Company','required|max_length[100]|min_length[1]'),
+                array('storage_location_branch','Branch','required|max_length[100]|min_length[1]'),
+                array('storage_location_parent_location','Parent Location','max_length[100]|min_length[1]'),
+                array('storage_location_name','Storage Location Name','required|max_length[45]|min_length[1]|is_unique[erp_item_categories.name]')
             );
 
-            $id = en_dec('dec',$this->input->post('company_primary'));
-
-            $company = $this->model_company->read($id);    
-
-            if($company['name']==$this->input->post('company_name'))
-            {
-                array_push($validation,array('company_name','Company Name','required|max_length[100]|min_length[1]'));
-            }
-            else
-            {
-                array_push($validation,array('company_name','Company Name','required|max_length[100]|min_length[1]|is_unique[erp_companies.name]'));
-            }
+            $id = en_dec('dec',$this->input->post('storage_location_primary'));
 
             foreach ($validation as $value) {
                 $this->form_validation->set_rules($value[0],$value[1],$value[2]);
@@ -147,10 +139,11 @@ class Company extends CI_Controller {
             }
             else
             {
-                $result = $this->model_company->update(
-                    $this->input->post('company_name'),
-                    $this->input->post('company_description'),
-                    en_dec('dec',$this->input->post('company_industry')),
+                $result = $this->model_storage_location->update(
+                    en_dec('dec',$this->input->post('storage_location_company')),
+                    en_dec('dec',$this->input->post('storage_location_branch')),
+                    $this->input->post('storage_location_parent_location')=="0" ? 0 : en_dec('dec',$this->input->post('storage_location_parent_location')) ,
+                    $this->input->post('storage_location_name'),
                     $id
                 );
 
@@ -179,19 +172,19 @@ class Company extends CI_Controller {
                'search_string' => $get_data['search_string']
             );
 
-            $result = $this->model_company->table_data($read_args);
+            $result = $this->model_storage_location->table_data($read_args);
 
             $data = [];
 
             foreach($result['result'] as $row) {
 
                 $nestedData = array();
-                $nestedData[] = $row["name"];
-                $nestedData[] = $row["description"];
-                $nestedData[] = $row["industry_name"];
+                $nestedData[] = $row["company_name"];
+                $nestedData[] = $row["branch_name"];
+                $nestedData[] = $row["location_string"];
                 $nestedData[] = '
-                    <button class="btn btn-primary company_btn_view" id="'.en_dec('en',$row['id']).'"> view</button>
-                    <button class="btn btn-danger company_btn_delete" id="'.en_dec('en',$row['id']).'"> remove</button>
+                    <button class="btn btn-primary storage_location_btn_view" id="'.en_dec('en',$row['id']).'"> view</button>
+                    <button class="btn btn-danger storage_location_btn_delete" id="'.en_dec('en',$row['id']).'"> remove</button>
                 ';
 
                   $data[] = $nestedData;
@@ -219,10 +212,12 @@ class Company extends CI_Controller {
 
         if($this->loginstate->get_access()['overall_access'] == 1)
         {
-            $company = $this->model_company->read($id);
-            $company['id'] = en_dec('en',$company['id']);
-            $company['industry'] = en_dec('en',$company['industry']);
-            echo json_encode($company);
+            $storage_location = $this->model_storage_location->read($id);
+            $storage_location['id'] = en_dec('en',$storage_location['id']);
+            $storage_location['company'] = en_dec('en',$storage_location['company']);
+            $storage_location['branch'] = en_dec('en',$storage_location['branch']);
+            $storage_location['parent_location'] = $storage_location['parent_location']=="0" ? "0" : en_dec('en',$storage_location['parent_location']);
+            echo json_encode($storage_location);
         }
     }   
 
@@ -232,7 +227,7 @@ class Company extends CI_Controller {
 
         if($this->loginstate->get_access()['overall_access'] == 1)
         {
-            $result = $this->model_company->delete($id);
+            $result = $this->model_storage_location->delete($id);
 
             $response = array(
                 'success' => $result['status'],
@@ -254,27 +249,32 @@ class Company extends CI_Controller {
     ///////////////////////////////////////////////////////////Additional functions start//////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public function get_active_branches($company_id)
+    public function get_company_categories($id)
     {
-        $this->loginstate->login_state_check();
+        $id = en_dec('dec',$id);
 
-        if($this->loginstate->get_access()['overall_access']==1)
-        {   
-            $id = en_dec('dec',$company_id);
-            $result = $this->model_company->get_active_branches($id);
-            $count = $result->num_rows();
-            $branches = $result->result_array();
-            if($count>0)
+        if($this->loginstate->get_access()['overall_access'] == 1)
+        {
+            $item_categories = $this->model_storage_location->get_company_categories($id);
+
+            if($item_categories->num_rows()>0)
             {
-                for($a=0; $a<$count; $a++)
+                $item_categories = $item_categories->result_array();
+
+                for($a = 0; $a < count($item_categories); $a++)
                 {
-                    $branches[$a]['id'] = en_dec('en',$branches[$a]['id']);
+                    $item_categories[$a]['id'] = en_dec('en',$item_categories[$a]['id']);
                 }
             }
+            else
+            {
+                $item_categories = $item_categories->result_array();
+            }
 
-            echo json_encode($branches);
+            echo json_encode($item_categories);
         }
     }
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////Additional functions end////////////////////////////////////////////////////////////////
