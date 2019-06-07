@@ -1,115 +1,69 @@
+function showCover(message){
+
+	$('#current-activity').html(message);
+    $('#transparent-cover').css({'display':'table'});
+
+}
+
+function hideCover(){
+
+	$('#current-activity').html('');
+    $('#transparent-cover').css({'display':'none'});
+    
+}
+
+function showResponse(type,message,container){
+	var div = "<div class='alert alert-dismissable alert-"+type+"'>"+
+				""+message+
+				"<i data-dismiss='alert' class='pull-right glyphicon glyphicon-remove'></i>"+
+			  "</div>";
+	$(container).html(div);
+}
+
+
 $(document).ready(function(){
-
-	base_url = $("body").data('base_url');
-	ajax_token = $("body").data('token_value');
-	ajax_token_name = $("body").data('token_name');
-
-	showCover = function(message){
-
-		$('#current-activity').html(message);
-	    $('#transparent-cover').css({'display':'table'});
-
-	}
-
-	hideCover = function(){
-
-		$('#current-activity').html('');
-	    $('#transparent-cover').css({'display':'none'});
-	    
-	}
-
-	sys_log = function(env,data){
-		if(env=="development"){
-			console.log(data);
-		}
-	}
-
-	sys_toast = function(message,heading,icon,position,bgcolor,txtcolor)
-	{
-		$.toast({
-		    heading: heading,
-		    text: message,
-		    icon: icon,
-		    loader: false,  
-		    stack: false,
-		    position: position, 
-			allowToastClose: false,
-			bgColor: bgcolor,
-			textColor: txtcolor  
-		});
-	}
-
-
-	tofixed = function(x){
-		return numberWithCommas(parseFloat(x).toFixed(2));
-	}
-	numberWithCommas = function(x){
-	  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	}
-
-
-	// toast options
-	sys_toast_success = function(message)
-	{
-		sys_toast(message,'Success','success','top-center','yellowgreen','white');
-	}
-
-	sys_toast_error = function(message)
-	{
-		sys_toast(message,'Error','error','top-center','red','white');
-	}
-
-	sys_toast_warning = function(message)
-	{
-		sys_toast(message,'Warning','warning','top-center','orange','white');
-	}
-
-	sys_toast_warning_info = function(message)
-	{
-		sys_toast(message,'Note','info','top-center','orange','white');
-	}
-
-	sys_toast_info = function(message)
-	{
-		sys_toast(message,'Note','info','top-center','lightblue','white');
-	}
-	//close the transparent cover once the page was successfully loaded
-
 	hideCover();
+})
 
 
-	draw_transaction_status = function(status){
-		var element = "";
-		if(status=='S')
-		{
-			element = "<label class='badge badge-success'> Paid</label>";
+loading_content = "";
 
-			return element;
-		}
-		else if(status=='F')
-		{
-			element = "<label class='badge badge-danger'> Failed</label>";
+get_loading_content = function()
+{
+	loading_content = $('#x_content').html();
+}
 
-			return element;
-		}
-		else if(status=='P')
-		{
-			element = "<label class='badge badge-info'> Pending</label>";
-
-			return element;
-		}
-		else 
-		{
-			element = "<label class='badge badge-danger'> Unpaid</label>";
-
-			return element;
-		}
-	}
-
-	update_token = function(value)
-	{
-		$('#template_body').data('token_value',value);
-		ajax_token = $("body").data('token_value');
-	}
-
+$('#add_record_trigger').click(function(){
+	$("#add_record_form")[0].reset();
+	$("#error_message").addClass("hidden");
+	$('#form-loading').addClass("hidden");
 });
+
+
+
+$('#change_password_form').submit(function(event){
+	event.preventDefault();
+
+	var form = $(this);
+
+	$.ajax({				
+		url: form.attr('action'),
+	    type: form.attr('method'),
+		data: form.serialize(),
+		success : function(response){
+			var result = JSON.parse(response);
+			if(result.success===true)
+			{
+				alertify.success(result.message);
+				$('#change_password_modal').modal('hide');
+			}
+			else
+			{
+				$('#change_password_modal #error_message').removeClass('hidden');
+				$('#change_password_modal #error_message').html(result.message);
+			}
+			
+		}
+	});
+
+})

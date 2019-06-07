@@ -1,1 +1,0 @@
-/*ALTER TABLE `pp_merchants` ADD `ref_repeat` TINYINT NULL DEFAULT '0' AFTER `status`;  DEV*/
