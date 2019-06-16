@@ -11,15 +11,15 @@
 
         <div class="form-group ">
             <label>Current Password</label>
-            <input type="text" name="current_password" id="current_password" class="form-control">
+            <input type="password" name="current_password" id="current_password" class="form-control">
         </div>
         <div class="form-group">
             <label>New Password</label>
-            <input type="text" name="new_password" id="new_password" class="form-control">
+            <input type="password" name="new_password" id="new_password" class="form-control">
         </div>
         <div class="form-group">
             <label>Confirm Password</label>
-            <input type="text" name="confirm_password" id="confirm_password" class="form-control">
+            <input type="password" name="confirm_password" id="confirm_password" class="form-control">
         </div>
       </div>
       <div class="modal-footer">

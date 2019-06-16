@@ -78,7 +78,7 @@ function add_user()
 
 	$id = intval($this->_custom_query($query)->row()->id)+1;
 	$username = $this->input->post('username');
-	$password = '$2y$12$SADPX7f/V1hS.41E18OvruccldrN7HTPfUUjvdJjXChB3jQs24dSK';
+	$password = '$2y$12$j.TH5b40Vw/gaMGvuadOB.bFgl9jqYq5q088ebFe4gTGa5Sfe4iM2';
 	$first_name = $this->input->post('first_name');
 	$middle_name = $this->input->post('middle_name');
 	$last_name = $this->input->post('last_name');
