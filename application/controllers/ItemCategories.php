@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class ItemCategories extends CI_Controller {
+class Itemcategories extends CI_Controller {
 
 	public function index()
 	{

@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | environments.
 |
 */
-$config['base_url'] = 'http://localhost/von/';
+$config['base_url'] = 'http://35.173.0.77/dev/SMEERP/';
 
 /*
 |--------------------------------------------------------------------------
