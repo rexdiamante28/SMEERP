@@ -1,0 +1,126 @@
+#main-content{
+  background-color: white;
+  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+#right_pane{
+  background-color: #F0EEEE;
+  height: 100vh;
+  overflow-y: auto;
+  width: 100%;
+  position: absolute;
+  top: 0; 
+  left: 0;
+  padding: 70px 20px 20px 410px;
+  z-index: 222;
+}
+
+#left_pane{
+  background-color: white;
+  height: 100vh;
+  overflow-y: auto;
+  width: 400px;
+  border-right:1px solid gray;
+  position: absolute;
+  top: 0; 
+  left: 0;
+   z-index: 333;
+}
+
+#top-controls{
+  width: 100%;
+  height: 50px;
+  background-color: #393939;
+  padding: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 444;
+}
+
+#top-controls label{
+  color: #DDDDDD;
+  font-size: 15px;
+}
+
+
+#bottom-controls{
+  width: 398px;
+  height: 50px;
+  background-color: white;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 444;
+}
+
+#bottom-controls label{
+  color: #DDDDDD;
+  font-size: 15px;
+}
+
+#top-controls_right{
+  width: 100%;
+  height: 50px;
+  background-color: #D3D3D3;
+  padding: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 444;
+}
+
+
+#top-controls_right input{
+  border-radius: 10px;
+  border: none;
+  height: 30px;
+  padding: 2px;
+}
+
+.store_items{
+  float: left;
+  margin-right: 15px;
+  width: 150px;
+  height: 150px;
+  cursor: pointer;
+  max-width: 150px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  position: relative;
+  box-shadow: 1px 1px 1px gray;
+  margin-top:20px;
+}
+
+.store_items .details{
+  position: absolute;
+  bottom: 0;
+  left: 0px;
+  height: 50px;
+  background-color: rgba(240,238,238,.95);
+  width: 100%;
+  padding: 5px;
+}
+
+.store_items .details p{
+  line-height: 90%;
+}
+
+#order_listing{
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+.order-row{
+  border-bottom: 1px dotted gray;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+.order-row:hover{
+  background-color: #F0EEEE;
+}
