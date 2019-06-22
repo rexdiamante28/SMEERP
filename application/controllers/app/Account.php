@@ -35,6 +35,11 @@ class Account extends CI_Controller {
         }
     }
 
+    // public function index()
+    // {
+    //     $this->list();
+    // }
+
     public function view($id)
     {
         $id = en_dec('dec',$id);
@@ -250,6 +255,45 @@ class Account extends CI_Controller {
 
                 echo json_encode($response);
             }
+        }
+    }
+
+    public function list()
+    {
+        $this->loginstate->login_state_check();
+
+        if($this->loginstate->get_access()['overall_access']==1)
+        {
+            $page_title = "Users";
+
+            $sub_data['breadcrumb'] = array(
+                array('',base_url('app/general/'),'Account'),
+                array('active','', $page_title),
+            );
+
+            $sub_data['breadcrumb'] = $this->load->view("common/breadcrumb",$sub_data,true);
+
+            //get all active industries
+
+            $form_data['users']  = $this->model_account->get_active();
+
+            $forms = array(
+                $this->load->view('app/account/form_view',$form_data,true)
+            );
+
+            $data = array(
+                'view' => $this->load->view("app/account/table_view",$sub_data,true),
+                'title' => $page_title,
+                'add_css' => array(),
+                'add_js' =>  array('assets/js/app/account/main.js','assets/js/app/company/create.js'),
+                'forms' => $forms
+            );
+             
+            $this->load->view('templates/template_admin',$data);
+        }
+        else
+        {
+            deny_access();
         }
     }
 

@@ -23,7 +23,7 @@
                                                                 <i class="fa fa-search no-margin"></i>
                                                             </button>
                                                             <?php
-                                                                if($this->loginstate->get_access()['admin']['settings']['users']['create']==1)
+                                                                if($this->loginstate->get_access()['overall_access']==1)
                                                                 {
                                                                     ?>
                                                                         <button type="button" class="input-group-btn btn-sm btn btn-primary btn-auto no-margin" id="newuser_btn">
@@ -61,10 +61,8 @@
 </div>
 
 
-
-
 <?php
-    if($this->loginstate->get_access()['admin']['accounts']['merchants']['create']==1)
+    if($this->loginstate->get_access()['overall_access']==1)
     {
         ?>
             <!-- Modals-->
