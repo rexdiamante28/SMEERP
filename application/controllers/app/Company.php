@@ -276,6 +276,32 @@ class Company extends CI_Controller {
         }
     }
 
+
+    public function company_json($search_phrase)
+    {
+        $read_args = array(
+           'start' => 0,
+           'end' => $this->config->item('json_result_limit'),
+           'order_column' => 0,
+           'order_direction' => 'asc',
+           'search_string' => $search_phrase
+        );
+        
+        $result_data = $this->model_company->table_data($read_args);
+        $companies = $result_data['result'];
+        $data_match = intval($result_data['recordsFiltered']);
+
+        if( $data_match > 0)
+        {
+            for($a = 0; $a < $data_match; $a++)
+            {
+                $companies[$a]['id'] = en_dec('en',$companies[$a]['id']);
+            }
+        }
+
+        echo json_encode($companies);
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////Additional functions end////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
