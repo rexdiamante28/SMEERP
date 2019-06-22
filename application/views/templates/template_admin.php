@@ -25,11 +25,13 @@
     <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/select2-materialize.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/select2.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/font-awesome.min.css">
+    <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/datatables.min.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/bootstrap-datepicker3.min.css"></head>
     <!-- <link href="<?=base_url('assets/css/stepwizard/smart_wizard.css'); ?>" rel="stylesheet"> -->
     <link href="<?=base_url('assets/css/stepwizard/smart_wizard_theme_circles.css'); ?>" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="<?=base_url('assets/css/style.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?=base_url('assets/admin/css/dropzone.css'); ?>">
     <link href="<?=base_url('assets/css/stepwizard/stepwizard.css'); ?>" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="<?=base_url('assets/css/app/app.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?=base_url('assets/css/pell.css'); ?>">
@@ -251,12 +253,14 @@
         <script src="<?= base_url();?>assets/admin/js/mdb.min.js"></script>
         <script src="<?= base_url();?>assets/admin/js/jquery-ui.js"></script>
         <script src="<?= base_url();?>assets/admin/js/datatables.min.js"></script>
+        <script src="<?= base_url();?>assets/admin/js/dataTables.bootstrap4.min.js"></script>
         <script src="<?= base_url();?>assets/admin/js/select2.min.js"></script>
         <script src="<?= base_url();?>assets/admin/js/bootstrap-datepicker.min.js"></script>
         <script src="<?= base_url();?>assets/admin/js/accounting.min.js"></script>
         <script src="<?= base_url();?>assets/admin/js/moment.js"></script>
         <script src="<?= base_url();?>assets/admin/js/custom.js"></script>
         <script src="<?= base_url();?>assets/admin/js/mdb.min.js"></script>
+        <script src="<?= base_url();?>assets/admin/js/dropzone.js"></script>
         <script src="<?= base_url();?>assets/js/public.js"></script>
         <script src="<?= base_url() ?>assets/js/alertify.js"></script>
         <script src="<?= base_url() ?>assets/js/pell.js"></script>

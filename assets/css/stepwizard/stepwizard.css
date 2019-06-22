@@ -1,28 +1,42 @@
 :root {
     --main-color: #5e35b1;
+    --faded-main-color: rgba(94, 53, 177, 0.6);
+    --box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18),
+        0 4px 15px 0 rgba(0, 0, 0, 0.15);
 }
 
-#stepwizard ul {
+#stepwizard ul.nav-tabs {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 60px;
 }
 
-#stepwizard ul li {
+#stepwizard ul li.nav-item {
     margin-left: 0;
     background-color: #fff;
     border-radius: 50%;
 }
 
-#stepwizard ul li a {
+#stepwizard ul li.nav-item a {
     border-radius: 50%;
     height: 100px;
     width: 100px;
     padding: 40px 0;
 }
 
+#stepwizard .card-header {
+    background: transparent !important;
+}
+
 .sw-theme-circles > ul.step-anchor > li.active > a {
     border-color: var(--main-color);
     background-color: var(--main-color);
+    color: #fff !important;
+}
+
+.sw-theme-circles > ul.step-anchor > li.done > a {
+    border-color: var(--faded-main-color);
+    background-color: var(--faded-main-color);
     color: #fff !important;
 }
 
@@ -36,4 +50,25 @@
 
 .sw-theme-circles > ul.step-anchor > li > a > small {
     bottom: -50px;
+}
+
+.sw-theme-circles .sw-toolbar {
+    background: transparent !important;
+    margin-top: 20px;
+    padding-right: 0;
+}
+
+.sw-theme-circles .step-content {
+    box-shadow: var(--box-shadow) !important;
+    border-radius: 20px !important;
+    /* padding: 5%; */
+}
+
+.dropzone {
+    border: 2px dashed var(--main-color);
+    border-radius: 5px;
+}
+
+.dropzone .dz-message span {
+    font-weight: bold;
 }

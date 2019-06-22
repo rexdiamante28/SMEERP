@@ -20,7 +20,7 @@
                                 <?php
                             }
                         ?>
-                        <!-- <?php
+                        <?php
                             if($this->loginstate->get_access()['overall_access'] == 1)
                             {
                                 ?>
@@ -35,7 +35,7 @@
                                     </div>
                                 <?php
                             }
-                        ?> -->
+                        ?>
 
 
 
