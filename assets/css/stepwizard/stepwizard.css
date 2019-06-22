@@ -1,0 +1,39 @@
+:root {
+    --main-color: #5e35b1;
+}
+
+#stepwizard ul {
+    display: flex;
+    justify-content: space-between;
+}
+
+#stepwizard ul li {
+    margin-left: 0;
+    background-color: #fff;
+    border-radius: 50%;
+}
+
+#stepwizard ul li a {
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    padding: 40px 0;
+}
+
+.sw-theme-circles > ul.step-anchor > li.active > a {
+    border-color: var(--main-color);
+    background-color: var(--main-color);
+    color: #fff !important;
+}
+
+.sw-theme-circles > ul.step-anchor > li.active > a > small {
+    color: var(--main-color);
+}
+
+.sw-theme-circles > ul.step-anchor {
+    background-color: transparent;
+}
+
+.sw-theme-circles > ul.step-anchor > li > a > small {
+    bottom: -50px;
+}
