@@ -1,19 +1,20 @@
 <?php 
-class Model_company extends CI_Model {
+class Model_branch extends CI_Model {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////Default functions start////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public function create($name,$description,$industry)
+	public function create($company,$name,$description,$address)
 	{
-		$query="insert into erp_companies (name,description,industry,created,updated,status)
-		values (?,?,?,?,?,?)";
+		$query="insert into erp_branches (company,branch,description,address,created,updated,status)
+		values (?,?,?,?,?,?,?)";
 
 		$args = array(
+			$company,
 			$name,
 			$description,
-			$industry,
+			$address,
 			date('Y-m-d H:i:s'),
 			date('Y-m-d H:i:s'),
 			1
@@ -41,9 +42,8 @@ class Model_company extends CI_Model {
 	public function table_data($read_args)
 	{
 		$columns = array(
-            0 => 'name',
-            1 => 'description',
-            2 => 'industry'
+            0 => 'company',
+            1 => 'branch',
         );
 
 
@@ -51,12 +51,12 @@ class Model_company extends CI_Model {
 		$totalData = 0;
 		$totalFiltered = 0;
 
-		$query="select a.*, b.name as industry_name from erp_companies as a left join erp_industries as b on a.industry = b.id where a.status = 1 ";
+		$query="select a.*, b.name as company_name from erp_branches as a left join erp_companies as b on a.company = b.id where a.status = 1 ";
 
 		if($read_args['search_string']!='')
 		{
-			$query.=" and ( a.name like '%".$read_args['search_string']."%' or a.description like '%".$read_args['search_string']."%') or 
-			b.name like '%".$read_args['search_string']."%'";
+			$query.=" and ( a.branch like '%".$read_args['search_string']."%' or a.description like '%".$read_args['search_string']."%' or 
+			b.name like '%".$read_args['search_string']."%' )";
 		}
 
 		$totalData = $this->db->query($query)->num_rows();
@@ -83,20 +83,21 @@ class Model_company extends CI_Model {
 
 	public function read($id)
 	{
-		$query="select * from erp_companies where id = ? ";
+		$query="select * from erp_branches where id = ? ";
 
 		return $this->db->query($query,$id)->row_array();
 	}
 
-	public function update($name,$description,$industry,$id)
+	public function update($company,$name,$description,$address,$id)
 	{
-		$query="update erp_companies set name = ?, description = ?, industry = ?, updated = ?
+		$query="update erp_branches set company = ?, branch =?,  description = ?, address = ?, updated = ?
 		 where id = ?";
 
 		$args = array(
+			$company,
 			$name,
 			$description,
-			$industry,
+			$address,
 			date('Y-m-d H:i:s'),
 			$id
 		);
@@ -105,7 +106,7 @@ class Model_company extends CI_Model {
 		{
 			$response = array(
 				'success' => true,
-				'message' => 'Company updated',
+				'message' => 'Branch updated',
 				'id' => en_dec('en',$id)
 			);
 		}
@@ -113,7 +114,7 @@ class Model_company extends CI_Model {
 		{
 			$response = array(
 				'success' => false,
-				'message' => 'Unable to update company. Please try again.'
+				'message' => 'Unable to update branch. Please try again.'
 			);
 		}
 
@@ -122,13 +123,13 @@ class Model_company extends CI_Model {
 
 	public function delete($id)
 	{
-		$query="update erp_companies set status = 0 where id = ?";
+		$query="update erp_branches set status = 0 where id = ?";
 		
 		if($this->db->query($query,$id))
 		{
 			$response = array(
 				'status' => true,
-				'message' => "Company deleted."
+				'message' => "Branch deleted."
 			);
 
 			return $response;
@@ -162,12 +163,11 @@ class Model_company extends CI_Model {
 		return $this->db->query($query)->result_array();
 	}
 
-
-	public function get_active_branches($company_id)
+	public function get_active_locations($branch_id)
 	{
-		$query="select * from erp_branches where company = ? and status = 1";
+		$query="select * from erp_storage_locations where branch = ? and status = 1";
 
-		return $this->db->query($query,$company_id);
+		return $this->db->query($query,$branch_id);
 	}
 
 

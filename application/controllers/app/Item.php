@@ -1,5 +1,5 @@
 <?php
-class Company extends CI_Controller {
+class Item extends CI_Controller {
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -8,8 +8,8 @@ class Company extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
+        $this->load->model('app/model_item');
         $this->load->model('app/model_company');
-        $this->load->model('app/model_industry');
     }
 
     public function index()
@@ -23,10 +23,10 @@ class Company extends CI_Controller {
 
         if($this->loginstate->get_access()['overall_access']==1)
         {
-            $page_title = "Companies";
+            $page_title = "Items";
 
             $sub_data['breadcrumb'] = array(
-                array('',base_url('app/general/'),'General'),
+                array('',base_url('app/inventory/'),'Inventory'),
                 array('active','', $page_title),
             );
 
@@ -34,17 +34,17 @@ class Company extends CI_Controller {
 
             //get all active industries
 
-            $form_data['industries']  = $this->model_industry->get_active();
+            $form_data['companies']  = $this->model_company->get_active();
 
             $forms = array(
-                $this->load->view('app/company/form_view',$form_data,true)
+                $this->load->view('app/item/form_view',$form_data,true)
             );
 
             $data = array(
-                'view' => $this->load->view("app/company/table_view",$sub_data,true),
+                'view' => $this->load->view("app/item/table_view",$sub_data,true),
                 'title' => $page_title,
                 'add_css' => array(),
-                'add_js' =>  array('assets/js/app/company/main.js','assets/js/app/company/create.js'),
+                'add_js' =>  array('assets/js/app/item/main.js','assets/js/app/item/create.js'),
                 'forms' => $forms
             );
              
@@ -59,15 +59,16 @@ class Company extends CI_Controller {
 
     public function create()
     {
-
         $this->loginstate->login_state_check();
 
         if($this->loginstate->get_access()['overall_access']==1)
         {
             $validation = array(
-                array('company_name','Company Name','required|max_length[100]|min_length[1]|is_unique[erp_companies.name]'),
-                array('company_description','Company Description','max_length[5000]|min_length[1]'),
-                array('company_industry','Company Industry','required|max_length[100]|min_length[1]')
+                array('item_company','Company','required|max_length[100]|min_length[1]'),
+                array('item_category','Item Category','required|max_length[100]|min_length[1]'),
+                array('item_unit','Item Unit','max_length[100]|min_length[1]'),
+                array('item_code','Item Code','required|max_length[100]|min_length[1]'),
+                array('item_name','Item Name','required|max_length[100]|min_length[1]')
             );
 
             foreach ($validation as $value) {
@@ -86,10 +87,69 @@ class Company extends CI_Controller {
             }
             else
             {
-                $result = $this->model_company->create(
-                    $this->input->post('company_name'),
-                    $this->input->post('company_description'),
-                    en_dec('dec',$this->input->post('company_industry'))
+
+                //try to upload files. If successful, save the updated remittance record
+
+                $file_name = "";
+
+                if(count($_FILES)>0)
+                {
+                    $this->load->library('upload');
+
+                    if($_FILES['item_image']['name']!="")
+                    {
+                        $_FILES['userfile']['name']     = $_FILES['item_image']['name'];
+                        $_FILES['userfile']['type']     = $_FILES['item_image']['type'];
+                        $_FILES['userfile']['tmp_name'] = $_FILES['item_image']['tmp_name'];
+                        $_FILES['userfile']['error']    = $_FILES['item_image']['error'];
+                        $_FILES['userfile']['size']     = $_FILES['item_image']['size'];
+
+                        $mct =  microtime('get_as_float');
+                        $mct = str_replace('.', '', $mct);
+
+                        $config = array(
+                          'file_name'     => $mct.$_FILES['userfile']['name'],
+                          'allowed_types' => 'jpg|jpeg|png|pdf',
+                          'max_size'      => 3000,
+                          'overwrite'     => FALSE,
+                          'upload_path'   =>  './assets/uploads/items'
+                        );
+
+                        $this->upload->initialize($config);
+
+                        if ( ! $this->upload->do_upload()) 
+                        {
+                             $error = $this->upload->display_errors();
+
+                             $response = array(
+                               'success'      => false,
+                               'environment' => ENVIRONMENT,
+                               'message'     => $error,
+                               'csrf_name'   => $this->security->get_csrf_token_name(),
+                               'csrf_hash'   => $this->security->get_csrf_hash()
+                             );
+                             echo json_encode($response);
+                             die();
+                        }
+                        else 
+                        {
+                             $file_name = $this->upload->data()['file_name'];
+                        }
+                    }
+
+                }
+
+
+                $result = $this->model_item->create(
+                    en_dec('dec',$this->input->post('item_company')),
+                    en_dec('dec',$this->input->post('item_category')),
+                    en_dec('dec',$this->input->post('item_unit')),
+                    $this->input->post('item_code'),
+                    $this->input->post('item_name'),
+                    $file_name,
+                    $this->input->post('item_unique_identifier') !== null ? 1 : 0,
+                    $this->input->post('item_generic_name'),
+                    $this->input->post('item_description')
                 );
 
                 $response['environment']    =   ENVIRONMENT;
@@ -106,30 +166,21 @@ class Company extends CI_Controller {
 
     public function update()
     {
-
+        
         $this->loginstate->login_state_check();
 
         if($this->loginstate->get_access()['overall_access']==1)
         {
 
             $validation = array(
-                array('company_primary','ID','required|max_length[100]|min_length[1]'),
-                array('company_description','Company Description','max_length[5000]|min_length[1]'),
-                array('company_industry','Company Industry','required|max_length[100]|min_length[1]')
+                array('item_primary','ID','required|max_length[100]|min_length[1]'),
+                array('item_company','Company','required|max_length[100]|min_length[1]'),
+                array('item_branch','Branch','required|max_length[100]|min_length[1]'),
+                array('item_parent_location','Parent Location','max_length[100]|min_length[1]'),
+                array('item_name','Storage Location Name','required|max_length[45]|min_length[1]|is_unique[erp_item_categories.name]')
             );
 
-            $id = en_dec('dec',$this->input->post('company_primary'));
-
-            $company = $this->model_company->read($id);    
-
-            if($company['name']==$this->input->post('company_name'))
-            {
-                array_push($validation,array('company_name','Company Name','required|max_length[100]|min_length[1]'));
-            }
-            else
-            {
-                array_push($validation,array('company_name','Company Name','required|max_length[100]|min_length[1]|is_unique[erp_companies.name]'));
-            }
+            $id = en_dec('dec',$this->input->post('item_primary'));
 
             foreach ($validation as $value) {
                 $this->form_validation->set_rules($value[0],$value[1],$value[2]);
@@ -147,10 +198,11 @@ class Company extends CI_Controller {
             }
             else
             {
-                $result = $this->model_company->update(
-                    $this->input->post('company_name'),
-                    $this->input->post('company_description'),
-                    en_dec('dec',$this->input->post('company_industry')),
+                $result = $this->model_item->update(
+                    en_dec('dec',$this->input->post('item_company')),
+                    en_dec('dec',$this->input->post('item_branch')),
+                    $this->input->post('item_parent_location')=="0" ? 0 : en_dec('dec',$this->input->post('item_parent_location')) ,
+                    $this->input->post('item_name'),
                     $id
                 );
 
@@ -179,19 +231,21 @@ class Company extends CI_Controller {
                'search_string' => $get_data['search_string']
             );
 
-            $result = $this->model_company->table_data($read_args);
+            $result = $this->model_item->table_data($read_args);
 
             $data = [];
 
             foreach($result['result'] as $row) {
 
                 $nestedData = array();
-                $nestedData[] = $row["name"];
-                $nestedData[] = $row["description"];
-                $nestedData[] = $row["industry_name"];
+                $nestedData[] = $row["company_name"];
+                $nestedData[] = $row["category_name"];
+                $nestedData[] = $row["item_unit_name"];
+                $nestedData[] = $row["item_code"];
+                $nestedData[] = $row["item_name"];
                 $nestedData[] = '
-                    <button class="btn btn-primary company_btn_view" id="'.en_dec('en',$row['id']).'"> view</button>
-                    <button class="btn btn-danger company_btn_delete" id="'.en_dec('en',$row['id']).'"> remove</button>
+                    <button class="btn btn-primary item_btn_view" id="'.en_dec('en',$row['id']).'"> view</button>
+                    <button class="btn btn-danger item_btn_delete" id="'.en_dec('en',$row['id']).'"> remove</button>
                 ';
 
                   $data[] = $nestedData;
@@ -219,10 +273,12 @@ class Company extends CI_Controller {
 
         if($this->loginstate->get_access()['overall_access'] == 1)
         {
-            $company = $this->model_company->read($id);
-            $company['id'] = en_dec('en',$company['id']);
-            $company['industry'] = en_dec('en',$company['industry']);
-            echo json_encode($company);
+            $item = $this->model_item->read($id);
+            $item['id'] = en_dec('en',$item['id']);
+            $item['company'] = en_dec('en',$item['company']);
+            $item['item_category'] = en_dec('en',$item['item_category']);
+            $item['item_unit'] = en_dec('en',$item['item_unit']);
+            echo json_encode($item);
         }
     }   
 
@@ -232,7 +288,7 @@ class Company extends CI_Controller {
 
         if($this->loginstate->get_access()['overall_access'] == 1)
         {
-            $result = $this->model_company->delete($id);
+            $result = $this->model_item->delete($id);
 
             $response = array(
                 'success' => $result['status'],
@@ -254,27 +310,32 @@ class Company extends CI_Controller {
     ///////////////////////////////////////////////////////////Additional functions start//////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public function get_active_branches($company_id)
+    public function get_company_categories($id)
     {
-        $this->loginstate->login_state_check();
+        $id = en_dec('dec',$id);
 
-        if($this->loginstate->get_access()['overall_access']==1)
-        {   
-            $id = en_dec('dec',$company_id);
-            $result = $this->model_company->get_active_branches($id);
-            $count = $result->num_rows();
-            $branches = $result->result_array();
-            if($count>0)
+        if($this->loginstate->get_access()['overall_access'] == 1)
+        {
+            $item_categories = $this->model_item->get_company_categories($id);
+
+            if($item_categories->num_rows()>0)
             {
-                for($a=0; $a<$count; $a++)
+                $item_categories = $item_categories->result_array();
+
+                for($a = 0; $a < count($item_categories); $a++)
                 {
-                    $branches[$a]['id'] = en_dec('en',$branches[$a]['id']);
+                    $item_categories[$a]['id'] = en_dec('en',$item_categories[$a]['id']);
                 }
             }
+            else
+            {
+                $item_categories = $item_categories->result_array();
+            }
 
-            echo json_encode($branches);
+            echo json_encode($item_categories);
         }
     }
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////Additional functions end////////////////////////////////////////////////////////////////

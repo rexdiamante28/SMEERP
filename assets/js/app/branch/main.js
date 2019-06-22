@@ -4,18 +4,18 @@ $(document).ready(function(){
     ////////////////////////////////////////////////////////////////Data Loading///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	load_companies = function() {
+	load_branches = function() {
 
 		var data = {
-			"search_string" : $('#company_searchtext').val()
+			"search_string" : $('#branch_searchtext').val()
 		};
 		
-		dataTable = $('#company-table-grid').DataTable({
+		dataTable = $('#branch-table-grid').DataTable({
 			destroy: true,
 			"serverSide": true,
 			responsive: true,
 			"ajax":{
-				url:base_url+"app/company/table_data", // json datasource
+				url:base_url+"app/branch/table_data", // json datasource
 				type: "get",  // method  , by default get
 				data: data,
 				beforeSend:function(data){
@@ -35,19 +35,19 @@ $(document).ready(function(){
 				}
 			},
 			"columnDefs": [
-			   { orderable: false, "targets": [ 3 ] },
-			   { className: "text-center", "targets": [ 3 ] }
+			   { orderable: false, "targets": [ 2 ] },
+			   { className: "text-center", "targets": [ 2 ] }
 			 ]
 		});
 	}
 
 
-	load_companies();
+	load_branches();
 
 
-	$('#company_search_form').submit(function(e){
+	$('#branch_search_form').submit(function(e){
 		e.preventDefault();
-		load_companies();
+		load_branches();
 	});
 
 
@@ -56,26 +56,26 @@ $(document).ready(function(){
     ////////////////////////////////////////////////////////////////Specific Data Loading///////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	$(document).delegate('.company_btn_view','click',function(e){
+	$(document).delegate('.branch_btn_view','click',function(e){
 		showCover('Loading data...');
 		$.ajax({
 	        type:'get',
-	        url:base_url+'app/company/read/'+e.currentTarget.id,
+	        url:base_url+'app/branch/read/'+e.currentTarget.id,
 	        data:'',
 	        success:function(data){
 	        	hideCover();
 	        	var json_data = JSON.parse(data);
 	        	console.log(json_data);
 
-	        	$('#company_create_form')[0].reset();
+	        	$('#branch_create_form')[0].reset();
 
-				$('#company_primary').val(json_data.id);
-				$('#company_name').val(json_data.name);
-				$('#company_description').val(json_data.description);
-				$('#company_industry').val(json_data.industry).trigger('change');
+				$('#branch_primary').val(json_data.id);
+				$('#branch_company').val(json_data.company).trigger('change');
+				$('#branch_name').val(json_data.branch);
+				$('#branch_description').val(json_data.description);
+				$('#branch_address').val(json_data.address);
 
-
-				$('#company_create_modal').modal();
+				$('#branch_create_modal').modal();
 				
 
 	        },
@@ -91,7 +91,7 @@ $(document).ready(function(){
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////Specific Data Deleting/////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	$(document).delegate('.company_btn_delete','click',function(e){
+	$(document).delegate('.branch_btn_delete','click',function(e){
 
 		var id = e.currentTarget.id;
 
@@ -100,7 +100,7 @@ $(document).ready(function(){
 				showCover('Deleting data...');
 				$.ajax({
 			        type:'get',
-			        url:base_url+'app/company/delete/'+id,
+			        url:base_url+'app/branch/delete/'+id,
 			        data:'',
 			        success:function(data){
 			        	hideCover();
@@ -109,7 +109,7 @@ $(document).ready(function(){
 			        	if(json_data.success)
 			        	{
 			        		sys_toast_success(json_data.message);
-			        		load_companies();
+			        		load_branches();
 			        	}
 			        	else
 			        	{
