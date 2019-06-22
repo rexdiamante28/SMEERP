@@ -20,7 +20,8 @@
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/alertify.css">
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/default.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/style.css">
-    <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/custom.css">    <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/jquery-ui.css">
+    <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/custom.css">
+    <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/jquery-ui.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/select2.min.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/select2-materialize.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/admin/css/select2.css">
@@ -35,6 +36,12 @@
     <link href="<?=base_url('assets/css/stepwizard/stepwizard.css'); ?>" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="<?=base_url('assets/css/app/app.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?=base_url('assets/css/pell.css'); ?>">
+
+    <!-- CSS file -->
+    <link rel="stylesheet" href="<?=base_url('assets/css/app/easy-autocomplete.css'); ?>"> 
+
+    <!-- Additional CSS Themes file - not required-->
+    <link rel="stylesheet" href="<?=base_url('assets/css/app/easy-autocomplete.themes.min.css'); ?>"> 
     <?php
         if(isset($add_css))
         {
@@ -266,6 +273,9 @@
         <script src="<?= base_url() ?>assets/js/pell.js"></script>
         <script src="<?=base_url('assets/js/stepwizard/jquery.smartWizard.js'); ?>"></script>
         <script src="<?=base_url('assets/js/stepwizard/stepwizard.js'); ?>"></script>
+
+        <!-- CSS file -->
+        <script type="text/javascript" src="<?=base_url('assets/js/app/jquery.easy-autocomplete.js'); ?>" ></script>
 
         <?php
             if(isset($add_js))

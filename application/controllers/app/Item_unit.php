@@ -32,12 +32,8 @@ class Item_unit extends CI_Controller {
 
             $sub_data['breadcrumb'] = $this->load->view("common/breadcrumb",$sub_data,true);
 
-            //get all active industries
-
-            $form_data['companies']  = $this->model_company->get_active();
-
             $forms = array(
-                $this->load->view('app/item_unit/form_view',$form_data,true)
+                $this->load->view('app/item_unit/form_view','',true)
             );
 
             $data = array(
@@ -59,7 +55,6 @@ class Item_unit extends CI_Controller {
 
     public function create()
     {
-
         $this->loginstate->login_state_check();
 
         if($this->loginstate->get_access()['overall_access']==1)

@@ -73,7 +73,8 @@ $(document).ready(function(){
 	        	$('#item_unit_create_form')[0].reset();
 
 				$('#item_unit_primary').val(json_data.id);
-				$('#item_unit_company').val(json_data.company);
+				$('#item_unit_company').val(json_data.company_name);
+				$('#item_unit_company').attr('data-id',json_data.company);
 				$('#item_unit_name').val(json_data.name);
 				$('#item_unit_description').val(json_data.description);
 
@@ -135,6 +136,21 @@ $(document).ready(function(){
     ///////////////////////////////////////////////////////////////Additional functions start//////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	var options = {
+		url: function(phrase) {
+			return base_url+"app/company/company_json/"+$('#item_unit_company').val();
+		},
+		getValue: "name",
+		list: {
+
+			onSelectItemEvent: function() {
+				var value = $("#item_unit_company").getSelectedItemData().id;
+				$("#item_unit_company").attr('data-id',value);
+			}
+		}
+	};
+
+	$("#item_unit_company").easyAutocomplete(options);
   
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

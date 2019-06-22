@@ -58,4 +58,14 @@ class Model_account extends CI_Model {
 		return $response;
 	}
 
+	public function get_active(){
+
+		$query="SELECT * FROM users a
+				LEFT JOIN employees b ON a.emp_id = b.id
+				LEFT JOIN people c ON b.people_id = c.id 
+				WHERE a.status = 1";
+
+		return $this->db->query($query)->result_array();
+	}
+
 }

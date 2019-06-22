@@ -6,19 +6,14 @@ $(document).ready(function(){
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-	$('#item_unit_create_btn').click(function(){
-
-		$("#item_unit_category").html('');
-		$("#item_unit_category").append(new Option("-- Select parent category --", "0"));
-		$('#item_unit_item_unit_group').addClass('hidden');
-		
-		$('#item_unit_create_form')[0].reset();
-		$('#item_unit_create_modal').modal();
+	$('#people_create_btn').click(function(){
+		$('#people_create_form')[0].reset();
+		$('#people_create_modal').modal();
 	});
 
 
 
-	$('#item_unit_create_form').submit(function(e){
+	$('#people_create_form').submit(function(e){
 
 		showCover("Saving...");
 
@@ -28,13 +23,12 @@ $(document).ready(function(){
 		var form_data = new FormData(form[0]);
 
 		form_data.append([ajax_token_name],ajax_token);
-		form_data.append('item_unit_company',$('#item_unit_company').attr('data-id'));
 
 		var endpoint = form.data('create_url');
 
-		if($('#item_unit_primary').val()!='0')
+		if($('#people_primary').val()!='0')
 		{
-			form_data.append('item_unit_primary',$('#item_unit_primary').val());
+			form_data.append('people_primary',$('#people_primary').val());
 			endpoint = form.data('update_url');
 		}
 
@@ -55,9 +49,9 @@ $(document).ready(function(){
 	  			if(json_data.success)
 	  			{
 	  				sys_toast_success(json_data.message);
-	  				$('#item_unit_create_form')[0].reset();
-	  				$('#item_unit_create_modal').modal('hide');
-	  				load_item_units();
+	  				$('#people_create_form')[0].reset();
+	  				$('#people_create_modal').modal('hide');
+	  				load_people();
 	  			}
 	  			else
 	  			{
@@ -74,10 +68,11 @@ $(document).ready(function(){
 
 
 
-
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////Additional functions start//////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////Additional functions end/////////////////////////////////////////////////////////////
