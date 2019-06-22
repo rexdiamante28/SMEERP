@@ -1,4 +1,4 @@
-<?php
+    <?php
     if($this->loginstate->get_access()['overall_access']==1)
     {
         ?>
@@ -18,16 +18,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Company</label>
-                                        <select class="form-control" name="item_unit_company" id="item_unit_company">
-                                            <option value="">-- Select Company --</option>
-                                            <?php
-                                                foreach ($companies as $company) {
-                                                    ?>
-                                                        <option value="<?= en_dec('en',$company['id']); ?>"><?= $company['name']; ?></option>
-                                                    <?php
-                                                }
-                                            ?>
-                                        </select>
+                                        <input id="item_unit_company" name="item_unit_company" type="text" class="form-control" />
                                     </div>
                                     <div class="form-group">
                                         <label>Name</label>

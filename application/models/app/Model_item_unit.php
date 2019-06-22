@@ -105,7 +105,8 @@ class Model_item_unit extends CI_Model {
 
 	public function read($id)
 	{
-		$query="select * from erp_item_units where id = ? ";
+		$query="select a.*, b.name as company_name from erp_item_units as a left join erp_companies as b 
+		on a.company = b.id where a.id = ? ";
 
 		return $this->db->query($query,$id)->row_array();
 	}

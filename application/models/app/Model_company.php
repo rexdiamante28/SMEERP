@@ -55,8 +55,8 @@ class Model_company extends CI_Model {
 
 		if($read_args['search_string']!='')
 		{
-			$query.=" and ( a.name like '%".$read_args['search_string']."%' or a.description like '%".$read_args['search_string']."%') or 
-			b.name like '%".$read_args['search_string']."%'";
+			$query.=" and ( a.name like '%".$read_args['search_string']."%' or a.description like '%".$read_args['search_string']."%' or 
+			b.name like '%".$read_args['search_string']."%' )";
 		}
 
 		$totalData = $this->db->query($query)->num_rows();
@@ -76,6 +76,7 @@ class Model_company extends CI_Model {
 			"recordsTotal"    => intval($totalData),  // total number of records
 			"recordsFiltered" => intval($totalFiltered), // total number of records after searching, if there is no searching then totalFiltered = totalData
 			"result"          => $result->result_array()   // total data array
+			
 		);
 		
 		return $json_data;
