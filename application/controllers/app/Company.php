@@ -167,8 +167,7 @@ class Company extends CI_Controller {
 
     public function table_data()
     {
-        if($this->loginstate->get_access()['overall_access'] == 1)
-        {
+        if($this->loginstate->get_access()['overall_access'] == 1) {
             $get_data = $this->input->get();
 
             $read_args = array(
@@ -206,8 +205,7 @@ class Company extends CI_Controller {
 
             echo json_encode($json_data);
         }
-        else
-        {
+        else {
             deny_access();
         }
     }
