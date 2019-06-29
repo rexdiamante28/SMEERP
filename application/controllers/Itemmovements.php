@@ -30,14 +30,14 @@ class Itemmovements extends CI_Controller {
 				$form1 = $this->load->view('common/modal_form',$tempdata,TRUE);
 
 				$form2 = $this->load->view('account/itemmovement/details_modal',$tempdata,TRUE);
-
+				$form2a = $this->load->view('account/itemmovement/details_modal_inb',$tempdata,TRUE);
+				$form2b = $this->load->view('account/itemmovement/details_modal_accepted',$tempdata,TRUE);
 				$form3 = $this->load->view('account/itemmovement/add_item_in_movement_modal',$tempdata,TRUE);
-
 				$form4 = $this->load->view('account/itemmovement/add_item_in_movement_details_modal',$tempdata,TRUE);
-
 				$form5 = $this->load->view('account/itemmovement/identifiers_modal',$tempdata,TRUE);
+				$form5a = $this->load->view('account/itemmovement/identifiers_modal_accepted',$tempdata,TRUE);
 
-				$data['forms'] = array($form1,$form2,$form3,$form4,$form5);
+				$data['forms'] = array($form1,$form2,$form2a,$form2b,$form3,$form4,$form5,$form5a);
 
 				// additional styles
 
@@ -154,10 +154,15 @@ class Itemmovements extends CI_Controller {
     	if($this->input->post('type')==='Orders')
     	{
     		$this->form_validation->set_rules('date', 'Date', 'trim');
-    	}
+    	} 
     	else
     	{
     		$this->form_validation->set_rules('date', 'Date', 'trim|required');
+    	}
+
+    	if($this->input->post('type') === "Outbound"){
+    		
+    		$this->form_validation->set_rules('branch_id2', 'Move to branch', 'trim|required|numeric');
     	}
     	
     	$this->form_validation->set_rules('status', 'Status', 'trim|required|max_length[20]');
@@ -204,6 +209,7 @@ class Itemmovements extends CI_Controller {
 	public function get_stock_movement_items($id)
 	{
 		$this->load->model('account/itemmovement_model');
+		$data['movement_info'] = $this->itemmovement_model->get_stock_movement($id)->row_array();
 		$data['item_movement_items'] = $this->itemmovement_model->get_stock_movement_items($id)->result_array();
 
 		$data['table_content'] = $this->load->view('account/itemmovement/items_table',$data,TRUE);
@@ -293,6 +299,14 @@ class Itemmovements extends CI_Controller {
 		$data['uids'] = $this->itemmovement_model->get_item_movement_item_uids($item_movement_id);
 
 		$this->load->view('account/itemmovement/uids',$data);
+	}	
+
+	public function get_item_movement_item_uids_acc($item_movement_id)
+	{
+		$this->load->model('account/itemmovement_model');
+		$data['uids'] = $this->itemmovement_model->get_item_movement_item_uids_acc($item_movement_id);
+
+		$this->load->view('account/itemmovement/uids_acc',$data);
 	}
 
 
@@ -307,6 +321,11 @@ class Itemmovements extends CI_Controller {
 	{
 		$this->load->model('account/itemmovement_model');
 		echo json_encode($this->itemmovement_model->delete_uid());
+	}
+
+	public function import_item_out_to_inbound(){
+		$this->load->model('account/itemmovement_model');
+		echo json_encode ($this->itemmovement_model->import_item_out_to_inbound());
 	}
 
 }

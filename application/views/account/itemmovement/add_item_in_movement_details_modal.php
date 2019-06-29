@@ -104,7 +104,7 @@
       </div>
 
       <div class="modal-footer">
-        <button type="submit" id="add_item_to_movement_submit" class="btn btn-default btn-sm" >Submit</button>
+        <button type="submit" id="add_item_to_movement_submit" class="btn btn-primary btn-sm" >Submit</button>
         <button type="button" class="btn btn-default btn-sm" id="close_modal" data-dismiss="modal">Close</button>
       </div>
       </form>

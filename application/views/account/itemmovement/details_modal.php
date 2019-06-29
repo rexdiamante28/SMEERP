@@ -14,7 +14,7 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-default btn-sm" id = "add_item_in_movement_button">Add New Item</button>
+        <button type="button" class="btn btn-primary btn-sm" id = "add_item_in_movement_button">Add New Item</button>
         <button type="button" class="btn btn-default btn-sm" id="close_modal" data-dismiss="modal">Close</button>
       </div>
       </form>

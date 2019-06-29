@@ -32,11 +32,14 @@ function get_items()
 
 
 function set_handler2(){
-	$('.add_to_item_tigger').click(function(){
+
+	$('.add_to_item_tigger').click(function(e){
+		var item_id = event.currentTarget.id;
 		$('#add_item_in_movement_details_form #item_id').val(event.currentTarget.id);
 		$('#add_item_in_movement_details_modal').modal();
 		$('#add_item_in_movement_details_form #error_message').addClass('hidden');
 	});
+
 }
 
 
@@ -130,6 +133,21 @@ $(document).delegate(".view_identifiers", "click", function(e) {
 			hideCover();
 			$('#identifiers_modal_body').html(response);
 			$('#identifiers_modal').modal();
+		}
+	});
+
+});
+
+$(document).delegate(".view_identifiers_acc", "click", function(e) {
+	showCover('Fetching data...');
+  	$.ajax({				
+		type : 'GET',
+		url  : 'get_item_movement_item_uids_acc/'+e.currentTarget.id,
+		data : '',
+		success : function(response){
+			hideCover();
+			$('#identifiers_modal_body_acc').html(response);
+			$('#identifiers_modal_acc').modal();
 		}
 	});
 

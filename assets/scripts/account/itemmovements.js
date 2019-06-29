@@ -124,8 +124,48 @@ function set_handler()
 			success : function(response){
 				hideCover();
 				$('#details_modal').modal();
-
 				$('#details_modal_content').html(response);
+
+			}
+		});
+
+	});
+
+
+	$('.details-inb').click(function(){
+
+		showCover("Fetching record...");
+
+		$('#add_item_in_movement_details_form #movement_id').val(event.currentTarget.id);
+
+		$.ajax({				
+			type : 'GET',
+			url  : 'get_stock_movement_items/'+event.currentTarget.id,
+			data : '',
+			success : function(response){
+				hideCover();
+				$('#details_modal_inb').modal();
+				$('#details_modal_content_inb').html(response);
+
+			}
+		});
+
+	});	
+
+	$('.details-acc').click(function(){
+
+		showCover("Fetching record...");
+
+		$('#add_item_in_movement_details_form #movement_id').val(event.currentTarget.id);
+
+		$.ajax({				
+			type : 'GET',
+			url  : 'get_stock_movement_items/'+event.currentTarget.id,
+			data : '',
+			success : function(response){
+				hideCover();
+				$('#details_modal_accepted').modal();
+				$('#details_modal_content_acc').html(response);
 
 			}
 		});
@@ -218,3 +258,50 @@ function get_facilitators(){
 		}
 	});
 }
+
+	//ADDED FUNCTIONS
+	$('#type').change(function(){
+		var from_id = $("#branch_id option:selected").val();
+
+		if($(this).val() == "Outbound"){
+
+			$("#move_to_branch").prop("hidden", false);
+			$("#branch_id2 option[value="+from_id+"]").prop("hidden", true);
+
+		}else{
+			$("#move_to_branch").prop("hidden", true);
+		}
+	});
+
+	$('#accept_oub_to_inb').click(function(e){
+		$('#details_modal_inb_accept').modal();
+	});
+
+	$('#accept_oub_to_inb_confirm').click(function(e){
+		
+		var inbound_id = $('#add_item_in_movement_details_form #movement_id').val();
+		$.ajax({				
+			type : 'POST',
+			url  : 'import_item_out_to_inbound',
+			data : {'inbound_id': inbound_id},
+			success : function(response){
+				hideCover();
+
+				response = JSON.parse(response);
+
+				if(response.success == 'true' || response.success == true)
+				{
+					alertify.success(response.message);
+					$('#details_modal_inb').modal('toggle');
+					$('#details_modal_inb_accept').modal('toggle');
+				}
+				else
+				{
+					alertify.error(response.message);
+				}
+
+				
+			}
+		});
+	});
+

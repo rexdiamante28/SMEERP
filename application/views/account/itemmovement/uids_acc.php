@@ -16,18 +16,10 @@
 							<td>
 								<input type="text" class="form_control" id="uid<?= $value['id']; ?>" value="<?= $value['identifier'] ?>">
 							</td>
-							<?php if($value['from_outbound'] !=1 || $value['is_accepted']!=1): ?>
-							<td>
-								<button class="btn btn-default btn-xs">
-									<i class="fa fa-check update_uid_button" id="uid_button<?= $value['id']; ?>"></i>
-								</button>
-								<button class="btn btn-default btn-xs">
-									<i class="fa fa-remove remove_uid_button" id="uidd_button<?= $value['id']; ?>"></i>
-								</button>
-							</td>
-							<?php else: ?>
-								<td></td>
-							<?php endif; ?>
+							
+						
+							<td></td>
+						
 						</tr>
 					<?php
 				}

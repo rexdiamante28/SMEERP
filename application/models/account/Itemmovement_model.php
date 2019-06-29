@@ -14,19 +14,19 @@ function get_item_movements()
 	if($search==='')
 	{
 		$query="select a.id,a.branch_id,a.code, a.type, a.date,
-		a.internal_notes, a.facilitator, a.status, b.branch_name from item_movements
+		a.internal_notes, a.facilitator, a.status, a.from_outbound, a.outbound_id,a.is_accepted, b.branch_name from item_movements
 		as a left join branches as b on a.branch_id = b.id where
 		b.id in (".$this->session->branches.")
-		order by a.id limit $limit";
+		order by a.id DESC limit $limit";
 	}
 		else
 	{
 		$query="select a.id,a.branch_id,a.code, a.type, a.date,
-		a.internal_notes, a.facilitator, a.status, b.branch_name from item_movements
+		a.internal_notes, a.facilitator, a.status,  a.from_outbound, a.outbound_id, a.is_accepted,b.branch_name from item_movements
 		as a left join branches as b on a.branch_id = b.id where (a.code like '%$search%'
 		or a.type like '%$search%' or a.date like '%$search%' or a.internal_notes like '%$search%'
 		or a.status like '%$search%' or b.branch_name like '%$search%') and b.id in (".$this->session->branches.")
-		order by a.id limit $limit";
+		order by a.id DESC limit $limit";
 	}
 
 	return $this->_custom_query($query);
@@ -38,6 +38,7 @@ function add_movement()
 
 	$id = intval($this->_custom_query($query)->row()->id)+1;
 	$branch_id = $this->input->post('branch_id');
+	$branch_id2 = $this->input->post('branch_id2');
 	$code = $this->input->post('code');
 	$type = $this->input->post('type');
 	$date = $this->input->post('date');
@@ -52,7 +53,8 @@ function add_movement()
 	}
 	if($type==='Outbound')
 	{
-		$code = 'OUTB-'.$code;
+		$code1 = 'OUTB-'.$code;
+		
 	}
 	if($type==='Orders')
 	{
@@ -67,17 +69,30 @@ function add_movement()
 		$code = 'QRNTN-'.$code;
 	}
 
-	if($this->input->post('date')==='')
+	if($branch_id2 ==='')
 	{
-		$query = "insert into item_movements (id,branch_id,code,type,internal_notes,facilitator,
-		encoder,status) values 
-		('$id','$branch_id','$code','$type','$internal_notes','$facilitator','$encoder','$status')";
+
+		$query = "insert into item_movements (id,branch_id,code,type,date,internal_notes,facilitator,
+		encoder,status,from_outbound) values 
+		('$id','$branch_id','$code1','$type','$date','$internal_notes','$facilitator','$encoder','$status','0')";
+
 	}
 	else
 	{
 		$query = "insert into item_movements (id,branch_id,code,type,date,internal_notes,facilitator,
-		encoder,status) values 
-		('$id','$branch_id','$code','$type','$date','$internal_notes','$facilitator','$encoder','$status')";
+		encoder,status,from_outbound) values 
+		('$id','$branch_id','$code1','$type','$date','$internal_notes','$facilitator','$encoder','$status','0')";
+		$this->db->query($query);
+
+		//ADD INBOUND
+		$type = 'Inbound';
+		$id2 = $id+1;
+		$internal_notes = 'Created from '.$code;
+		$code2 = 'INBD-'.$code;
+
+		$query = "insert into item_movements (id,branch_id,code,type,date,internal_notes,facilitator,
+		encoder,status,from_outbound, outbound_id) values 
+		('$id2','$branch_id2','$code2','$type','$date','$internal_notes','$facilitator','$encoder','$status','1','$id')";
 	}
 
 	
@@ -208,20 +223,23 @@ function get_facilitators()
 
 function get_stock_movement_items($id)
 {
-	$query="select a.id, a.quantity, a.remarks, a.stock, b.item_name, b.item_code,b.item_unit,
-	b.item_image, c.unit, 
 
-	(select count(*) from item_unique_identifiers where item_movement_items_id = a.id )
+	$movement_info = $this->get_stock_movement($id)->row_array();
 
-	as id_not_set, 
+	if($movement_info['from_outbound'] == 1){
+		$id = $movement_info['outbound_id'];
+	}
 
-	(select count(*) from item_unique_identifiers where item_movement_items_id = a.id and identifier != '0' )
-
-	as id_set
-
-	from item_movement_items as a left join items as b on a.item_id = b.id
-	left join item_units as c on b.item_unit = c.id
-	 where a.item_movement_id = '$id'";
+	$query="select a.id,a.item_id, a.quantity, a.remarks, a.stock, b.item_name, b.item_code,b.item_unit,
+			b.item_image, c.unit, 
+			(select count(*) from item_unique_identifiers where item_movement_items_id = a.id )
+			as id_not_set,
+			(select count(*) from item_unique_identifiers where item_movement_items_id = a.id and identifier != '0' )
+			as id_set from item_movement_items as a
+			left join items as b on a.item_id = b.id
+			left join item_units as c on b.item_unit = c.id
+			where a.item_movement_id = '$id'";
+	
 	return $this->_custom_query($query);
 }
 
@@ -263,6 +281,7 @@ function get_items()
 function add_item_in_movement()
 {
 	$query="select max(id) as id from item_movement_items";
+
 	$id = intval($this->_custom_query($query)->row()->id)+1;
 	$item_movement_id  = $this->input->post('movement_id');
 	$item_id = $this->input->post('item_id');
@@ -279,209 +298,219 @@ function add_item_in_movement()
 	//If if outbound,quarantine,damages check if item is avaliable in stocks and the quantity is sufficient. otherwise, show error
 	$query="select * from item_movements where id = '$item_movement_id'";
 	$item_movement = $this->_custom_query($query)->row();
-	if($item_movement->type==='Inbound')
-	{
-		//check if the item is already in the stocks. If yes, just update quantity. else insert item.
-		$query="select * from store_items where item_id = '$item_id' and branch_id = '".$item_movement->branch_id."'";
-		$store_item = $this->_custom_query($query);
-		if($store_item->num_rows()===0)
+	
+	if($item_movement->from_outbound == 0){
+		
+		if($item_movement->type==='Inbound')
 		{
-			$query="select max(id) as id from store_items";
-			$store_item_id = intval($this->_custom_query($query)->row()->id)+1;
+			//check if the item is already in the stocks. If yes, just update quantity. else insert item.
+			$query="select * from store_items where item_id = '$item_id' and branch_id = '".$item_movement->branch_id."'";
+			$store_item = $this->_custom_query($query);
+			if($store_item->num_rows()===0)
+			{
+				$query="select max(id) as id from store_items";
+				$store_item_id = intval($this->_custom_query($query)->row()->id)+1;
 
-			$query="insert into store_items (id,item_id,branch_id) values 
-				('$store_item_id','$item_id','".$item_movement->branch_id."')";
+				$query="insert into store_items (id,item_id,branch_id) values 
+					('$store_item_id','$item_id','".$item_movement->branch_id."')";
 
-			$this->db->query($query);
-		}
+				$this->db->query($query);
+			}
 
-		//insert entries to item unique identifiers table with value '0'
-
-		if($item['has_unique_identifier']=='1')
-		{
-			$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
-			values ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','0','$remarks')";
-		}
-		else
-		{
-			$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
-			values ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','$quantity','$remarks')";
-		}
-
-		if($this->_custom_query($query))
-		{
+			//insert entries to item unique identifiers table with value '0'
 
 			if($item['has_unique_identifier']=='1')
 			{
-				for($a = 0; $a < $quantity; $a++)
-				{
-					$identifiers_insertion_query="insert into item_unique_identifiers (item_movement_items_id,identifier,available) values 
-					('$id','0','0')";
-
-					$this->_custom_query($identifiers_insertion_query);
-				}
+				$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
+				values ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','0','$remarks')";
+			}
+			else
+			{
+				$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
+				values ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','$quantity','$remarks')";
 			}
 
-			$response['success'] = true;
-			$response['message'] = 'Item successfully added';
-			$response['environment'] = ENVIRONMENT;
-
-			return $response;
-		}
-		else
-		{
-			$response['success'] = false;
-		    $response['message'] = 'something went wrong. '.$query;
-		    $response['environment'] = ENVIRONMENT;
-
-			return $response;
-		}
-
-	}
-	else if($item_movement->type==='Orders')
-	{
-
-
-		$query="insert into item_movement_items (id,item_movement_id,item_id,quantity,remarks)
-		values ('$id','$item_movement_id','$item_id','$quantity','$remarks')";
-
-		if($this->_custom_query($query))
-		{
-
-			$response['success'] = true;
-		    $response['message'] = 'Item successfully added';
-		    $response['environment'] = ENVIRONMENT;
-
-			return $response;
-		}
-		else
-		{
-			$response['success'] = false;
-		    $response['message'] = 'something went wrong. '.$query;
-		    $response['environment'] = ENVIRONMENT;
-
-			return $response;
-		}
-			
-	}
-	else
-	{
-		//check if the item is already in the stocks and current stocks is greater than or equal to the quantity
-		$query = "select *, (select sum(stock) from item_movement_items where item_movement_id in 
-		(select id from item_movements where branch_id = '".$item_movement->branch_id."' and type = 'Inbound') 
-		and item_id = '$item_id') as stock_count from store_items where item_id = '$item_id' and branch_id = '".$item_movement->branch_id."'";
-
-		$store_item = $this->_custom_query($query);
-
-		if($store_item->num_rows()===0)
-		{
-			$response['success'] = false;
-			$response['message'] = 'Item not found in store.'.$query;
-			$response['environment'] = ENVIRONMENT;
-
-			return $response;
-		}
-		else
-		{
-			$store_item = $store_item->row();
-			$current_stock = floatval($store_item->stock_count);
-			$current_stock-=floatval($quantity);
-
-			
-			if($current_stock<0)
+			if($this->_custom_query($query))
 			{
-				$response['success'] = false;
-				$response['message'] = 'Insuficient Item. Please check.';
+
+				if($item['has_unique_identifier']=='1')
+				{
+					for($a = 0; $a < $quantity; $a++)
+					{
+						$identifiers_insertion_query="insert into item_unique_identifiers (item_movement_items_id,identifier,available) values 
+						('$id','0','0')";
+
+						$this->_custom_query($identifiers_insertion_query);
+					}
+				}
+
+				$response['success'] = true;
+				$response['message'] = 'Item successfully added';
 				$response['environment'] = ENVIRONMENT;
 
 				return $response;
 			}
 			else
 			{
+				$response['success'] = false;
+			    $response['message'] = 'something went wrong. '.$query;
+			    $response['environment'] = ENVIRONMENT;
 
-				if($item['has_unique_identifier']=='1')
+				return $response;
+			}
+
+		}
+		else if($item_movement->type==='Orders')
+		{
+
+
+			$query="insert into item_movement_items (id,item_movement_id,item_id,quantity,remarks)
+			values ('$id','$item_movement_id','$item_id','$quantity','$remarks')";
+
+			if($this->_custom_query($query))
+			{
+
+				$response['success'] = true;
+			    $response['message'] = 'Item successfully added';
+			    $response['environment'] = ENVIRONMENT;
+
+				return $response;
+			}
+			else
+			{
+				$response['success'] = false;
+			    $response['message'] = 'something went wrong. '.$query;
+			    $response['environment'] = ENVIRONMENT;
+
+				return $response;
+			}
+				
+		}
+		else
+		{
+			//check if the item is already in the stocks and current stocks is greater than or equal to the quantity
+			$query = "select *, (select sum(stock) from item_movement_items where item_movement_id in 
+			(select id from item_movements where branch_id = '".$item_movement->branch_id."' and type = 'Inbound') 
+			and item_id = '$item_id') as stock_count from store_items where item_id = '$item_id' and branch_id = '".$item_movement->branch_id."'";
+
+			$store_item = $this->_custom_query($query);
+
+			if($store_item->num_rows()===0)
+			{
+				$response['success'] = false;
+				$response['message'] = 'Item not found in store.'.$query;
+				$response['environment'] = ENVIRONMENT;
+
+				return $response;
+			}
+			else
+			{
+				$store_item = $store_item->row();
+				$current_stock = floatval($store_item->stock_count);
+				$current_stock-=floatval($quantity);
+
+				
+				if($current_stock<0)
 				{
-					$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
-					values ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','0','$remarks')";
+					$response['success'] = false;
+					$response['message'] = 'Insuficient Item. Please check.';
+					$response['environment'] = ENVIRONMENT;
+
+					return $response;
 				}
 				else
-				{
-					$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
-					values ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','$quantity','$remarks')";
-				}
-
-				if($this->_custom_query($query))
 				{
 
 					if($item['has_unique_identifier']=='1')
 					{
-						for($a = 0; $a < $quantity; $a++)
-						{
-							$identifiers_insertion_query="insert into item_unique_identifiers (item_movement_items_id,identifier,available) values 
-							('$id','0','0')";
-
-							$this->_custom_query($identifiers_insertion_query);
-						}
+						$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
+						values ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','0','$remarks')";
 					}
 					else
 					{
-						$removed = intval($quantity);
-
-						$query="select * from item_movement_items where item_movement_id in (select id from item_movements where
-						 branch_id = '".$item_movement->branch_id."' and type = 'Inbound') and item_id = '$item_id' order by id";
-
-						$result = $this->db->query($query)->result_array();
-
-					
-
-						foreach ($result as $value) {
-							if($removed>0)
-							{
-								$current_stock = intval($value['stock']);
-
-								$row_diff = $current_stock - $removed;
-
-								if($row_diff<0)
-								{
-									$query="update item_movement_items set stock = '0' where id = '".$value['id']."'";
-
-									$this->db->query($query);
-
-									$removed -= $current_stock;
-								}
-								else
-								{
-									$query="update item_movement_items set stock = '$row_diff' where id = '".$value['id']."'";
-
-									$this->db->query($query);
-
-									$removed = 0;
-								}
-
-							}
-						}
+						$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
+						values ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','$quantity','$remarks')";
 					}
 
-					$response['success'] = true;
-				    $response['message'] = 'Item successfully added';
-				    $response['environment'] = ENVIRONMENT;
+					if($this->_custom_query($query))
+					{
+
+						if($item['has_unique_identifier']=='1')
+						{
+							for($a = 0; $a < $quantity; $a++)
+							{
+								$identifiers_insertion_query="insert into item_unique_identifiers (item_movement_items_id,identifier,available) values 
+								('$id','0','0')";
+
+								$this->_custom_query($identifiers_insertion_query);
+							}
+						}
+						else
+						{
+							$removed = intval($quantity);
+
+							$query="select * from item_movement_items where item_movement_id in (select id from item_movements where
+							 branch_id = '".$item_movement->branch_id."' and type = 'Inbound') and item_id = '$item_id' order by id";
+
+							$result = $this->db->query($query)->result_array();
+
+						
+
+							foreach ($result as $value) {
+								if($removed>0)
+								{
+									$current_stock = intval($value['stock']);
+
+									$row_diff = $current_stock - $removed;
+
+									if($row_diff<0)
+									{
+										$query="update item_movement_items set stock = '0' where id = '".$value['id']."'";
+
+										$this->db->query($query);
+
+										$removed -= $current_stock;
+									}
+									else
+									{
+										$query="update item_movement_items set stock = '$row_diff' where id = '".$value['id']."'";
+
+										$this->db->query($query);
+
+										$removed = 0;
+									}
+
+								}
+							}
+						}
+
+						$response['success'] = true;
+					    $response['message'] = 'Item successfully added';
+					    $response['environment'] = ENVIRONMENT;
 
 
-					return $response;
+						return $response;
+					}
+					else
+					{
+						$response['success'] = false;
+					    $response['message'] = 'something went wrong. '.$query;
+					    $response['environment'] = ENVIRONMENT;
+
+						return $response;
+					}
 				}
-				else
-				{
-					$response['success'] = false;
-				    $response['message'] = 'something went wrong. '.$query;
-				    $response['environment'] = ENVIRONMENT;
 
-					return $response;
-				}
 			}
-
 		}
-	}
+	}else{
 
+		$response['success'] = false;
+		$response['message'] = 'You cannot add item from this Item Movement.';
+		$response['environment'] = ENVIRONMENT;
+
+		return $response;
+	}
 }
 
 /*
@@ -522,9 +551,28 @@ function add_item_in_movement()
 
 public function get_item_movement_item_uids($item_movement_id)
 {
-	$query = "select * from item_unique_identifiers where item_movement_items_id = '$item_movement_id' and available != '6' and available != '2'";
 
+
+	$query = "select a.*, c.from_outbound, c.is_accepted, c.id as im_id from item_unique_identifiers a
+	left join item_movement_items b on a.item_movement_items_id = b.id
+	left join item_movements c on b.item_movement_id = c.id
+	where item_movement_items_id = '$item_movement_id' and available != '6' and available != '2'";
 	return $this->db->query($query)->result_array();
+	
+	
+}
+
+public function get_item_movement_item_uids_acc($item_movement_id)
+{
+
+
+	$query = "select a.*, c.from_outbound, c.is_accepted, c.id from item_unique_identifiers a
+	left join item_movement_items b on a.item_movement_items_id = b.id
+	left join item_movements c on b.item_movement_id = c.id
+	where item_movement_items_id = '$item_movement_id' and available != '6' and available != '2'";
+	return $this->db->query($query)->result_array();
+	
+	
 }
 
 
@@ -619,8 +667,8 @@ public function update_uid()
 			if($unid['available']=='0')
 			{
 
-				$query = "update item_movement_items set stock = stock - 1 where id =  ( select item_movement_items_id from item_unique_identifiers
-				 where identifier = '$uid' )";
+				$query = "update item_movement_items set stock = stock - 1 where id in ( select item_movement_items_id from item_unique_identifiers
+				 where identifier = '$uid' and available = '1' )";
 
 				$this->db->query($query);
 
@@ -746,5 +794,120 @@ function _custom_query($mysql_query) {
 	$result = $this->db->query($mysql_query);
 	return $result;
 }
+
+function import_item_out_to_inbound(){
+
+	$this->load->model('account/item_model');
+	$inbound_id = $this->input->post('inbound_id');
+	$movement_info = $this->get_stock_movement($inbound_id)->row_array();
+	$branch_id = $movement_info['branch_id'];
+
+	if($movement_info['from_outbound'] == 1){
+		$outbound_id = $movement_info['outbound_id'];
+	}else{
+		$outbound_id = 0;
+	}
+
+	//GET ITEMS
+	$items = $this->get_stock_movement_items_custom($outbound_id)->result_array();
+	// print_r($items);die();
+	$query="select max(id) as id from item_movement_items";
+	$item_movement_items_id = intval($this->_custom_query($query)->row()->id)+1;
+	$item_movement_id  = $inbound_id;
+	$checker = 1;
+	
+	foreach ($items as $item) {
+		
+		//SA ITEM_MOVEMENT_ITEM MUNA
+		$item_id = $item['item_id'];
+		$price =  $item['price'];
+		$selling_price =  $item['selling_price'];
+		$quantity =  $item['quantity'];
+		$stock =  $item['stock'];
+		$remarks =  $item['remarks'];
+		$identifier = $item['unique_id'];
+
+		$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
+			values ('$item_movement_items_id','$item_movement_id','$item_id','$price','$selling_price','$quantity','$stock','$remarks')";
+		if($this->_custom_query($query)){
+			$checker *= 1;
+		}else{
+			$checker *= 0;
+		};
+		
+		//check if the item is already in the stocks
+		$query="select * from store_items where item_id = '$item_id' and branch_id = '".$branch_id."'";
+		$store_item = $this->_custom_query($query);
+
+		if($store_item->num_rows()===0)
+		{
+			$query="select max(id) as id from store_items";
+			$store_item_id = intval($this->_custom_query($query)->row()->id)+1;
+
+			$query="insert into store_items (id,item_id,branch_id) values 
+				('$store_item_id','$item_id','".$branch_id."')";
+			
+			if($this->_custom_query($query)){
+				$checker *= 1;
+			}else{
+				$checker *= 0;
+			};
+		
+		}
+
+		//TAPOS NA SA STORE_ITEMS NEXT IS SA item_unique_identifiers
+		if($identifier != 0 || $identifier != "")
+		{
+			$identifiers_insertion_query="insert into item_unique_identifiers (item_movement_items_id,identifier,available) values 
+				('$item_movement_items_id','$identifier','1')";
+			if($this->_custom_query($identifiers_insertion_query)){
+				$checker *= 1;
+			}else{
+				$checker *= 0;
+			};
+		}
+
+		$item_movement_items_id++;
+	}
+
+	if($checker == 1){
+
+		$query="update item_movements set is_accepted=1,status='Approved' where id in ('$inbound_id', '$outbound_id')";
+		if($this->_custom_query($query)){
+			$response = array(
+				'success' => true,
+				'message' => 'Successfully transferred items.'
+			);
+		}else{
+			$response = array(
+				'success' => false,
+				'message' => 'Something went wrong.'.$query
+			);
+		}
+	}else{
+		$response = array(
+			'success' => false,
+			'message' => 'Something went wrong. Please contact your administrator.'
+		);
+
+	}
+
+	return $response;
+
+}
+
+
+function get_stock_movement_items_custom($movement_id){
+
+	$query="select a.*, b.item_name, b.item_code,b.item_unit,
+			b.item_image, c.unit, 
+			(select identifier from item_unique_identifiers where item_movement_items_id = a.id )
+			as unique_id from item_movement_items as a
+			left join items as b on a.item_id = b.id
+			left join item_units as c on b.item_unit = c.id
+			where a.item_movement_id = '$movement_id'";
+	return $this->_custom_query($query);
+}
+
 
 }
