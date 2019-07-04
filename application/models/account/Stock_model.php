@@ -215,7 +215,7 @@ function get_store_items()
 		order by a.id limit 1000 ";*/
 
 		$query = "
-			select a.id as item_movement_id, a.price,a.selling_price,a.quantity, a.stock, b.item_code, b.item_name,b.has_unique_identifier, d.id as store_item_id, d.threshold_min, d.threshold_max, b.item_code,b.bar_code,b.item_name,b.generic_name,b.item_description,b.item_image, e.category_string, f.unit, g.branch_name from item_movement_items as a left join items as b on a.item_id = b.id left join item_movements as c on a.item_movement_id = c.id left join store_items as d on b.id = d.item_id left join item_categories as e on b.item_category = e.id left join item_units as f on b.item_unit = f.id left join branches as g on d.branch_id = g.id where c.branch_id = '$branch_id' and c.type = 'Inbound' and a.stock > 0
+			select a.id as item_movement_item_id, a.price,a.selling_price,a.quantity, a.stock, b.item_code, b.item_name,b.has_unique_identifier, d.id as store_item_id, d.threshold_min, d.threshold_max, b.item_code,b.bar_code,b.item_name,b.generic_name,b.item_description,b.item_image, e.category_string, f.unit, g.branch_name from item_movement_items as a left join items as b on a.item_id = b.id left join item_movements as c on a.item_movement_id = c.id left join store_items as d on b.id = d.item_id left join item_categories as e on b.item_category = e.id left join item_units as f on b.item_unit = f.id left join branches as g on d.branch_id = g.id where c.branch_id = '$branch_id' and c.type = 'Inbound' and a.stock > 0
 
 			and
 

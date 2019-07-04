@@ -74,25 +74,37 @@ function add_movement()
 
 		$query = "insert into item_movements (id,branch_id,code,type,date,internal_notes,facilitator,
 		encoder,status,from_outbound) values 
-		('$id','$branch_id','$code1','$type','$date','$internal_notes','$facilitator','$encoder','$status','0')";
+		('$id','$branch_id','$code','$type','$date','$internal_notes','$facilitator','$encoder','$status','0')";
 
 	}
 	else
-	{
-		$query = "insert into item_movements (id,branch_id,code,type,date,internal_notes,facilitator,
-		encoder,status,from_outbound) values 
-		('$id','$branch_id','$code1','$type','$date','$internal_notes','$facilitator','$encoder','$status','0')";
-		$this->db->query($query);
+	{	
+		if($type === "Outbound"){
 
-		//ADD INBOUND
-		$type = 'Inbound';
-		$id2 = $id+1;
-		$internal_notes = 'Created from '.$code;
-		$code2 = 'INBD-'.$code;
+			$query = "insert into item_movements (id,branch_id,code,type,date,internal_notes,facilitator,
+			encoder,status,from_outbound) values 
+			('$id','$branch_id','$code1','$type','$date','$internal_notes','$facilitator','$encoder','$status','0')";
+			$this->db->query($query);
 
-		$query = "insert into item_movements (id,branch_id,code,type,date,internal_notes,facilitator,
-		encoder,status,from_outbound, outbound_id) values 
-		('$id2','$branch_id2','$code2','$type','$date','$internal_notes','$facilitator','$encoder','$status','1','$id')";
+			//ADD INBOUND
+			$type = 'Inbound';
+			$id2 = $id+1;
+			$internal_notes = 'Created from '.$code;
+			$code2 = 'INBD-'.$code;
+
+			$query = "insert into item_movements (id,branch_id,code,type,date,internal_notes,facilitator,
+			encoder,status,from_outbound, outbound_id) values 
+			('$id2','$branch_id2','$code2','$type','$date','$internal_notes','$facilitator','$encoder','$status','1','$id')";
+
+		}else{
+			{
+
+				$query = "insert into item_movements (id,branch_id,code,type,date,internal_notes,facilitator,
+				encoder,status,from_outbound) values 
+				('$id','$branch_id','$code','$type','$date','$internal_notes','$facilitator','$encoder','$status','0')";
+
+			}
+		}
 	}
 
 	

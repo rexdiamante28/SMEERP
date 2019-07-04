@@ -66,6 +66,7 @@ $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 	'username' => 'root',
+	// 'password' => '',
 	'password' => 'Test123',
 	'database' => 'von_test',
 	'dbdriver' => 'mysqli',

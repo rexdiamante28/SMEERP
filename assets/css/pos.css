@@ -83,31 +83,32 @@
 }
 
 .store_items{
-  float: left;
+/*  float: left;
   margin-right: 15px;
   width: 150px;
-  height: 150px;
+  height: 150px;*/
+  color:blue;
   cursor: pointer;
-  max-width: 150px;
+/*  max-width: 150px;
   overflow-y: hidden;
   overflow-x: hidden;
   position: relative;
   box-shadow: 1px 1px 1px gray;
-  margin-top:20px;
+  margin-top:20px;*/
 }
 
 .store_items .details{
-  position: absolute;
+/*  position: absolute;
   bottom: 0;
   left: 0px;
   height: 50px;
   background-color: rgba(240,238,238,.95);
   width: 100%;
-  padding: 5px;
+  padding: 5px;*/
 }
 
 .store_items .details p{
-  line-height: 90%;
+  /*line-height: 90%;*/
 }
 
 #order_listing{
