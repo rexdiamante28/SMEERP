@@ -914,7 +914,7 @@ function import_item_out_to_inbound(){
 function get_stock_movement_items_custom($movement_id){
 
 	$query="select a.*, b.item_name, b.item_code,b.item_unit,
-			b.item_image, c.unit, 
+			b.item_image, c.unit
 			from item_movement_items as a
 			left join items as b on a.item_id = b.id
 			left join item_units as c on b.item_unit = c.id
