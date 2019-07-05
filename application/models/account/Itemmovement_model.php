@@ -838,6 +838,7 @@ function import_item_out_to_inbound(){
 		$stock =  $item['stock'];
 		$remarks =  $item['remarks'];
 		$identifier = $item['unique_id'];
+		$item_imid = $item['id'];
 
 		$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
 			values ('$item_movement_items_id','$item_movement_id','$item_id','$price','$selling_price','$quantity','$stock','$remarks')";
@@ -867,16 +868,17 @@ function import_item_out_to_inbound(){
 		
 		}
 
+		$identifiers = $this->get_unique_identifiers($item_imid)->result_array();
+
 		//TAPOS NA SA STORE_ITEMS NEXT IS SA item_unique_identifiers
-		if($identifier != 0 || $identifier != "")
+		if(!empty($identifiers))
 		{
-			$identifiers_insertion_query="insert into item_unique_identifiers (item_movement_items_id,identifier,available) values 
-				('$item_movement_items_id','$identifier','1')";
-			if($this->_custom_query($identifiers_insertion_query)){
-				$checker *= 1;
-			}else{
-				$checker *= 0;
-			};
+			foreach ($identifiers as $value) {
+				$identifier = $value['identifier'];
+				$identifiers_insertion_query ="insert into item_unique_identifiers (item_movement_items_id,identifier,available) values 
+					('$item_movement_items_id','$identifier','1')";
+				$this->db->query($identifiers_insertion_query);
+			}
 		}
 
 		$item_movement_items_id++;
@@ -913,11 +915,16 @@ function get_stock_movement_items_custom($movement_id){
 
 	$query="select a.*, b.item_name, b.item_code,b.item_unit,
 			b.item_image, c.unit, 
-			(select identifier from item_unique_identifiers where item_movement_items_id = a.id and available='4')
-			as unique_id from item_movement_items as a
+			from item_movement_items as a
 			left join items as b on a.item_id = b.id
 			left join item_units as c on b.item_unit = c.id
 			where a.item_movement_id = '$movement_id'";
+	return $this->_custom_query($query);
+}
+
+function get_unique_identifiers($item_movement_items_id){
+
+	$query="select identifier from item_unique_identifiers where item_movement_items_id = '$item_movement_items_id'";
 	return $this->_custom_query($query);
 }
 
