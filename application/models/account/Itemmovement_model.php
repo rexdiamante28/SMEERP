@@ -837,7 +837,6 @@ function import_item_out_to_inbound(){
 		$quantity =  $item['quantity'];
 		$stock =  $item['stock'];
 		$remarks =  $item['remarks'];
-		$identifier = $item['unique_id'];
 		$item_imid = $item['id'];
 
 		$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
