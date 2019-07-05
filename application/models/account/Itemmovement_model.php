@@ -913,7 +913,7 @@ function get_stock_movement_items_custom($movement_id){
 
 	$query="select a.*, b.item_name, b.item_code,b.item_unit,
 			b.item_image, c.unit, 
-			(select identifier from item_unique_identifiers where item_movement_items_id = a.id )
+			(select identifier from item_unique_identifiers where item_movement_items_id = a.id and available='4')
 			as unique_id from item_movement_items as a
 			left join items as b on a.item_id = b.id
 			left join item_units as c on b.item_unit = c.id
