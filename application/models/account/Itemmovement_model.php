@@ -267,20 +267,20 @@ function get_items()
 		$query="select a.id as item_id, a.item_code, a.item_name,
 		a.item_image, a.price, a.status, b.id as item_units_id,
 		b.unit, c.id as category_id, c.category_string
-		from items as a left join item_units as b on 
-		a.item_unit = b.id left join item_categories as c
-		on a.item_category = c.id
+		from items as a 
+		left join item_units as b on a.item_unit = b.id 
+		left join item_categories as c on a.item_category = c.id
 		order by a.id limit $limit";
 	}
-		else
+	else
 	{
 		$query="select a.id as item_id, a.item_code, a.item_name,
 		a.item_image, a.price, a.status, b.id as item_units_id,
 		b.unit, c.id as category_id, c.category_string
-		from items as a left join item_units as b on 
-		a.item_unit = b.id left join item_categories as c
-		on a.item_category = c.id where
-		a.item_code like '%$search%' or a.item_name like '%$search%'
+		from items as a 
+		left join item_units as b on a.item_unit = b.id 
+		left join item_categories as c on a.item_category = c.id 
+		where a.item_code like '%$search%' or a.item_name like '%$search%'
 		or b.unit like '%$search%' or c.category_string like '%$search%'
 		order by a.id limit $limit";
 	}

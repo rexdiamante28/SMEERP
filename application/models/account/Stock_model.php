@@ -14,29 +14,53 @@ function get_items()
 	if($search==='')
 	{
 
-		$query="select a.id as store_item_id, a.stock,a.threshold_min, a.threshold_max,
+		$query="select a.id as store_item_id, a.stock,a.threshold_min, a.threshold_max,b.has_unique_identifier,
 		b.item_code,b.bar_code,b.price,b.item_name,b.generic_name,b.item_description,b.item_image,
-		c.category_string, d.unit, e.branch_name from store_items as a left join items as b on a.item_id = b.id
-		left join item_categories as c on b.item_category = c.id left join item_units as d
-		on b.item_unit = d.id left join branches as e on a.branch_id = e.id where e.id in (".$this->session->branches.")
-		order by a.id limit $limit ";
+		c.category_string, d.unit, e.branch_name,
+		(select sum(stock) from item_movement_items where item_movement_id in (select id from item_movements where branch_id = e.id and type = 'Inbound') and item_id = b.id) as stock_count
+		from store_items as a 
+		left join items as b on a.item_id = b.id
+		left join item_categories as c on b.item_category = c.id 
+		left join item_units as d on b.item_unit = d.id 
+		left join branches as e on a.branch_id = e.id 
+		where e.id in (".$this->session->branches.") order by e.branch_name limit $limit ";
 	}
 		else
 	{
-		$query="select a.id as store_item_id, a.stock,a.threshold_min, a.threshold_max,
+		$query="select a.id as store_item_id, a.stock,a.threshold_min, a.threshold_max, b.has_unique_identifier,
 		b.item_code,b.bar_code,b.price,b.item_name,b.generic_name,b.item_description,b.item_image,
-		c.category_string, d.unit, e.branch_name from store_items as a left join items as b on a.item_id = b.id
-		left join item_categories as c on b.item_category = c.id left join item_units as d
-		on b.item_unit = d.id left join branches as e on a.branch_id = e.id 
+		c.category_string, d.unit, e.branch_name,
+		(select sum(stock) from item_movement_items where item_movement_id in (select id from item_movements where branch_id = e.id and type = 'Inbound') and item_id = b.id) as stock_count 
+		from store_items as a 
+		left join items as b on a.item_id = b.id
+		left join item_categories as c on b.item_category = c.id 
+		left join item_units as d on b.item_unit = d.id 
+		left join branches as e on a.branch_id = e.id 
 		where (b.item_code like '%$search%' or b.price like '%$search%' or b.item_name like '%$search%' or
 		b.generic_name like '%$search%' or b.item_description like '%$search%' or c.category_string like '%$search%'
 		or d.unit like '%$search%' or e.branch_name like '%$search%') and e.id in (".$this->session->branches.")
-		order by a.id limit $limit ";
+		order by e.branch_name limit $limit ";
 	}
 
 
 	return $this->_custom_query($query);
 }
+
+function get_item($id)
+{
+	$query = "select a.id as store_item_id, a.stock,a.threshold_min, a.threshold_max, b.has_unique_identifier,
+	b.item_code,b.bar_code,b.price,b.item_name,b.generic_name,b.item_description,b.item_image,
+	c.category_string, d.unit, e.branch_name, 
+	(select sum(stock) from item_movement_items where item_movement_id in (select id from item_movements where branch_id = e.id and type = 'Inbound') and item_id = b.id) as stock_count 
+	from store_items as a 
+	left join items as b on a.item_id = b.id
+	left join item_categories as c on b.item_category = c.id 
+	left join item_units as d on b.item_unit = d.id 
+	left join branches as e on a.branch_id = e.id
+	where a.id = '$id'";
+	return $this->_custom_query($query);
+}
+
 
 
 function get_all_stocks($branch_id)
@@ -139,19 +163,7 @@ function update_item()
 }
 
 
-function get_item($id)
-{
-	$query="select a.id as store_item_id, a.stock,a.threshold_min, a.threshold_max, b.has_unique_identifier,
-	b.item_code,b.bar_code,b.price,b.item_name,b.generic_name,b.item_description,b.item_image,
-	c.category_string, d.unit, e.branch_name, 
 
-	(select sum(stock) from item_movement_items where item_movement_id in (select id from item_movements where branch_id = e.id and type = 'Inbound') and item_id = b.id) as stock_count
-
-	 from store_items as a left join items as b on a.item_id = b.id
-	left join item_categories as c on b.item_category = c.id left join item_units as d
-	on b.item_unit = d.id left join branches as e on a.branch_id = e.id where a.id = '$id'";
-	return $this->_custom_query($query);
-}
 
 function remove_order($id)
 {
@@ -381,7 +393,9 @@ function add_order($unique = false)
 {
 	$user_id = $this->session->user_id;
 	$terminal_id = $this->session->terminal_id;
+	
 	$unique_id = "";
+	
 	if($unique==false)
 	{
 		$item_movement_item_id = $this->input->post('item_movement_item_id');
@@ -405,23 +419,39 @@ function add_order($unique = false)
 			die();
 		}
 
-		$query="select * from item_unique_identifiers where identifier = '$unique_id' and available = '1' ";
-		$result = $this->db->query($query);
+		$branch_id = $this->get_branch_id($terminal_id)->row()->id;
+		$is_uid_available = $this->is_identifier_available($unique_id,$branch_id);
+		// $query="select * from item_unique_identifiers where identifier = '$unique_id' and available = '1'";
+		// $result = $this->db->query($query);
 
-		if($result->num_rows()<1)
-		{
+		// if($result->num_rows()<1)
+		// {
+		// 	$response['success'] = false;
+		// 	$response['message'] = "Invalid UID";
+
+		// 	return $response;
+
+		// 	die();
+		// }
+		// else
+		// {
+		// 	$row = $result->row_array();
+		// 	$item_movement_item_id = $row['item_movement_items_id'];
+		// }
+
+		if($is_uid_available ==1){
+			$query="select * from item_unique_identifiers where identifier = '$unique_id' and available = '1'";
+			$result = $this->db->query($query);
+			$row = $result->row_array();
+			$item_movement_item_id = $row['item_movement_items_id'];
+		}else{
 			$response['success'] = false;
 			$response['message'] = "Invalid UID";
 
 			return $response;
+		}
+		
 
-			die();
-		}
-		else
-		{
-			$row = $result->row_array();
-			$item_movement_item_id = $row['item_movement_items_id'];
-		}
 	}
 	$discount = $this->input->post('discount');
 
@@ -547,6 +577,48 @@ function add_order($unique = false)
 	}
 
 }
+
+//NEW FUNCTION TO RESTRICT PUNCHING WHEN NOT IN TERMINAL
+
+function get_unique_ids($id){
+
+	$query = "	SELECT identifier,available FROM item_unique_identifiers 
+				WHERE item_movement_items_id in 
+				(select id from item_movement_items where item_movement_id in 
+					(select id from item_movements where branch_id = 
+						(select branch_id from store_items where id='$id') and type ='Inbound') 
+					and item_id = (select item_id from store_items where id='$id')) 
+				ORDER by available ASC";
+						   
+	return $this->_custom_query($query);
+}
+
+function get_branch_id($terminal_id){
+	
+	$sql = "SELECT b.id FROM terminals a
+			LEFT JOIN branches b ON a.branch_id = b.id
+			WHERE a.id = '$terminal_id'";
+
+	return $this->db->query($sql);
+}
+
+function is_identifier_available($uid,$branch_id){
+
+	$query = "SELECT available FROM item_unique_identifiers 
+				WHERE item_movement_items_id in 
+				(select id from item_movement_items where item_movement_id in 
+					(select id from item_movements where branch_id = '$branch_id' and type ='Inbound')
+				)
+				AND identifier = '$uid'";
+	$result= $this->db->query($query);	
+	
+	if($result->num_rows() > 0){
+		$result= $this->db->query($query)->row()->available;
+		return $result;
+	}else{ $result = 0;}
+
+}
+
 
 }
 

@@ -24,8 +24,9 @@ class Stocks extends CI_Controller {
 			$tempdata['action'] = 'stocks/add_item';
 			$tempdata['form'] = $this->load->view('account/stocks/add_item','',TRUE);
 			$form1 = $this->load->view('common/modal_form',$tempdata,TRUE);
+			$form2 = $this->load->view('account/stocks/identifiers_modal',$tempdata,TRUE);
 
-			$data['forms'] = array($form1);
+			$data['forms'] = array($form1, $form2);
 
 			// additional styles
 
@@ -74,7 +75,6 @@ class Stocks extends CI_Controller {
 			$this->load->model('account/stock_model');
 
 			$item = $this->stock_model->get_item($id)->row_array();
-
 			$item['has_unique_identifier'] = $item['has_unique_identifier'] == '1' ? 'YES' : 'NO';
 
 			echo json_encode($item);
@@ -136,6 +136,19 @@ class Stocks extends CI_Controller {
         {
             echo json_encode(array('upload_data' => $this->upload->data()));
         }
+	}
+
+	//UPDATE 7-7-2019
+	public function get_uniqueids($id)
+	{
+		if($this->loginstate->login_state_check())
+		{	
+			
+			$this->load->model('account/stock_model');
+			$data['uids'] = $this->stock_model->get_unique_ids($id)->result_array();
+			$data['table_content'] = $this->load->view('account/stocks/identifiers_content',$data,TRUE);
+			echo $data['table_content'];
+		}
 	}
 
 

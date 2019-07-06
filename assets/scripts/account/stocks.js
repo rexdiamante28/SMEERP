@@ -1,6 +1,7 @@
 $('document').ready(function(){
 	get_loading_content();
 	get_items();
+
 });
 
 
@@ -19,6 +20,7 @@ function get_items()
 		data : data,
 		success : function(response){		
 			$('#x_content').html(response);
+			$('#add_record_trigger').css("display", "none");
 			set_handler();
 		}
 	});
@@ -57,8 +59,6 @@ function set_handler()
 
 				var result = JSON.parse(response);
 				//fill up the modal form
-				console.log(result);
-
 				$('#id').val(result.store_item_id);
 				$('#t_branch').html(result.branch_name);
 				$('#t_category').html(result.category_string);
@@ -67,7 +67,7 @@ function set_handler()
 				$('#t_item_price').html(parseFloat(result.price).toFixed(2));
 				$('#t_item_description').html(result.item_description);
 				$('#t_item_code').html(result.item_code);
-				$('#t_item_stock').html(parseFloat(result.stock_count).toFixed(2));
+				$('#t_item_stock').html(parseFloat(result.stock_count));
 				$('#threshold_min').val(result.threshold_min);
 				$('#threshold_max').val(result.threshold_max);
 				$('#t_bar_code').html(result.bar_code);
@@ -76,8 +76,6 @@ function set_handler()
 				var url =  imgurl;
 				url = url.replace('default.png',result.item_image);
 				$('#t_item_image').attr('src', url);
-
-				console.log(url);
 			}
 		});
 
@@ -115,6 +113,29 @@ function set_handler()
 			}
 		);
 	});
+
+	//UPDATE 7-7-2019
+
+	$(".unique-ids").click(function(e){
+
+		$('#error_message').addClass("hidden");
+
+		showCover("Fetching record...");
+
+		$.ajax({				
+			type : 'GET',
+			url  : 'get_uniqueids/'+event.currentTarget.id,
+			data : '',
+			success : function(response){
+				hideCover();
+				console.log(response)
+				$('#details_modal_identifier').modal();
+				$("#identifier-div").html(response);
+
+			}
+		});
+
+	})
 }
 
 
@@ -254,9 +275,9 @@ $(document).ready(function(){
 	imgurl = $('#img_preview').val();
 })
 
-$('#add_record_trigger').click(function(){
-	$('#uploadbutton').addClass("hidden");
-	$('#upload_image_form')[0].reset();
-	$('#img_preview').attr('src', imgurl);
-	$('#upload-loading').addClass('hidden');
-});
+// $('#add_record_trigger').click(function(){
+// 	$('#uploadbutton').addClass("hidden");
+// 	$('#upload_image_form')[0].reset();
+// 	$('#img_preview').attr('src', imgurl);
+// 	$('#upload-loading').addClass('hidden');
+// });
