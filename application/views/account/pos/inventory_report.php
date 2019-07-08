@@ -41,7 +41,9 @@
                             <ol>
                                 <?php if(!empty($uids)): ?>
                                 <?php foreach ($uids->result_array() as $uid): ?>
-                                    <li><strong><?=$uid['identifier']?> - <?=$uid['available'] == 1 ? '<span style="color: green"><i>Available</i></span>' : '<span style="color: red"><i>Sold/Transferred</i></span>' ?></strong></li>
+                                    <?php if($uid['available'] == 1): ?>
+                                    <li><strong><?=$uid['identifier']?> - <span style="color: green"><i>Available</i></span></strong></li>
+                                    <?php endif; ?>
                                 <?php endforeach;?>
                                 <?php endif; ?>
                             </ol>

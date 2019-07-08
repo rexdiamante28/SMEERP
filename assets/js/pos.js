@@ -33,11 +33,13 @@ function set_handler()
 	$('.store_items').click(function(event){
 
 		
-
-		//unique_order_modal
-
 		if($('#'+event.currentTarget.id).data('unique')=='1')
 		{
+			//unique_order_modal
+			$('#unique_order_form')[0].reset();
+			$('#unique_error_message').addClass('hidden');
+			var store_item_id = $('#'+event.currentTarget.id).data('storeitemid');
+			$("#store_item_id").val(store_item_id);
 			$('#unique_order_modal').modal();
 		}
 		else
@@ -78,7 +80,6 @@ function set_handler2()
 
 $('#search_form').submit(function(event){
 	event.preventDefault();
-
 	get_store_items();
 })
 
@@ -99,30 +100,31 @@ function get_temp_orders(){
 }
 
 $('#add_record_form').submit(function(event){
-			event.preventDefault();
+	event.preventDefault();
 
-			var form = $(this);
+	var form = $(this);
 
-			$.ajax({				
-				url: form.attr('action'),
-	    	    type: form.attr('method'),
-				data: form.serialize(),
-				success : function(response){
-					var result = JSON.parse(response);
-					console.log(response);
-					if(result.success===true)
-					{
-						get_temp_orders();
-						$('#add_record_modal').modal('hide');
-					}
-					else
-					{
-						$('#error_message').removeClass('hidden');
-						$('#error_message').html(result.message);
-					}
-					
-				}
-			});
+	$.ajax({				
+		url: form.attr('action'),
+	    type: form.attr('method'),
+		data: form.serialize(),
+		success : function(response){
+			var result = JSON.parse(response);
+			console.log(response);
+			if(result.success===true)
+			{
+				get_temp_orders();
+				$('#add_record_form')[0].reset();
+				$('#add_record_modal').modal('hide');
+			}
+			else
+			{
+				$('#error_message').removeClass('hidden');
+				$('#error_message').html(result.message);
+			}
+			
+		}
+	});
 })
 
 

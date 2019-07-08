@@ -33,22 +33,30 @@ function get_items()
 
 function set_handler2(){
 
-	$('.add_to_item_tigger').click(function(e){
+	$('.add_to_item_trigger').click(function(e){
+
+		if($('#add_item_in_movement_details_form #movement_type').val() === "Outbound"){
+			$('#add_item_in_movement_details_form #buying_price-div').css("display", "none");
+			$('#add_item_in_movement_details_form #selling_price-div').css("display", "none");
+		}else{
+			$('#add_item_in_movement_details_form #buying_price-div').css("display", "block");
+			$('#add_item_in_movement_details_form #selling_price-div').css("display", "block");
+		}
+		
 		var item_id = event.currentTarget.id;
 		$('#add_item_in_movement_details_form #item_id').val(event.currentTarget.id);
 		$('#add_item_in_movement_details_modal').modal();
 		$('#add_item_in_movement_details_form #error_message').addClass('hidden');
+
 	});
 
 }
 
 
 $('#items_search_form').submit(function(event){
-		event.preventDefault();
-
-		$('#item_movements_item_list').html(loading_content);
-
-		get_items();
+	event.preventDefault();
+	$('#item_movements_item_list').html(loading_content);
+	get_items();
 
 });
 
@@ -62,9 +70,7 @@ $('#items_record_per_page').change(function(){
 $('#add_item_in_movement_details_form').submit(function(event)
 {
 		event.preventDefault();
-
         $('#add_item_in_movement_details_form #form-loading').removeClass("hidden");
-
         add_item_in_movement($(this));
 
 });
@@ -80,8 +86,7 @@ function add_item_in_movement(form)
         }).done(function(response) {
 
             $('#add_item_in_movement_details_form #form-loading').addClass("hidden");
-
-
+            
             var response = JSON.parse(response);
             console.log(response);
 

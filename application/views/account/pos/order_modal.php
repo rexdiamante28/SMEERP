@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button name="submit" type="submit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-floppy-save"></span> Add Order</button>
+        <button name="submit" type="submit" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-floppy-save"></span> Add Order</button>
         <button type="button" class="btn btn-default btn-sm" id="close_modal" data-dismiss="modal">Close</button>
       </div>
       </form>

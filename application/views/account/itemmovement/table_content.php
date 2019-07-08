@@ -22,29 +22,29 @@
 		<?php if($value['from_outbound'] == 1): ?>
 			<?php if($value['is_accepted'] == 1): ?>
 				<td>
-					<button id="<?= $value['id']?>" class="details-acc btn btn-xs btn-default"><i class="fa fa-eye"></i></button>
-					<button id="<?= $value['id']?>" class="disabled btn btn-xs btn-default"><i class="fa fa-remove"></i></button>
-					<button id="<?= $value['id']?>" class="disabled btn btn-xs btn-default"><i class="fa fa-pencil"></i></button>
+					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" class="details-acc btn btn-xs btn-default"><i class="fa fa-eye"></i></button>
+					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" class="disabled btn btn-xs btn-default"><i class="fa fa-remove"></i></button>
+					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" class="disabled btn btn-xs btn-default"><i class="fa fa-pencil"></i></button>
 				</td>
 			<?php else: ?>
 				<td>
-					<button id="<?= $value['id']?>" class="details-inb btn btn-xs btn-default"><i class="fa fa-eye"></i></button>
-					<button id="<?= $value['id']?>" class="disabled btn btn-xs btn-default"><i class="fa fa-remove"></i></button>
-					<button id="<?= $value['id']?>" class="disabled btn btn-xs btn-default"><i class="fa fa-pencil"></i></button>
+					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" class="details-inb btn btn-xs btn-default"><i class="fa fa-eye"></i></button>
+					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" class="disabled btn btn-xs btn-default"><i class="fa fa-remove"></i></button>
+					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" class="disabled btn btn-xs btn-default"><i class="fa fa-pencil"></i></button>
 				</td>
 			<?php endif; ?>
 		<?php else: ?>
 			<?php if($value['is_accepted'] == 1): ?>
 				<td>
-					<button id="<?= $value['id']?>" class="details-acc btn btn-xs btn-default"><i class="fa fa-eye"></i></button>
-					<button id="<?= $value['id']?>" class="disabled btn btn-xs btn-default"><i class="fa fa-remove"></i></button>
-					<button id="<?= $value['id']?>" class="disabled btn btn-xs btn-default"><i class="fa fa-pencil"></i></button>
+					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" class="details-acc btn btn-xs btn-default"><i class="fa fa-eye"></i></button>
+					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" class="disabled btn btn-xs btn-default"><i class="fa fa-remove"></i></button>
+					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" class="disabled btn btn-xs btn-default"><i class="fa fa-pencil"></i></button>
 				</td>
 			<?php else: ?>
 				<td>
-					<button id="<?= $value['id']?>" class="details btn btn-xs btn-default"><i class="fa fa-eye"></i></button>
-					<button id="<?= $value['id']?>" class="remove btn btn-xs btn-default"><i class="fa fa-remove"></i></button>
-					<button id="<?= $value['id']?>" class="update btn btn-xs btn-default"><i class="fa fa-pencil"></i></button>
+					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" class="details btn btn-xs btn-default"><i class="fa fa-eye"></i></button>
+					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" class="remove btn btn-xs btn-default"><i class="fa fa-remove"></i></button>
+					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" class="update btn btn-xs btn-default"><i class="fa fa-pencil"></i></button>
 				</td>
 			<?php endif; ?>
 		<?php endif; ?>

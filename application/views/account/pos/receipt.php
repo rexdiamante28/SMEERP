@@ -1,6 +1,6 @@
 <div id="receipt_body">
     <div id="receipt_header" class="text-center" style="border-bottom:dotted 1px #F0EEEE;">
-        <label class="bold">Von Micheal's Auto Parts Shop</label><br/>
+        <label class="bold">JSL Gadgets</label><br/>
         <small><?= $transaction['branch_name'];?></small>
     </div>
     <div class="top-10 bottom-10" style="border-bottom:dotted 1px #F0EEEE;">

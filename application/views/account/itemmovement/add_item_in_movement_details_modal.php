@@ -31,6 +31,7 @@
               <div class="col-lg-8 col-md-8">
                 <div id="subject_combo">
                   <input type="text" class="form-control " readonly name="movement_id" id="movement_id" >
+                  <input type="text" class="form-control " readonly name="movement_type" id="movement_type" >
                 </div>
               </div>
             </div>
@@ -59,7 +60,7 @@
             </div>
 
 
-            <div class="col-lg-12 col-md-12 " style="margin-bottom: 15px;">
+            <div class="col-lg-12 col-md-12 " style="margin-bottom: 15px;" id="buying_price-div">
               <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
                 <label for="subject_code">Price :</label>
               </div>
@@ -72,7 +73,7 @@
             </div>
 
 
-            <div class="col-lg-12 col-md-12 " style="margin-bottom: 15px;">
+            <div class="col-lg-12 col-md-12 " style="margin-bottom: 15px;" id="selling_price-div">
               <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
                 <label for="subject_code">Selling Price :</label>
               </div>

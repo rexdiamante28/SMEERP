@@ -48,6 +48,6 @@
 
 <div class="top-10 padd-10">
     <label>Total</label> <label class="pull-right" id="left_pane_total">P <?= number_format($subtotal,2); ?></label><br/>
-    <small>Total Taxes</small> <small class="pull-right" id="left_pane_tax">P <?= number_format($total_tax,2); ?></small><br/>
+    <small style="display:none">Total Taxes</small> <small class="pull-right" id="left_pane_tax" style="display:none">P <?= number_format($total_tax,2); ?></small><br/>
     <small>Total Discounts</small> <small class="pull-right" id="left_pane_discount">P <?= number_format($total_discount,2); ?></small>
 </div>

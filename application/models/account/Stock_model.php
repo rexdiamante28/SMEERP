@@ -405,6 +405,7 @@ function add_order($unique = false)
 	{
 		$quantity = 1;
 		$unique_id = $this->input->post('unique_id');
+		$store_item_id = $this->input->post('store_item_id');
 
 		$query="select * from temp_orders where unique_id = '$unique_id' ";
 		$result = $this->db->query($query);
@@ -421,29 +422,20 @@ function add_order($unique = false)
 
 		$branch_id = $this->get_branch_id($terminal_id)->row()->id;
 		$is_uid_available = $this->is_identifier_available($unique_id,$branch_id);
-		// $query="select * from item_unique_identifiers where identifier = '$unique_id' and available = '1'";
-		// $result = $this->db->query($query);
-
-		// if($result->num_rows()<1)
-		// {
-		// 	$response['success'] = false;
-		// 	$response['message'] = "Invalid UID";
-
-		// 	return $response;
-
-		// 	die();
-		// }
-		// else
-		// {
-		// 	$row = $result->row_array();
-		// 	$item_movement_item_id = $row['item_movement_items_id'];
-		// }
 
 		if($is_uid_available ==1){
-			$query="select * from item_unique_identifiers where identifier = '$unique_id' and available = '1'";
-			$result = $this->db->query($query);
-			$row = $result->row_array();
-			$item_movement_item_id = $row['item_movement_items_id'];
+
+			$check_uid = $this->check_unique_ids($store_item_id,$branch_id,$unique_id);
+			if($check_uid == 1){
+				$query="select * from item_unique_identifiers where identifier = '$unique_id' and available = '1'";
+				$result = $this->db->query($query);
+				$row = $result->row_array();
+				$item_movement_item_id = $row['item_movement_items_id'];
+			}else{
+				$response['success'] = false;
+				$response['message'] = "IMEI not compatible with the unit.";
+				return $response;
+			}
 		}else{
 			$response['success'] = false;
 			$response['message'] = "Invalid UID";
@@ -453,6 +445,7 @@ function add_order($unique = false)
 		
 
 	}
+
 	$discount = $this->input->post('discount');
 
 	if($discount==='')
@@ -694,6 +687,24 @@ function inventory_report_new($branch_id){
 	
 	return $this->_custom_query($query);
 
+}
+
+function check_unique_ids($id,$branch_id,$uid){
+
+	$query = "SELECT count(identifier) as totalcount FROM item_unique_identifiers 
+				WHERE item_movement_items_id in 
+				(select id from item_movement_items where item_movement_id in 
+					(select id from item_movements where branch_id = '$branch_id' and type ='Inbound') 
+					and item_id = (select item_id from store_items where id='$id'))
+				AND identifier = '$uid' AND available='1'
+				ORDER by available ASC";
+						   
+	$result = $this->db->query($query)->row();
+	if($result->totalcount == 1){
+		return 1;
+	}else{
+		return 0;
+	}
 }
 
 

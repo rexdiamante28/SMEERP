@@ -28,7 +28,6 @@ class Itemmovements extends CI_Controller {
 				$tempdata['action'] = 'itemmovements/add_record';
 				$tempdata['form'] = $this->load->view('account/itemmovement/add_item_movement','',TRUE);
 				$form1 = $this->load->view('common/modal_form',$tempdata,TRUE);
-
 				$form2 = $this->load->view('account/itemmovement/details_modal',$tempdata,TRUE);
 				$form2a = $this->load->view('account/itemmovement/details_modal_inb',$tempdata,TRUE);
 				$form2b = $this->load->view('account/itemmovement/details_modal_accepted',$tempdata,TRUE);
@@ -231,7 +230,6 @@ class Itemmovements extends CI_Controller {
 
 			// load the data to common views
 			$data['items'] = $this->itemmovement_model->get_items()->result_array();
-
 			$data['table_content'] = $this->load->view('account/itemmovement/thumbnail_content',$data,TRUE);
 			
 			// print view
@@ -246,7 +244,6 @@ class Itemmovements extends CI_Controller {
 
     	$this->load->library('form_validation');
     	$this->load->model('account/itemmovement_model');
-
 
     	$item_movement = $this->itemmovement_model->get_stock_movement($this->input->post('movement_id'))->row_array();
 

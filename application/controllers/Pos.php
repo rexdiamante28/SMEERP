@@ -125,6 +125,7 @@ class Pos extends CI_Controller {
 		if(null !== ($this->input->post('unique_id')))
         {
           	$this->form_validation->set_rules('unique_id', 'IMEI', 'trim|required|min_length[3]');
+          	$this->form_validation->set_rules('store_item_id', 'IMEI', 'trim|required');
           	$unique = true;
         }
         else

@@ -43,10 +43,7 @@ function set_handler()
 		$('#error_message').addClass("hidden");
 
 		showCover("Fetching record...");
-
 		var movement_id = event.currentTarget.id;
-
-
 
 		$.ajax({				
 			type : 'GET',
@@ -114,8 +111,9 @@ function set_handler()
 	$('.details').click(function(){
 
 		showCover("Fetching record...");
-
+		console.log(event);
 		$('#add_item_in_movement_details_form #movement_id').val(event.currentTarget.id);
+		$('#add_item_in_movement_details_form #movement_type').val(event.currentTarget.getAttribute('data-movement_type'));
 
 		$.ajax({				
 			type : 'GET',

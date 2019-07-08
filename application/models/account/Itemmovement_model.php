@@ -318,6 +318,7 @@ function add_item_in_movement()
 			//check if the item is already in the stocks. If yes, just update quantity. else insert item.
 			$query="select * from store_items where item_id = '$item_id' and branch_id = '".$item_movement->branch_id."'";
 			$store_item = $this->_custom_query($query);
+			
 			if($store_item->num_rows()===0)
 			{
 				$query="select max(id) as id from store_items";
@@ -420,7 +421,6 @@ function add_item_in_movement()
 				$store_item = $store_item->row();
 				$current_stock = floatval($store_item->stock_count);
 				$current_stock-=floatval($quantity);
-
 				
 				if($current_stock<0)
 				{
@@ -435,6 +435,10 @@ function add_item_in_movement()
 
 					if($item['has_unique_identifier']=='1')
 					{
+						$branch_id = $item_movement->branch_id;
+						$price = $this->get_prices_for_outbound($item_id,$branch_id)['price'];
+						$selling_price = $this->get_prices_for_outbound($item_id,$branch_id)['selling_price'];
+
 						$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
 						values ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','0','$remarks')";
 					}
@@ -927,5 +931,13 @@ function get_unique_identifiers($item_movement_items_id){
 	return $this->_custom_query($query);
 }
 
+function get_prices_for_outbound($item_id,$branch_id){
+
+	$query="select price,selling_price from item_movement_items 
+			where item_id = '$item_id'
+			and
+			item_movement_id in (select id from item_movements where branch_id='$branch_id' and type='Inbound') order by stock desc";
+	return $this->db->query($query)->row_array();
+}
 
 }
