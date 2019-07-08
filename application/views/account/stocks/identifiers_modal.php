@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"><strong>Identifiers</strong></h4>
+                <h4 class="modal-title"><strong>IMEI</strong></h4>
             </div>
             <div class="modal-body">
                 <div id="identifier-div">

@@ -21,7 +21,7 @@ class Stocks extends CI_Controller {
 			// load forms
 			$tempdata['id'] = 'add_record_modal';
 			$tempdata['title'] = 'Store Items';
-			$tempdata['action'] = 'stocks/add_item';
+			$tempdata['action'] = 'stocks/update_item_price';
 			$tempdata['form'] = $this->load->view('account/stocks/add_item','',TRUE);
 			$form1 = $this->load->view('common/modal_form',$tempdata,TRUE);
 			$form2 = $this->load->view('account/stocks/identifiers_modal',$tempdata,TRUE);
@@ -57,7 +57,6 @@ class Stocks extends CI_Controller {
 
 			// load the data to common views
 			$data['items'] = $this->stock_model->get_items()->result_array();
-
 			$data['table_content'] = $this->load->view('account/stocks/thumbnail_content',$data,TRUE);
 			
 			// print view
@@ -76,6 +75,7 @@ class Stocks extends CI_Controller {
 
 			$item = $this->stock_model->get_item($id)->row_array();
 			$item['has_unique_identifier'] = $item['has_unique_identifier'] == '1' ? 'YES' : 'NO';
+			$item['data'] = $this->stock_model->get_itemmovement_id_using_storeitemid($id);
 
 			echo json_encode($item);
 		}
@@ -114,8 +114,6 @@ class Stocks extends CI_Controller {
 	        echo json_encode($this->stock_model->update_item());
 	    }
 
-    	
-    	
 	}
 
 	public function upload_photo()
@@ -149,6 +147,29 @@ class Stocks extends CI_Controller {
 			$data['table_content'] = $this->load->view('account/stocks/identifiers_content',$data,TRUE);
 			echo $data['table_content'];
 		}
+	}
+
+	public function update_item_price()
+	{
+
+    	$this->load->library('form_validation');
+    	$this->load->model('account/stock_model');
+
+    	$this->form_validation->set_rules('selling-price', 'New Selling Price', 'trim|required|max_length[11]|numeric');
+
+    	if ($this->form_validation->run() === FALSE)
+	    {
+	        $response['success'] = false;
+	        $response['message'] = validation_errors();
+	        $response['environment'] = ENVIRONMENT;
+
+	        echo json_encode($response);
+	    }
+	    else
+	    {
+	        echo json_encode($this->stock_model->update_item_price());
+	    }
+
 	}
 
 

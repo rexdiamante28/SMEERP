@@ -58,13 +58,14 @@ function set_handler()
 				$('#add_record_modal').modal();
 
 				var result = JSON.parse(response);
+				console.log(response);
 				//fill up the modal form
 				$('#id').val(result.store_item_id);
 				$('#t_branch').html(result.branch_name);
 				$('#t_category').html(result.category_string);
 				$('#t_item_name').html(result.item_name);
 				$('#t_item_unit').html(result.unit);
-				$('#t_item_price').html(parseFloat(result.price).toFixed(2));
+				$('#t_item_price').html("Php " +parseFloat(result.data.selling_price).toFixed(2));
 				$('#t_item_description').html(result.item_description);
 				$('#t_item_code').html(result.item_code);
 				$('#t_item_stock').html(parseFloat(result.stock_count));

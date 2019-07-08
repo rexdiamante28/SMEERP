@@ -619,6 +619,83 @@ function is_identifier_available($uid,$branch_id){
 
 }
 
+function get_itemmovement_id_using_storeitemid($storeitemid){
+	
+	$query = "SELECT a.*, b.item_name FROM store_items a
+			LEFT JOIN items b on a.item_id = b.id
+			WHERE a.id = '$storeitemid'";
+	$result= $this->db->query($query)->row();
+	$branch_id = $result->branch_id;
+	$item_id = $result->item_id;
+	$itemname =  $result->item_name;
+	
+	$query = "SELECT id, item_movement_id, selling_price, price from item_movement_items where item_movement_id in 
+				(select id from item_movements where branch_id = '$branch_id' and type ='Inbound') 
+				AND item_id = '$item_id'";
+
+	$result= $this->db->query($query)->row();
+	$item_movement_id = $result->item_movement_id;
+	$selling_price = $result->selling_price;
+	$price = $result->price;
+
+	$data['item_id'] = $item_id ;
+	$data['item_movement_id'] = $item_movement_id ;
+	$data['selling_price'] = $selling_price ;
+	$data['itemname'] = $itemname;
+	$data['supplier_price'] = $price;
+
+	return $data;
+}
+
+function update_item_price()
+{
+	$id = $this->input->post('id');
+	$selling_price = $this->input->post('selling-price');
+	$data = $this->get_itemmovement_id_using_storeitemid($id);
+	// print_r($data);die();
+
+	$item_id = $data['item_id'];
+	$item_movement_id = $data['item_movement_id'];
+
+	$query="UPDATE item_movement_items SET selling_price = '$selling_price' 
+			WHERE item_movement_id = '$item_movement_id' 
+			AND item_id = '$item_id'";
+
+	$query1 = "select first_name, last_name from users where id = '".$this->session->user_id."'";
+	$me = $this->_custom_query($query1)->row();
+	
+	if($this->_custom_query($query))
+	{
+		$notification = $me->first_name." ".$me->last_name." changed ".$data['itemname']."\'s selling price.";
+
+		$this->notification_model->notify($notification,"Notification Inventory");
+		$this->notification_model->notify($notification,"Notification Users");
+
+		$response['success'] = true;
+	    $response['message'] = 'update successful';
+	    $response['environment'] = ENVIRONMENT;
+
+		return $response;
+	}
+}
+
+function inventory_report_new($branch_id){
+
+	$query="select a.id as store_item_id, a.stock,a.threshold_min, a.threshold_max, b.has_unique_identifier,
+		b.item_code,b.bar_code,b.price,b.item_name,b.generic_name,b.item_description,b.item_image,
+		c.category_string, d.unit, e.branch_name,
+		(select sum(stock) from item_movement_items where item_movement_id in (select id from item_movements where branch_id = e.id and type = 'Inbound') and item_id = b.id) as stock_count 
+		from store_items as a 
+		left join items as b on a.item_id = b.id
+		left join item_categories as c on b.item_category = c.id 
+		left join item_units as d on b.item_unit = d.id 
+		left join branches as e on a.branch_id = e.id 
+		where (e.id = '$branch_id)')";
+	
+	return $this->_custom_query($query);
+
+}
+
 
 }
 

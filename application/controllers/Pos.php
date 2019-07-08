@@ -299,7 +299,7 @@ class Pos extends CI_Controller {
 	
 	}
 
-	public function print_inventory_report($branch_id)
+	public function print_inventory_report_old($branch_id)
 	{
 		$this->load->model('account/stock_model');
 		$this->load->model('account/branch_model');
@@ -309,14 +309,25 @@ class Pos extends CI_Controller {
 		//$data['view_data'] = $this->load->view('web/login','',TRUE);
 
 		$data['branch'] = $this->branch_model->get_branch($branch_id)->row();
-
 		$data['items'] = $this->stock_model->get_all_stocks($branch_id)->result();
-
 		$data['view_data'] = $this->load->view('account/pos/inventory_report',$data,TRUE);
 		
 		$this->load->view('templates/blank_template',$data);
 
+	}	
+
+	public function print_inventory_report($branch_id)
+	{
+		$this->load->model('account/stock_model');
+		$this->load->model('account/branch_model');
 		
+		$data['title'] = "Inventory Report";
+
+		$data['branch'] = $this->branch_model->get_branch($branch_id)->row();
+		$data['items'] = $this->stock_model->inventory_report_new($branch_id)->result();
+		$data['view_data'] = $this->load->view('account/pos/inventory_report',$data,TRUE);
+		
+		$this->load->view('templates/blank_template',$data);
 
 	}
 

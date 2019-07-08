@@ -30,17 +30,21 @@
         <tr>
             <th>Branch Name</th>
             <th>Item Name</th>
-            <th style="text-align:center">Item Price</th>
+            <th style="text-align:center">Selling Price</th>
             <th style="text-align:center">Remaining Stocks</th>
             <th style="text-align:center">Available IMEI</th>
             <th style="text-align:center">View</th>
         </tr>  
 
 <?php foreach ($items as $value): ?>
+
+    <?php 
+        $data = $this->stock_model->get_itemmovement_id_using_storeitemid($value['store_item_id']);
+    ?>
     <tr>
         <td><?= $value['branch_name'] ?></td>
         <td><p><b><?= $value['item_name']?></b></p></td>
-        <td style="text-align:right"><p><strong>P <?= number_format($value['price'],2); ?></strong></p></td>
+        <td style="text-align:right"><p><strong>P <?= number_format($data['selling_price'],2); ?></strong></p></td>
         <td style="text-align:center"><?= $value['stock_count'] ?></i></a></td>
         <td style="text-align:center;cursor: pointer">
             <?php if($value['has_unique_identifier'] == 1): ?>
