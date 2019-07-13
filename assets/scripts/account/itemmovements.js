@@ -292,6 +292,7 @@ function get_facilitators(){
 					alertify.success(response.message);
 					$('#details_modal_inb').modal('toggle');
 					$('#details_modal_inb_accept').modal('toggle');
+					location.reload();
 				}
 				else
 				{

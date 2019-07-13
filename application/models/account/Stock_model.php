@@ -42,7 +42,6 @@ function get_items()
 		order by e.branch_name limit $limit ";
 	}
 
-
 	return $this->_custom_query($query);
 }
 
@@ -202,41 +201,36 @@ function get_store_items()
 
 	if($search==='')
 	{
-/*
-		$query="select a.id as store_item_id, a.stock,a.threshold_min, a.threshold_max,
-		b.item_code,b.bar_code,b.price,b.item_name,b.generic_name,b.item_description,b.item_image,
-		c.category_string, d.unit, e.branch_name from store_items as a left join items as b on a.item_id = b.id
-		left join item_categories as c on b.item_category = c.id left join item_units as d
-		on b.item_unit = d.id left join branches as e on a.branch_id = e.id
-		where a.branch_id = '$branch_id' order by a.id limit 1000 ";*/
 
-		$query = "
-			select a.id as item_movement_item_id, a.price,a.selling_price,a.quantity, a.stock, b.item_code, b.item_name, b.has_unique_identifier, d.id as store_item_id, d.threshold_min, d.threshold_max, b.item_code,b.bar_code,b.item_name,b.generic_name,b.item_description,b.item_image, e.category_string, f.unit, g.branch_name from item_movement_items as a left join items as b on a.item_id = b.id left join item_movements as c on a.item_movement_id = c.id left join store_items as d on b.id = d.item_id left join item_categories as e on b.item_category = e.id left join item_units as f on b.item_unit = f.id left join branches as g on d.branch_id = g.id where c.branch_id = '$branch_id' and c.type = 'Inbound' and a.stock > 0
-		";
+		$query = "SELECT a.id as item_movement_item_id, a.price,a.selling_price,a.quantity, a.stock, a.item_id as itemid, b.item_name, b.has_unique_identifier, d.id as store_item_id, d.threshold_min, d.threshold_max, b.item_code,b.bar_code,b.item_name,b.generic_name,b.item_description,b.item_image, e.category_string, f.unit, g.branch_name 
+			FROM item_movement_items as a 
+			LEFT JOIN items as b on a.item_id = b.id 
+			LEFT JOIN item_movements as c on a.item_movement_id = c.id 
+			LEFT JOIN store_items as d on b.id = d.item_id 
+			LEFT JOIN item_categories as e on b.item_category = e.id 
+			LEFT JOIN item_units as f on b.item_unit = f.id 
+			LEFT JOIN branches as g on d.branch_id = g.id 
+			WHERE c.branch_id = '$branch_id' and c.type = 'Inbound' and a.stock > 0
+			GROUP BY b.item_name,a.selling_price";
+
 	}
-		else
+	else
 	{
-		/*$query="select a.id as store_item_id, a.stock,a.threshold_min, a.threshold_max,
-		b.item_code,b.bar_code,b.price,b.item_name,b.generic_name,b.item_description,b.item_image,
-		c.category_string, d.unit, e.branch_name from store_items as a left join items as b on a.item_id = b.id
-		left join item_categories as c on b.item_category = c.id left join item_units as d
-		on b.item_unit = d.id left join branches as e on a.branch_id = e.id 
-		where a.branch_id = '$branch_id' and (b.item_code like '%$search%' or b.price like '%$search%' or b.item_name like '%$search%' or
-		b.generic_name like '%$search%' or b.item_description like '%$search%' or c.category_string like '%$search%'
-		or d.unit like '%$search%' or e.branch_name like '%$search%')
-		order by a.id limit 1000 ";*/
 
-		$query = "
-			select a.id as item_movement_item_id, a.price,a.selling_price,a.quantity, a.stock, b.item_code, b.item_name,b.has_unique_identifier, d.id as store_item_id, d.threshold_min, d.threshold_max, b.item_code,b.bar_code,b.item_name,b.generic_name,b.item_description,b.item_image, e.category_string, f.unit, g.branch_name from item_movement_items as a left join items as b on a.item_id = b.id left join item_movements as c on a.item_movement_id = c.id left join store_items as d on b.id = d.item_id left join item_categories as e on b.item_category = e.id left join item_units as f on b.item_unit = f.id left join branches as g on d.branch_id = g.id where c.branch_id = '$branch_id' and c.type = 'Inbound' and a.stock > 0
-
+		$query = "SELECT a.id as item_movement_item_id, a.price,a.selling_price,a.quantity, a.stock, a.item_id as itemid, b.item_name,b.has_unique_identifier, d.id as store_item_id, d.threshold_min, d.threshold_max, b.item_code,b.bar_code,b.item_name,b.generic_name,b.item_description,b.item_image, e.category_string, f.unit, g.branch_name 
+			from item_movement_items as a 
+			LEFT JOIN items as b on a.item_id = b.id 
+			LEFT JOIN item_movements as c on a.item_movement_id = c.id 
+			LEFT JOIN store_items as d on b.id = d.item_id 
+			LEFT JOIN item_categories as e on b.item_category = e.id 
+			LEFT JOIN item_units as f on b.item_unit = f.id 
+			LEFT JOIN branches as g on d.branch_id = g.id 
+			WHERE c.branch_id = '$branch_id' and c.type = 'Inbound' and a.stock > 0
 			and
-
 			(b.item_code like '%$search%' or a.selling_price like '%$search%' or b.item_name like '%$search%' or
 			b.generic_name like '%$search%' or b.item_description like '%$search%' or e.category_string like '%$search%'
 			or f.unit like '%$search%' or g.branch_name like '%$search%')
-
-
-		";
+			GROUP BY b.item_name, a.selling_price";
 	}
 
 
@@ -406,6 +400,7 @@ function add_order($unique = false)
 		$quantity = 1;
 		$unique_id = $this->input->post('unique_id');
 		$store_item_id = $this->input->post('store_item_id');
+		$selling_price = $this->input->post('selling_price');
 
 		$query="select * from temp_orders where unique_id = '$unique_id' ";
 		$result = $this->db->query($query);
@@ -425,7 +420,8 @@ function add_order($unique = false)
 
 		if($is_uid_available ==1){
 
-			$check_uid = $this->check_unique_ids($store_item_id,$branch_id,$unique_id);
+			$check_uid = $this->check_unique_ids($store_item_id,$branch_id,$unique_id,$selling_price);
+
 			if($check_uid == 1){
 				$query="select * from item_unique_identifiers where identifier = '$unique_id' and available = '1'";
 				$result = $this->db->query($query);
@@ -674,7 +670,7 @@ function update_item_price()
 
 function inventory_report_new($branch_id){
 
-	$query="select a.id as store_item_id, a.stock,a.threshold_min, a.threshold_max, b.has_unique_identifier,
+	$query="SELECT a.id as store_item_id, a.stock,a.threshold_min, a.threshold_max, b.has_unique_identifier,
 		b.item_code,b.bar_code,b.price,b.item_name,b.generic_name,b.item_description,b.item_image,
 		c.category_string, d.unit, e.branch_name,
 		(select sum(stock) from item_movement_items where item_movement_id in (select id from item_movements where branch_id = e.id and type = 'Inbound') and item_id = b.id) as stock_count 
@@ -689,13 +685,13 @@ function inventory_report_new($branch_id){
 
 }
 
-function check_unique_ids($id,$branch_id,$uid){
+function check_unique_ids($id,$branch_id,$uid,$selling_price){
 
 	$query = "SELECT count(identifier) as totalcount FROM item_unique_identifiers 
 				WHERE item_movement_items_id in 
 				(select id from item_movement_items where item_movement_id in 
 					(select id from item_movements where branch_id = '$branch_id' and type ='Inbound') 
-					and item_id = (select item_id from store_items where id='$id'))
+					and item_id = (select item_id from store_items where id='$id') and selling_price = '$selling_price')
 				AND identifier = '$uid' AND available='1'
 				ORDER by available ASC";
 						   
@@ -705,6 +701,23 @@ function check_unique_ids($id,$branch_id,$uid){
 	}else{
 		return 0;
 	}
+}
+
+function get_uid_via_itemprice(){
+
+	$item_id = $this->input->post('item_id');
+	$store_item_id = $this->input->post('store_item_id');
+	$item_price = $this->input->post('sellingprice');
+	$branch_id = $this->session->branch_id;
+
+	$query = "SELECT identifier FROM item_unique_identifiers 
+				WHERE item_movement_items_id in 
+				(select id from item_movement_items where item_id ='$item_id' and selling_price = '$item_price' and item_movement_id in 
+					(select id from item_movements where branch_id = '$branch_id' and type ='Inbound'))
+				AND available='1'";
+	$result = $this->db->query($query);
+	return $result->result_array();
+
 }
 
 

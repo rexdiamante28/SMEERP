@@ -39,7 +39,38 @@ function set_handler()
 			$('#unique_order_form')[0].reset();
 			$('#unique_error_message').addClass('hidden');
 			var store_item_id = $('#'+event.currentTarget.id).data('storeitemid');
+			var item_id = $('#'+event.currentTarget.id).data('itemid');
+			var sellingprice = $('#'+event.currentTarget.id).data('sellingprice');
+			
 			$("#store_item_id").val(store_item_id);
+			$("#selling_price").val(sellingprice);
+
+			var html ="";
+			html ="";
+			html +="<h6><strong>Available IMEI</strong></h6>";
+
+			$.ajax({				
+				type : 'POST',
+				url  : 'get_uid_via_itemprice',
+				data : {store_item_id,item_id,'sellingprice': sellingprice},
+				success : function(response){
+					$result= JSON.parse(response);
+					if($result.success===true)
+					{
+						html += "<ol style='padding-left:20px'>";
+						$result.result.forEach(function(e){
+							html += "<li>"+e.identifier+"</li>";
+						})
+						html += "</ol>";
+						$("#imei-div").html(html);
+					}
+					else
+					{
+						alertify.error(result.message);
+					}
+					
+				}
+			});
 			$('#unique_order_modal').modal();
 		}
 		else
@@ -139,7 +170,7 @@ $('#unique_order_form').submit(function(event){
 				data: form.serialize(),
 				success : function(response){
 					var result = JSON.parse(response);
-					console.log(response);
+
 					if(result.success===true)
 					{
 						get_temp_orders();

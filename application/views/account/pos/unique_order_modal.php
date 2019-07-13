@@ -13,6 +13,9 @@
             <label>IMEI</label>
             <input type="text" name="unique_id" id="unique_id" class="form-control">
             <input type="text" name="store_item_id" id="store_item_id" class="form-control" style="display:none">
+            <input type="text" name="selling_price" id="selling_price" class="form-control" style="display:none">
+        </div>
+        <div id="imei-div" class="card">
         </div>
       </div>
       <div class="modal-footer">

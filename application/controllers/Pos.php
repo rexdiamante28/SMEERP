@@ -332,5 +332,25 @@ class Pos extends CI_Controller {
 
 	}
 
+	function get_uid_via_itemprice(){
+		
+		$this->load->model('account/stock_model');
+		$result = $this->stock_model->get_uid_via_itemprice();
+		
+		if(!empty($result)){
+
+			$response['result'] = $result;
+			$response['success'] = true;
+	        $response['message'] = "success";
+	        $response['environment'] = ENVIRONMENT;
+		}else{
+			$response['success'] = false;
+	        $response['message'] = "No available IMEI found.";
+	        $response['environment'] = ENVIRONMENT;
+		}
+
+        echo json_encode($response);
+	}
+
 
 }
