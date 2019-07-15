@@ -264,7 +264,7 @@ function get_items()
 
 	if($search==='')
 	{
-		$query="select a.id as item_id, a.item_code, a.item_name,
+		$query="SELECT a.id as item_id, a.item_code, a.item_name,
 		a.item_image, a.price, a.status, b.id as item_units_id,
 		b.unit, c.id as category_id, c.category_string
 		from items as a 
@@ -274,7 +274,7 @@ function get_items()
 	}
 	else
 	{
-		$query="select a.id as item_id, a.item_code, a.item_name,
+		$query="SELECT a.id as item_id, a.item_code, a.item_name,
 		a.item_image, a.price, a.status, b.id as item_units_id,
 		b.unit, c.id as category_id, c.category_string
 		from items as a 
@@ -568,8 +568,8 @@ function add_item_in_movement()
 public function get_item_movement_item_uids($item_movement_id)
 {
 
-
-	$query = "select a.*, c.from_outbound, c.is_accepted, c.id as im_id from item_unique_identifiers a
+	$query = "SELECT a.*, c.from_outbound, c.is_accepted, c.id as im_id 
+	from item_unique_identifiers a
 	left join item_movement_items b on a.item_movement_items_id = b.id
 	left join item_movements c on b.item_movement_id = c.id
 	where item_movement_items_id = '$item_movement_id' and available != '6' and available != '2'";
@@ -610,7 +610,7 @@ public function update_uid()
 	}
 
 
-	$query="select * from  item_movements where id = (select item_movement_id from  item_movement_items where id = 
+	$query="SELECT * from  item_movements where id = (select item_movement_id from  item_movement_items where id = 
 		(select item_movement_items_id from item_unique_identifiers where id = '$id'))";
 
 	$item_movement = $this->db->query($query)->row_array();
@@ -630,14 +630,11 @@ public function update_uid()
 		else
 		{
 			//add to stock
-
 			// subtract from stocks
 
 			$query="select * from item_unique_identifiers where id = '$id' ";
-
 			$unid = $this->db->query($query)->row_array();
-
-			if($unid['available']=='0')
+			if($unid['available'] =='0')
 			{
 				$query = "update item_movement_items set stock = stock + 1 where id =  ( select item_movement_items_id from item_unique_identifiers
 				 where id = '$id' )";
@@ -660,9 +657,11 @@ public function update_uid()
 	}
 	else
 	{
+
 		$query = "select * from item_unique_identifiers where identifier = '$uid' and id != '$id' and (available = '1' or available = '3' or available = '6') "; // 0 = not set yet 3 = returned 1 = available  2 = sold 4 = outbound | Damaged | Quarantined
 
 		$result = $this->db->query($query);
+
 		if($result->num_rows()<1)
 		{
 			$response = array(
@@ -673,40 +672,46 @@ public function update_uid()
 		else
 		{
 			//add to stock
-
 			// subtract from stocks
+			//COMPARE IMEI
+			$branch_id = $this->input->post('branch_id');
+			$item_id = $this->input->post('item_id');
+			$available_imeis = $this->get_item_imei($branch_id,$item_id,$uid);
 
-			$query="select * from item_unique_identifiers where id = '$id' ";
+			if($available_imeis->num_rows() > 0){
 
-			$unid = $this->db->query($query)->row_array();
+				$query="select * from item_unique_identifiers where id = '$id' ";
+				$unid = $this->db->query($query)->row_array();
+				if($unid['available']=='0')
+				{
 
-			if($unid['available']=='0')
-			{
+					$query = "update item_movement_items set stock = stock-1 where id in ( select item_movement_items_id from item_unique_identifiers
+					 where identifier = '$uid' and available = '1' )";
 
-				$query = "update item_movement_items set stock = stock - 1 where id in ( select item_movement_items_id from item_unique_identifiers
-				 where identifier = '$uid' and available = '1' )";
+					$this->db->query($query);
+
+					$query = "update item_movement_items set stock = stock + 1 where id =  (select item_movement_items_id from item_unique_identifiers
+					 where id = '$id')";
+
+					$this->db->query($query);
+				}
+
+				$query = "update item_unique_identifiers set available = '6' where identifier = '$uid' ";
+				$this->db->query($query);
+				$query = "update item_unique_identifiers set identifier = '$uid', available = '4' where id = '$id' ";
 
 				$this->db->query($query);
 
-
-				$query = "update item_movement_items set stock = stock + 1 where id =  ( select item_movement_items_id from item_unique_identifiers
-				 where id = '$id' )";
-
-				$this->db->query($query);
+				$response = array(
+					'success' => true,
+					'message' => 'UID Updated'
+				);
+			}else{
+				$response = array(
+					'success' => false,
+					'message' => 'UID Not Compatible'
+				);
 			}
-
-			$query = "update item_unique_identifiers set available = '6' where identifier = '$uid' ";
-
-			$this->db->query($query);
-
-			$query = "update item_unique_identifiers set identifier = '$uid', available = '4' where id = '$id' ";
-
-			$this->db->query($query);
-
-			$response = array(
-				'success' => true,
-				'message' => 'UID Updated'
-			);
 		}
 
 		return $response;
@@ -938,6 +943,20 @@ function get_prices_for_outbound($item_id,$branch_id){
 			and
 			item_movement_id in (select id from item_movements where branch_id='$branch_id' and type='Inbound') order by stock desc";
 	return $this->db->query($query)->row_array();
+}
+
+//NEW FUNCTION
+
+function get_item_imei($branch_id,$item_id, $uid){
+
+	$query = "	SELECT * FROM item_unique_identifiers 
+				WHERE item_movement_items_id in 
+				(select id from item_movement_items where item_movement_id in 
+					(select id from item_movements where branch_id = '$branch_id' and type ='Inbound') 
+					and item_id = '$item_id')
+				AND available = '1' AND identifier='$uid'";
+						   
+	return $this->_custom_query($query);
 }
 
 }

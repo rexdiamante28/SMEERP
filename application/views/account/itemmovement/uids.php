@@ -9,7 +9,6 @@
 		</thead>
 		<tbody>
 			<?php
-			// print_r($uids);die();
 				foreach ($uids as $value) {
 					?>	
 						<tr id="uid_tr<?= $value['id']; ?>">
@@ -19,7 +18,7 @@
 							<?php if($value['from_outbound'] !=1 || $value['is_accepted']!=1): ?>
 							<td>
 								<button class="btn btn-default btn-xs">
-									<i class="fa fa-check update_uid_button" id="uid_button<?= $value['id']; ?>"></i>
+									<i class="fa fa-check update_uid_button" id="uid_button<?= $value['id']; ?>" data-item_id="<?=$item_id?>" data-branch_id="<?=$branch_id?>"></i>
 								</button>
 								<button class="btn btn-default btn-xs">
 									<i class="fa fa-remove remove_uid_button" id="uidd_button<?= $value['id']; ?>"></i>

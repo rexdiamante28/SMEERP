@@ -290,10 +290,18 @@ class Itemmovements extends CI_Controller {
 	}
 
 
-	public function get_item_movement_item_uids($item_movement_id)
+	public function get_item_movement_item_uids()
 	{
 		$this->load->model('account/itemmovement_model');
+		$item_movement_id = $this->input->post('id');
+		$branch_id = $this->input->post('branch_id');
+		$item_id = $this->input->post('item_id');
+
 		$data['uids'] = $this->itemmovement_model->get_item_movement_item_uids($item_movement_id);
+		$data['branch_id'] = $branch_id;
+		$data['item_id'] = $item_id;
+		
+		// $data['available_imei'] = $this->itemmovement_model->get_item_imei($branch_id,$item_id);
 
 		$this->load->view('account/itemmovement/uids',$data);
 	}	

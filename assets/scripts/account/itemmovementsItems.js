@@ -129,11 +129,17 @@ function add_item_in_movement(form)
 
 
 $(document).delegate(".view_identifiers", "click", function(e) {
+	
 	showCover('Fetching data...');
+
+	var id = e.currentTarget.id;
+	var item_id = e.currentTarget.dataset.item_id;
+	var branch_id = e.currentTarget.dataset.branch_id;
+
   	$.ajax({				
-		type : 'GET',
-		url  : 'get_item_movement_item_uids/'+e.currentTarget.id,
-		data : '',
+		type : 'POST',
+		url  : 'get_item_movement_item_uids/',
+		data : {id,item_id,branch_id},
 		success : function(response){
 			hideCover();
 			$('#identifiers_modal_body').html(response);
@@ -160,16 +166,19 @@ $(document).delegate(".view_identifiers_acc", "click", function(e) {
 
 
 $(document).delegate(".update_uid_button", "click", function(e) {
+	
 	showCover('Updating UID');
 
 	var cur_id = e.currentTarget.id;
 	cur_id = cur_id.replace('uid_button','');
 	var cur_id_selector = '#uid'+cur_id;
+	var item_id = e.currentTarget.dataset.item_id;
+	var branch_id = e.currentTarget.dataset.branch_id;
 
   	$.ajax({				
 		type : 'POST',
 		url  : 'update_uid',
-		data : {'id': cur_id, 'uid' : $(cur_id_selector).val()},
+		data : {'id': cur_id, 'uid' : $(cur_id_selector).val(), item_id,branch_id},
 		success : function(response){
 			hideCover();
 

@@ -13,7 +13,7 @@
 	
 </tbody>
 <?php foreach ($item_movement_items as $value): ?>
-	
+		
 	<tr id="<?= $value['id']?>">
 		<td><img class="img-thum" style="width:70px;" src="<?= base_url().'assets/images/items/'.$value['item_image']?>"></td>
 		<td>
@@ -35,7 +35,9 @@
 
 		<?php if($movement_info['from_outbound'] != 1 && $movement_info['is_accepted'] != 1 ): ?>
 		<td>
-			<button class="btn btn-default btn-xs view_identifiers" id="<?= $value['id']; ?>">
+			<button class="btn btn-default btn-xs view_identifiers" id="<?= $value['id']; ?>" 
+					data-item_id="<?= $value['item_id']?>" 
+					data-branch_id="<?=$movement_info['branch_id']?>">
 				<i class="fa fa-eye"></i>
 			</button>
 		</td>
