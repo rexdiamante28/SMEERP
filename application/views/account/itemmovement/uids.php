@@ -3,7 +3,8 @@
 	<table class="table table-striped table-bordered">
 		<thead>
 			<tr>
-				<th>UID</th>
+				<th>IMEI</th>
+				<th>Color</th>
 				<th>Actions</th>
 			</tr>
 		</thead>
@@ -14,6 +15,11 @@
 						<tr id="uid_tr<?= $value['id']; ?>">
 							<td>
 								<input type="text" class="form_control" id="uid<?= $value['id']; ?>" value="<?= $value['identifier'] ?>">
+							</td>
+							<td>
+								<input type="text" class="form_control" id="cid<?= $value['id']; ?>" 
+								value="<?= $value['color'] ?>"
+								<?=$value['type'] == 'Inbound'? '' : "readonly"?> >
 							</td>
 							<?php if($value['from_outbound'] !=1 || $value['is_accepted']!=1): ?>
 							<td>

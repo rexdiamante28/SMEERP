@@ -3,8 +3,8 @@
 	<table class="table table-striped table-bordered">
 		<thead>
 			<tr>
-				<th>UID</th>
-				<th>Actions</th>
+				<th>IMEI</th>
+				<th>Color</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -12,13 +12,13 @@
 			// print_r($uids);die();
 				foreach ($uids as $value) {
 					?>	
-						<tr id="uid_tr<?= $value['id']; ?>">
-							<td>
-								<input type="text" class="form_control" id="uid<?= $value['id']; ?>" value="<?= $value['identifier'] ?>">
+						<tr>
+							<td width="50%">
+								<label><?= $value['identifier'] ?></label>
+							</td>						
+							<td width="50%"> 
+								<label><?= $value['color'] ?></label>
 							</td>
-							
-						
-							<td></td>
 						
 						</tr>
 					<?php

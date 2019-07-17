@@ -571,13 +571,26 @@ function add_order($unique = false)
 
 function get_unique_ids($id){
 
-	$query = "	SELECT identifier,available FROM item_unique_identifiers 
+	$query = "	SELECT identifier,available,color FROM item_unique_identifiers 
 				WHERE item_movement_items_id in 
 				(select id from item_movement_items where item_movement_id in 
 					(select id from item_movements where branch_id = 
 						(select branch_id from store_items where id='$id') and type ='Inbound') 
 					and item_id = (select item_id from store_items where id='$id')) 
 				ORDER by available ASC";
+						   
+	return $this->_custom_query($query);
+}
+
+function get_unique_ids_color($id){
+
+	$query = "	SELECT count(color) as count, color FROM item_unique_identifiers 
+				WHERE item_movement_items_id in 
+				(select id from item_movement_items where item_movement_id in 
+					(select id from item_movements where branch_id = 
+						(select branch_id from store_items where id='$id') and type ='Inbound') 
+					and item_id = (select item_id from store_items where id='$id'))
+				AND available = '1' GROUP by color";
 						   
 	return $this->_custom_query($query);
 }

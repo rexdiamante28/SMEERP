@@ -20,12 +20,14 @@
               <th style="text-align:center">Unit</th>
               <th style="text-align:center">Stock</th>
               <th style="text-align:center">IMEI</th>
+              <th style="text-align:center">Availability by Color</th>
           </thead>
           <tbody>
             <?php
                 foreach ($items as $value) {
 
                     $uids = $this->stock_model->get_unique_ids($value->store_item_id);
+                    $uids_color = $this->stock_model->get_unique_ids_color($value->store_item_id);
                     $data = $this->stock_model->get_itemmovement_id_using_storeitemid($value->store_item_id);
 
                   ?>
@@ -42,11 +44,35 @@
                                 <?php if(!empty($uids)): ?>
                                 <?php foreach ($uids->result_array() as $uid): ?>
                                     <?php if($uid['available'] == 1): ?>
-                                    <li><strong><?=$uid['identifier']?> - <span style="color: green"><i>Available</i></span></strong></li>
+                                    <li><strong><?=$uid['identifier']?> - <span><?=$uid['color']?></span> - <span style="color: green"><i>Available</i></span></strong></li>
                                     <?php endif; ?>
                                 <?php endforeach;?>
                                 <?php endif; ?>
                             </ol>
+                        </small>
+                    </td>                      
+                    <td>
+                        <small>
+                            <?php if($value->has_unique_identifier == 1): ?>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Color</th>
+                                    <th>Available</th>
+                                </tr>
+                                <?php  $total = 0; ?>
+                                <?php foreach ($uids_color->result_array() as $uidc): ?>
+                                    <?php  $total += $uidc['count']; ?>
+                                    <tr>
+                                        <td><?=$uidc['color']?></td>
+                                        <td style="text-align: right"><?=$uidc['count']?></td>
+                                    </tr>
+                                <?php endforeach;?>
+                                    <tr>
+                                        <th>Total</th>
+                                        <td style="text-align: right"><?=$total?></td>
+                                    </tr>
+                            </table>
+                            <?php endif; ?>
                         </small>
                     </td>
                     </tr>

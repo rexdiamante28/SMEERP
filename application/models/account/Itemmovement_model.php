@@ -568,13 +568,12 @@ function add_item_in_movement()
 public function get_item_movement_item_uids($item_movement_id)
 {
 
-	$query = "SELECT a.*, c.from_outbound, c.is_accepted, c.id as im_id 
+	$query = "SELECT a.*, c.from_outbound, c.is_accepted, c.type,c.id as im_id
 	from item_unique_identifiers a
 	left join item_movement_items b on a.item_movement_items_id = b.id
 	left join item_movements c on b.item_movement_id = c.id
 	where item_movement_items_id = '$item_movement_id' and available != '6' and available != '2'";
 	return $this->db->query($query)->result_array();
-	
 	
 }
 
@@ -596,16 +595,16 @@ public function update_uid()
 {
 	$id = $this->input->post('id');
 	$uid = $this->input->post('uid');
-
-	if($uid=='0')
+	$color = $this->input->post('color');
+	
+	if($uid=='0' || $color == "")
 	{
 		$response = array(
 			'success' => false,
-			'message' => 'Invalid UID'
+			'message' => 'Invalid UID / Color'
 		);
 
 		return $response;
-
 		die();
 	}
 
@@ -634,6 +633,7 @@ public function update_uid()
 
 			$query="select * from item_unique_identifiers where id = '$id' ";
 			$unid = $this->db->query($query)->row_array();
+			
 			if($unid['available'] =='0')
 			{
 				$query = "update item_movement_items set stock = stock + 1 where id =  ( select item_movement_items_id from item_unique_identifiers
@@ -643,7 +643,7 @@ public function update_uid()
 			}
 
 
-			$query = "update item_unique_identifiers set identifier = '$uid', available = '1' where id = '$id' ";
+			$query = "update item_unique_identifiers set identifier = '$uid', available = '1', color='$color' where id = '$id' ";
 
 			$this->db->query($query);
 
@@ -671,8 +671,6 @@ public function update_uid()
 		}
 		else
 		{
-			//add to stock
-			// subtract from stocks
 			//COMPARE IMEI
 			$branch_id = $this->input->post('branch_id');
 			$item_id = $this->input->post('item_id');
@@ -682,14 +680,17 @@ public function update_uid()
 
 				$query="select * from item_unique_identifiers where id = '$id' ";
 				$unid = $this->db->query($query)->row_array();
-				if($unid['available']=='0')
+
+				if($unid['available'] =='0')
 				{
 
+					// subtract from stocks
 					$query = "update item_movement_items set stock = stock-1 where id in ( select item_movement_items_id from item_unique_identifiers
 					 where identifier = '$uid' and available = '1' )";
 
 					$this->db->query($query);
 
+					//add to stock
 					$query = "update item_movement_items set stock = stock + 1 where id =  (select item_movement_items_id from item_unique_identifiers
 					 where id = '$id')";
 
@@ -698,8 +699,9 @@ public function update_uid()
 
 				$query = "update item_unique_identifiers set available = '6' where identifier = '$uid' ";
 				$this->db->query($query);
-				$query = "update item_unique_identifiers set identifier = '$uid', available = '4' where id = '$id' ";
 
+				$orig_color = $result->row()->color;
+				$query = "update item_unique_identifiers set identifier = '$uid', available = '4', color='$orig_color' where id = '$id' ";
 				$this->db->query($query);
 
 				$response = array(
@@ -883,8 +885,9 @@ function import_item_out_to_inbound(){
 		{
 			foreach ($identifiers as $value) {
 				$identifier = $value['identifier'];
-				$identifiers_insertion_query ="insert into item_unique_identifiers (item_movement_items_id,identifier,available) values 
-					('$item_movement_items_id','$identifier','1')";
+				$color = $value['color'];
+				$identifiers_insertion_query ="insert into item_unique_identifiers (item_movement_items_id,identifier,available,color) values 
+					('$item_movement_items_id','$identifier','1','$color')";
 				$this->db->query($identifiers_insertion_query);
 			}
 		}
@@ -932,7 +935,7 @@ function get_stock_movement_items_custom($movement_id){
 
 function get_unique_identifiers($item_movement_items_id){
 
-	$query="select identifier from item_unique_identifiers where item_movement_items_id = '$item_movement_items_id'";
+	$query="select identifier,color from item_unique_identifiers where item_movement_items_id = '$item_movement_items_id'";
 	return $this->_custom_query($query);
 }
 

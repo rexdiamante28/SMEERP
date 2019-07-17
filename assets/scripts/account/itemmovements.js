@@ -1,3 +1,4 @@
+
 $('document').ready(function(){
 	get_loading_content();
 	get_item_movements();
@@ -276,12 +277,16 @@ function get_facilitators(){
 	});
 
 	$('#accept_oub_to_inb_confirm').click(function(e){
-		
+
+		var thiss = $(this);
 		var inbound_id = $('#add_item_in_movement_details_form #movement_id').val();
 		$.ajax({				
 			type : 'POST',
 			url  : 'import_item_out_to_inbound',
 			data : {'inbound_id': inbound_id},
+			beforeSend: function(){
+				thiss.prop("disabled", true);
+			},
 			success : function(response){
 				hideCover();
 
@@ -296,6 +301,7 @@ function get_facilitators(){
 				}
 				else
 				{
+					thiss.prop("disabled", false);
 					alertify.error(response.message);
 				}
 

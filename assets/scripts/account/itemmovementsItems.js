@@ -172,13 +172,14 @@ $(document).delegate(".update_uid_button", "click", function(e) {
 	var cur_id = e.currentTarget.id;
 	cur_id = cur_id.replace('uid_button','');
 	var cur_id_selector = '#uid'+cur_id;
+	var color_selector = '#cid'+cur_id;
 	var item_id = e.currentTarget.dataset.item_id;
 	var branch_id = e.currentTarget.dataset.branch_id;
 
   	$.ajax({				
 		type : 'POST',
 		url  : 'update_uid',
-		data : {'id': cur_id, 'uid' : $(cur_id_selector).val(), item_id,branch_id},
+		data : {'id': cur_id, 'uid' : $(cur_id_selector).val(), 'color': $(color_selector).val(), item_id,branch_id},
 		success : function(response){
 			hideCover();
 
