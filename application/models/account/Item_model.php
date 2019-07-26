@@ -63,7 +63,7 @@ function add_item()
 
 	$query = "insert into items (id,item_code,has_unique_identifier,bar_code,item_name,price,generic_name,item_description,
 	item_image,item_category,item_unit,status) values 
-	('$id','$item_code','$has_unique_identifier','$bar_code','$item_name','$price','$generic_name','$item_description','$image_name',
+	('$id','$bar_code','$has_unique_identifier','$bar_code','$item_name','$price','$generic_name','$item_description','$image_name',
 	'$item_category','$item_unit','$status')";
 
 	if($this->_custom_query($query))
@@ -80,7 +80,7 @@ function add_item()
 function update_item()
 {
 	$id = $this->input->post('id');
-	$item_code = $this->input->post('item_code');
+	// $item_code = $this->input->post('item_code');
 	$has_unique_identifier = $this->input->post('unique_identifier') !== null ? 1 : 0;
 	$bar_code = $this->input->post('bar_code');
 	$item_name = $this->input->post('item_name');
@@ -99,7 +99,7 @@ function update_item()
 
 
 
-	$query="update items set item_code = '$item_code', has_unique_identifier = '$has_unique_identifier',
+	$query="update items set item_code = '$bar_code', has_unique_identifier = '$has_unique_identifier',
 	bar_code = '$bar_code', item_name = '$item_name',
 	generic_name = '$generic_name', item_description = '$item_description', item_image = '$image_name',
 	item_category = '$item_category', item_unit = '$item_unit', status = '$status', price = '$price'

@@ -10,7 +10,7 @@
               <th>OR #</th>
               <th>Total</th>
               <th>Amount Due</th>
-              <th>Tax</th>
+              <!-- <th>Tax</th> -->
               <th>Change</th>
               <th>Receivable</th>
               <th>Capital</th>
@@ -33,7 +33,7 @@
                       <td><small><?= $value->or_number; ?></small></td>
                       <td><small>P <?= number_format($value->total,2); ?></small></td>
                       <td><small>P <?= number_format($value->amount_due,2); ?></small></td>
-                      <td><small>P <?= number_format($value->tax,2); ?></small></td>
+                      <!-- <td><small>P <?= number_format($value->tax,2); ?></small></td> -->
                       <td><small>P <?= number_format($value->payment_change,2); ?></small></td>
                       <td><small>P <?= number_format($value->receivable,2); ?></small></td>
                       <td><small>P <?= number_format($value->capital,2); ?></small></td>
@@ -57,7 +57,7 @@
                       <td><small></td>
                       <td><small><b>P <?= number_format($grand_total,2); ?></b></small></td>
                       <td><small><b></b></small></td>
-                      <td><small><b>P <?= number_format($total_tax,2); ?></b></small></td>
+                      <!-- <td><small><b>P <?= number_format($total_tax,2); ?></b></small></td> -->
                       <td><small><b></b></small></td>
                       <td><small><b>P <?= number_format($total_receivable,2); ?></b></small></td>
                       <td><small><b>P <?= number_format($total_capital,2); ?></b></small></td>

@@ -1,6 +1,14 @@
 
 <div class="table-responsive">
 	<table class="table table-striped table-bordered">
+		<?php if($uids[0]['type'] == "Outbound"): ?>
+		<thead>
+			<tr>
+				<th>IMEI</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<?php else: ?>
 		<thead>
 			<tr>
 				<th>IMEI</th>
@@ -8,6 +16,8 @@
 				<th>Actions</th>
 			</tr>
 		</thead>
+		<?php endif; ?>
+
 		<tbody>
 			<?php
 				foreach ($uids as $value) {
@@ -16,11 +26,12 @@
 							<td>
 								<input type="text" class="form_control" id="uid<?= $value['id']; ?>" value="<?= $value['identifier'] ?>">
 							</td>
+							<?php if($value['type'] == 'Inbound'): ?>
 							<td>
 								<input type="text" class="form_control" id="cid<?= $value['id']; ?>" 
-								value="<?= $value['color'] ?>"
-								<?=$value['type'] == 'Inbound'? '' : "readonly"?> >
+								value="<?= $value['color'] ?>" >
 							</td>
+							<?php endif; ?>
 							<?php if($value['from_outbound'] !=1 || $value['is_accepted']!=1): ?>
 							<td>
 								<button class="btn btn-default btn-xs">
@@ -36,7 +47,6 @@
 						</tr>
 					<?php
 				}
-
 			?>
 		</tbody>
 	</table>

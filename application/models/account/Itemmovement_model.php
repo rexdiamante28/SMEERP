@@ -885,10 +885,13 @@ function import_item_out_to_inbound(){
 		{
 			foreach ($identifiers as $value) {
 				$identifier = $value['identifier'];
-				$color = $value['color'];
-				$identifiers_insertion_query ="insert into item_unique_identifiers (item_movement_items_id,identifier,available,color) values 
-					('$item_movement_items_id','$identifier','1','$color')";
-				$this->db->query($identifiers_insertion_query);
+				if($identifier != 0){
+					
+					$color = $value['color'];
+					$identifiers_insertion_query ="insert into item_unique_identifiers (item_movement_items_id,identifier,available,color) values 
+						('$item_movement_items_id','$identifier','1','$color')";
+					$this->db->query($identifiers_insertion_query);
+				}
 			}
 		}
 

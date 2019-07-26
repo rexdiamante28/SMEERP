@@ -6,13 +6,13 @@
       </div>
       <div class="modal-body">
       <?php echo form_open_multipart('items/upload_photo',array('id'=>'upload_image_form','method'=>'post')) ?>
-          <div class="col-lg-12 col-md-12 no-padd" style="margin-bottom: 15px;">
+          <div class="col-lg-12 col-md-12 no-padd" style="margin-bottom: 15px;" hidden>
             <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
               <label for="subject_desc">Item Image :</label>
             </div>
 
-            <div class="col-lg-8 col-md-8">
-              <input type="file" name="item_image" id="item_image" class="hidden_td">
+            <div class="col-lg-8 col-md-8" hidden>
+              <input type="file" name="item_image" id="item_image" class="hidden_td" >
               <img id="img_preview" class="img-thumbnail img-responsive col-xs-12 padd-10 point" src="<?= base_url().'assets/images/items/default.png'?>" >
               <button class="btn btn-xs hidden btn-primary" id="uploadbutton"  type="submit">Upload Image</button>
             </div>

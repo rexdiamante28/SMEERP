@@ -103,14 +103,15 @@ class Items extends CI_Controller {
     	$this->form_validation->set_rules('item_description', 'Description', 'trim|min_length[5]|max_length[2000]');
     	$this->form_validation->set_rules('item_unit', 'Item Unit', 'trim|numeric|required');
     	$this->form_validation->set_rules('status', 'Status', 'trim|numeric|required');
+    	
     	if($this->input->post('id')==='')
 	    {
-	    	$this->form_validation->set_rules('item_code', 'Item Code', 'trim|required|min_length[3]|max_length[45]|is_unique[items.item_code]');
+	    	// $this->form_validation->set_rules('item_code', 'Item Code', 'trim|required|min_length[3]|max_length[45]|is_unique[items.item_code]');
 	    	$this->form_validation->set_rules('bar_code', 'Bar Code', 'trim|min_length[3]|max_length[150]|is_unique[items.bar_code]');
 	    }
 	    else
 	    {
-	    	$this->form_validation->set_rules('item_code', 'Item Code', 'trim|required|min_length[3]|max_length[45]');
+	    	// $this->form_validation->set_rules('item_code', 'Item Code', 'trim|required|min_length[3]|max_length[45]');
 	    	$this->form_validation->set_rules('bar_code', 'Bar Code', 'trim|min_length[3]|max_length[150]');
 	    }
 
