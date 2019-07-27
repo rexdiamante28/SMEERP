@@ -56,7 +56,7 @@
     <div class="top-10" style="border-bottom:dotted 1px #F0EEEE;">
         <b><small class="pull-left">Total        :</small> <small class="pull-right">P <?= number_format($transaction['total'],2); ?></small></b><br/>
         <b><small class="pull-left">Change       :</small> <small class="pull-right">P <?= number_format($transaction['payment_change'],2); ?></small></b><br/>
-        <b><small class="pull-left">Taxes        :</small> <small class="pull-right">P <?= number_format($transaction['tax'],2); ?></small></b><br/>
+        <!-- <b><small class="pull-left">Taxes        :</small> <small class="pull-right">P <?= number_format($transaction['tax'],2); ?></small></b><br/> -->
         <b><small class="pull-left">Discounts    :</small> <small class="pull-right">P <?= number_format($total_discount,2); ?></small></b><br/>
     </div>
     <div class="text-center top-10">

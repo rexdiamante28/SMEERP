@@ -38,9 +38,16 @@ function set_handler2(){
 		if($('#add_item_in_movement_details_form #movement_type').val() === "Outbound"){
 			$('#add_item_in_movement_details_form #buying_price-div').css("display", "none");
 			$('#add_item_in_movement_details_form #selling_price-div').css("display", "none");
+			$('#add_item_in_movement_details_form #supplier-div').css("display", "none");
+			$('#add_item_in_movement_details_form #incentives-div').css("display", "none");
+			$('#add_item_in_movement_details_form #date_delivered-div').css("display", "none");
+			$('#add_item_in_movement_details_form #remarks-div').css("display", "none");
 		}else{
 			$('#add_item_in_movement_details_form #buying_price-div').css("display", "block");
 			$('#add_item_in_movement_details_form #selling_price-div').css("display", "block");
+			$('#add_item_in_movement_details_form #supplier-div').css("display", "block");
+			$('#add_item_in_movement_details_form #incentives-div').css("display", "block");
+			$('#add_item_in_movement_details_form #remarks-div').css("display", "block");
 		}
 		
 		var item_id = event.currentTarget.id;

@@ -301,6 +301,9 @@ function add_item_in_movement()
 	$remarks = $this->input->post('remarks');
 	$price = $this->input->post('buying_price');
 	$selling_price = $this->input->post('selling_price');
+	$supplier = $this->input->post('supplier');
+	$incentives = $this->input->post('incentives');
+	$date_delivered = $this->input->post('date');
 
 	$this->load->model('account/item_model');
 
@@ -334,13 +337,13 @@ function add_item_in_movement()
 
 			if($item['has_unique_identifier']=='1')
 			{
-				$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
-				values ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','0','$remarks')";
+				$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks,date_delivered,supplier,incentives)
+				values ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','0','$remarks', '$date_delivered', '$supplier', '$incentives')";
 			}
 			else
 			{
-				$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
-				values ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','$quantity','$remarks')";
+				$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks,date_delivered,supplier,incentives)
+				values ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','$quantity','$remarks', '$date_delivered', '$supplier', '$incentives')";
 			}
 
 			if($this->_custom_query($query))
@@ -597,16 +600,7 @@ public function update_uid()
 	$uid = $this->input->post('uid');
 	$color = $this->input->post('color');
 	
-	if($uid=='0' || $color == "")
-	{
-		$response = array(
-			'success' => false,
-			'message' => 'Invalid UID / Color'
-		);
 
-		return $response;
-		die();
-	}
 
 
 	$query="SELECT * from  item_movements where id = (select item_movement_id from  item_movement_items where id = 
@@ -616,6 +610,18 @@ public function update_uid()
 
 	if($item_movement['type'] == 'Inbound')
 	{
+
+		if($uid=='0' || $color == "")
+		{
+			$response = array(
+				'success' => false,
+				'message' => 'Invalid UID / Color'
+			);
+
+			return $response;
+			die();
+		}
+
 		$query = "select * from item_unique_identifiers where identifier = '$uid' and id != '$id' and available = '1' ";
 
 		$result = $this->db->query($query);
@@ -657,6 +663,16 @@ public function update_uid()
 	}
 	else
 	{
+		if($uid=='0')
+		{
+			$response = array(
+				'success' => false,
+				'message' => 'Invalid UID / Color'
+			);
+
+			return $response;
+			die();
+		}
 
 		$query = "select * from item_unique_identifiers where identifier = '$uid' and id != '$id' and (available = '1' or available = '3' or available = '6') "; // 0 = not set yet 3 = returned 1 = available  2 = sold 4 = outbound | Damaged | Quarantined
 
@@ -849,9 +865,14 @@ function import_item_out_to_inbound(){
 		$stock =  $item['stock'];
 		$remarks =  $item['remarks'];
 		$item_imid = $item['id'];
+		$supplier = $item['supplier'];
+		$date_delivered = $item['date_delivered'];
+		$supplier = $item['supplier'];
+		$incentives = $item['incentives'];
 
-		$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
-			values ('$item_movement_items_id','$item_movement_id','$item_id','$price','$selling_price','$quantity','$stock','$remarks')";
+		$query="insert into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks,date_delivered,supplier,incentives)
+			values ('$item_movement_items_id','$item_movement_id','$item_id','$price','$selling_price','$quantity','$stock','$remarks','$date_delivered','$supplier','$incentives')";
+		
 		if($this->_custom_query($query)){
 			$checker *= 1;
 		}else{

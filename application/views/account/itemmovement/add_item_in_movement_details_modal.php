@@ -62,7 +62,7 @@
 
             <div class="col-lg-12 col-md-12 " style="margin-bottom: 15px;" id="buying_price-div">
               <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
-                <label for="subject_code">Price :</label>
+                <label for="subject_code">Unit Price :</label>
               </div>
 
               <div class="col-lg-8 col-md-8">
@@ -72,10 +72,9 @@
               </div>
             </div>
 
-
             <div class="col-lg-12 col-md-12 " style="margin-bottom: 15px;" id="selling_price-div">
               <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
-                <label for="subject_code">Selling Price :</label>
+                <label for="subject_code">Market Price :</label>
               </div>
 
               <div class="col-lg-8 col-md-8">
@@ -83,11 +82,47 @@
                   <input type="text" class="form-control" name="selling_price" id="selling_price" >
                 </div>
               </div>
+            </div>            
+
+            <div class="col-lg-12 col-md-12 " style="margin-bottom: 15px;" id="supplier-div">
+              <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
+                <label for="subject_code">Supplier :</label>
+              </div>
+
+              <div class="col-lg-8 col-md-8">
+                <div id="subject_combo">
+                  <input type="text" class="form-control" name="supplier" id="supplier" >
+                </div>
+              </div>
+            </div>            
+
+            <div class="col-lg-12 col-md-12 " style="margin-bottom: 15px;" id="incentives-div">
+              <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
+                <label for="subject_code">Incentives :</label>
+              </div>
+
+              <div class="col-lg-8 col-md-8">
+                <div id="subject_combo">
+                  <input type="text" class="form-control" name="incentives" id="incentives" >
+                </div>
+              </div>
+            </div>            
+
+            <div class="col-lg-12 col-md-12 " style="margin-bottom: 15px;" id="date_delivered-div">
+              <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
+                <label for="subject_code">Date Delivered :</label>
+              </div>
+
+              <div class="col-lg-8 col-md-8">
+                <div id="subject_combo">
+                  <input class="form-control" type="date" name="date_delivered" id="date_delivered" >
+                </div>
+              </div>
             </div>
 
-            <div class="col-lg-12 col-md-12 " style="margin-bottom: 15px;">
+            <div class="col-lg-12 col-md-12 " style="margin-bottom: 15px;" id="remarks-div">
               <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
-                <label for="subject_code">Remarks :</label>
+                <label for="subject_code">DR NO. :</label>
               </div>
 
               <div class="col-lg-8 col-md-8">

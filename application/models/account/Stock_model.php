@@ -631,7 +631,7 @@ function get_itemmovement_id_using_storeitemid($storeitemid){
 	$item_id = $result->item_id;
 	$itemname =  $result->item_name;
 	
-	$query = "SELECT id, item_movement_id, selling_price, price from item_movement_items where item_movement_id in 
+	$query = "SELECT id, item_movement_id, selling_price, price,supplier,date_delivered,incentives from item_movement_items where item_movement_id in 
 				(select id from item_movements where branch_id = '$branch_id' and type ='Inbound') 
 				AND item_id = '$item_id'";
 
@@ -639,12 +639,18 @@ function get_itemmovement_id_using_storeitemid($storeitemid){
 	$item_movement_id = $result->item_movement_id;
 	$selling_price = $result->selling_price;
 	$price = $result->price;
+	$supplier = $result->supplier;
+	$date_delivered = $result->date_delivered;
+	$incentives = $result->incentives;
 
 	$data['item_id'] = $item_id ;
 	$data['item_movement_id'] = $item_movement_id ;
 	$data['selling_price'] = $selling_price ;
 	$data['itemname'] = $itemname;
 	$data['supplier_price'] = $price;
+	$data['supplier'] = $supplier;
+	$data['date_delivered'] = $date_delivered;
+	$data['incentives'] = $incentives;
 
 	return $data;
 }

@@ -260,8 +260,8 @@ function get_facilitators(){
 
 	//ADDED FUNCTIONS
 	$('#type').change(function(){
-		var from_id = $("#branch_id option:selected").val();
 
+		var from_id = $("#branch_id option:selected").val();
 		if($(this).val() == "Outbound"){
 
 			$("#move_to_branch").prop("hidden", false);
@@ -269,6 +269,11 @@ function get_facilitators(){
 
 		}else{
 			$("#move_to_branch").prop("hidden", true);
+		}
+
+
+		if($(this).val() == "Inbound"){
+
 		}
 	});
 
