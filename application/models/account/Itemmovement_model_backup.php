@@ -3,7 +3,6 @@ class Itemmovement_model extends CI_Model {
 
 function __construct() {
 	parent::__construct();
-	
 }
 
 function get_item_movements()
@@ -311,8 +310,7 @@ function add_item_in_movement()
 	$item = $this->item_model->get_item($item_id)->row_array();
 
 	//check the type of movement
-	//If outbound,quarantine,damages check if item is avaliable in stocks and the quantity is sufficient. otherwise, show error
-
+	//If if outbound,quarantine,damages check if item is avaliable in stocks and the quantity is sufficient. otherwise, show error
 	$query="select * from item_movements where id = '$item_movement_id'";
 	$item_movement = $this->_custom_query($query)->row();
 	
@@ -666,7 +664,7 @@ public function update_uid()
 		{
 			$response = array(
 				'success' => false,
-				'message' => 'Invalid UID'
+				'message' => 'Invalid UID / Color'
 			);
 
 			return $response;
@@ -706,7 +704,8 @@ public function update_uid()
 					$this->db->query($query);
 
 					//add to stock
-					$query = "update item_movement_items set stock = stock + 1 where id =  (select item_movement_items_id from item_unique_identifiers where id = '$id')";
+					$query = "update item_movement_items set stock = stock + 1 where id =  (select item_movement_items_id from item_unique_identifiers
+					 where id = '$id')";
 
 					$this->db->query($query);
 				}
@@ -974,7 +973,7 @@ function get_prices_for_outbound($item_id,$branch_id){
 
 function get_item_imei($branch_id,$item_id, $uid){
 
-	$query = "SELECT * FROM item_unique_identifiers 
+	$query = "	SELECT * FROM item_unique_identifiers 
 				WHERE item_movement_items_id in 
 				(select id from item_movement_items where item_movement_id in 
 					(select id from item_movements where branch_id = '$branch_id' and type ='Inbound') 

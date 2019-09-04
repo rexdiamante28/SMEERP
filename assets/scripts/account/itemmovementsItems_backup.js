@@ -1,18 +1,16 @@
 $('#add_item_in_movement_button').click(function(){
-	
-	$("#e-identifier").focus();
-	$("#e_addOutboundItem").modal('show');
-	scanItems();
-
+	get_items();
 });
 
 function get_items()
 {
 	showCover("Fetching Items...");
 
+
 	var data = '';
 	var search = $('#items_search').val();
 	var record_per_page = $('#items_record_per_page').val();
+
 
 	data = 'search='+search+'&record_per_page='+record_per_page;
 
@@ -95,7 +93,10 @@ function add_item_in_movement(form)
         }).done(function(response) {
 
             $('#add_item_in_movement_details_form #form-loading').addClass("hidden");
+            
             var response = JSON.parse(response);
+            console.log(response);
+
             if(response.success===false)
             {
             	$('#add_item_in_movement_details_form #error_message').removeClass('hidden');
@@ -103,8 +104,14 @@ function add_item_in_movement(form)
             }
             else
             {
+            	//alert(response.message);
+            	//$('#add_record_form')[0].reset();
+            	//$('#close_modal').click();
+
             	alertify.success(response.message);
+
             	$('#add_item_in_movement_details_modal').modal('hide');
+
             	showCover("Fetching record...");
 
 				$.ajax({				
@@ -113,7 +120,9 @@ function add_item_in_movement(form)
 					data : '',
 					success : function(response){
 						hideCover();
+
 						$('#details_modal_content').html(response);
+
 					}
 				});
 
@@ -213,7 +222,6 @@ $(document).delegate(".remove_uid_button", "click", function(e) {
 		data : {'id': cur_id},
 		success : function(response){
 			hideCover();
-
 			response = JSON.parse(response);
 
 			if(response.success == 'true' || response.success == true)
@@ -225,58 +233,7 @@ $(document).delegate(".remove_uid_button", "click", function(e) {
 			{
 				alertify.error(response.message);
 			}
-
-			
 		}
 	});
 
-
 });
-
-//Scanning QRCODE
-
-
-function scanItems(){
-
-	var scanning = true;
-	var imei = "";
-	var item_movement_id = $("#main_movement_id").val();
-	$(document).keypress(function (e) {
-		var code = (e.keyCode ? e.keyCode : e.which);
-		imei += String.fromCharCode(code);
-        if(code == 13){
-    		if(scanning){
-    			
-    			if(imei == "" || imei.length <=1){
-    				alert($("#e-identifier").val());
-    				imei = $("#e-identifier").val();
-    			}
-	        	$.ajax({
-			  		type: 'post',
-			  		url: 'add_item_in_movement_thru_scanning',
-			  		data:{imei,item_movement_id},
-			  		beforSend:function(){
-		  				
-		  			},
-			  		success:function(response){
-			  			response = JSON.parse(response);
-						if(response.success == 'true' || response.success == true)
-						{
-							alertify.success(response.message);
-							$("#e-identifier").val('');
-						}
-						else
-						{
-							alertify.error(response.message);
-						}
-						imei = "";
-						
-			  		}
-			  	}); 
-        	}else{
-				imei = "";
-				$("#e-identifier").val('');
-        	}
-	    }
-	});
-}

@@ -617,7 +617,10 @@ function is_identifier_available($uid,$branch_id){
 	if($result->num_rows() > 0){
 		$result= $this->db->query($query)->row()->available;
 		return $result;
-	}else{ $result = 0;}
+	}else{ 
+		$result = 0;
+		return $result;
+	}
 
 }
 
