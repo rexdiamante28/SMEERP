@@ -1,8 +1,14 @@
 $('#add_item_in_movement_button').click(function(){
-	
-	$("#e-identifier").focus();
-	$("#e_addOutboundItem").modal('show');
-	scanItems();
+	var movement_type = $('#add_item_in_movement_details_form #movement_type').val();
+
+	if(movement_type == "Inbound"){
+		get_items();
+	}else{
+
+		$("#e-identifier").focus();
+		$("#e_addOutboundItem").modal('show');
+		scanItems();
+	}
 
 });
 
@@ -241,6 +247,7 @@ function scanItems(){
 	var scanning = true;
 	var imei = "";
 	var item_movement_id = $("#main_movement_id").val();
+	
 	$(document).keypress(function (e) {
 		var code = (e.keyCode ? e.keyCode : e.which);
 		imei += String.fromCharCode(code);
@@ -248,7 +255,6 @@ function scanItems(){
     		if(scanning){
     			
     			if(imei == "" || imei.length <=1){
-    				alert($("#e-identifier").val());
     				imei = $("#e-identifier").val();
     			}
 	        	$.ajax({
@@ -256,7 +262,7 @@ function scanItems(){
 			  		url: 'add_item_in_movement_thru_scanning',
 			  		data:{imei,item_movement_id},
 			  		beforSend:function(){
-		  				
+		  				scanning = false;
 		  			},
 			  		success:function(response){
 			  			response = JSON.parse(response);
@@ -264,13 +270,14 @@ function scanItems(){
 						{
 							alertify.success(response.message);
 							$("#e-identifier").val('');
+							setTimeout(function(){ scanning = true;; }, 1000);
 						}
 						else
 						{
+							setTimeout(function(){ scanning = true;; }, 1000);
 							alertify.error(response.message);
 						}
 						imei = "";
-						
 			  		}
 			  	}); 
         	}else{

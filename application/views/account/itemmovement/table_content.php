@@ -37,9 +37,15 @@
 					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" data-movement_id="<?=$value['id']?>" class="details-acc btn btn-primary btn-block">View</button>
 				</td>
 			<?php else: ?>
+				<?php if($value['type'] == "Inbound"): ?>
 				<td>
 					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" data-movement_id="<?=$value['id']?>" class="details btn btn-primary btn-block">Add Item</button
 				</td>
+				<?php else: ?>
+				<td>
+					<button id="<?= $value['id']?>" data-movement_type="<?= $value['type']?>" data-movement_id="<?=$value['id']?> " class="details btn btn-primary btn-block">Add Item</button
+				</td>
+				<?php endif; ?>
 			<?php endif; ?>
 		<?php endif; ?>
 	</tr>

@@ -17,7 +17,7 @@ class Inventorymovement_model extends CI_Model {
 		$branch_id = $item_movement['branch_id'];
 
 		$is_imei_available = $this->is_imei_available($imei,$branch_id);
-		
+		// print_r($is_imei_available);die();
 		if(empty($is_imei_available)){
 			return $this->add_item_in_movement_thru_scanning_not_unique($imei,$item_movement_id);
 		}else{
@@ -41,21 +41,24 @@ class Inventorymovement_model extends CI_Model {
 			
 			if($item_movement['from_outbound'] == 0){
 		
-				// subtract from stocks
-				$sql = "UPDATE item_movement_items set stock=stock-1 where id in ( select item_movement_items_id from item_unique_identifiers where identifier = '$imei' and available = '1' )";
-				$this->db->query($query);
-
-				$sql = "INSERT into item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks)
-						VALUES ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','1','$remarks')";
+				// SUBTRACT STOCKS FROM THE OUTBOUNDING BRANCH
+				$tbd_item_movement_items_id = $is_imei_available['item_movement_items_id'];
+				$sql = "UPDATE item_movement_items set stock=(stock-1) where id='$tbd_item_movement_items_id'";
 				$this->db->query($sql);
 
-				//UPDATE IMEI STATUS TO 6 (FLOATING)
-				$sql = "UPDATE item_unique_identifiers set available = '6' where identifier = '$imei'";
+				//INSERT ITEM MOVEMENTS FOR OUTBOUNDING BRANCH
+				$sql = "INSERT INTO item_movement_items (id,item_movement_id,item_id,price,selling_price,quantity,stock,remarks, supplier, incentives, date_delivered)
+						VALUES ('$id','$item_movement_id','$item_id','$price','$selling_price','$quantity','0','$remarks', '$supplier', '$incentives', '$date_delivered')";
 				$this->db->query($sql);
 
-				//CREATE NEW IDENTIFIER WITH STATUS 4 (OUTBOUNDED)
+				//UPDATE IMEI STATUS TO 4 (OUTBOUNDED)
+				$tbd_unique_identifier_id = $is_imei_available['id'];
+				$sql = "UPDATE item_unique_identifiers set available = '4' where identifier = '$imei' and id = '$tbd_unique_identifier_id'";
+				$this->db->query($sql);
+
+				//CREATE NEW IDENTIFIER WITH STATUS 6 (FLOATING)
 				$color = $is_imei_available['color'];
-				$sql ="INSERT into item_unique_identifiers (item_movement_items_id,identifier,available, color) values ('$id','$imei','4','$color')";
+				$sql ="INSERT into item_unique_identifiers (item_movement_items_id,identifier,available, color) values ('$id','$imei','6','$color')";
 				$this->db->query($sql);
 
 				$response['success'] = true;
