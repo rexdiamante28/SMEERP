@@ -41,7 +41,7 @@ class Itemmovements extends CI_Controller {
 				// additional styles
 
 				// additional scripts
-				$data['add_js'] = array('assets/scripts/account/itemmovements.js','assets/scripts/account/itemmovementsitems.js');
+				$data['add_js'] = array('assets/scripts/account/itemmovements.js','assets/scripts/account/itemmovements_new.js');
 
 				$data['title'] = "Item Movements";
 
