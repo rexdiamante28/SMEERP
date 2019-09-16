@@ -63,7 +63,7 @@ class Item_model extends CI_Model {
 
 		$query = "INSERT into items (id,item_code,has_unique_identifier,bar_code,item_name,price,generic_name,item_description,
 		item_image,item_category,item_unit,status) values 
-		('$id','$bar_code','$has_unique_identifier','$bar_code','$item_name','$price','$generic_name','$item_description','$image_name',
+		('$id','$item_code','$has_unique_identifier','$bar_code','$item_name','$price','$generic_name','$item_description','$image_name',
 		'$item_category','$item_unit','$status')";
 
 		if($this->_custom_query($query))
@@ -96,8 +96,6 @@ class Item_model extends CI_Model {
 		{
 			$image_name = 'default.png';
 		}
-
-
 
 		$query="UPDATE items set has_unique_identifier = '$has_unique_identifier', item_name = '$item_name',
 			generic_name = '$generic_name', item_description = '$item_description', item_image = '$image_name',
@@ -148,20 +146,25 @@ class Item_model extends CI_Model {
         //get maxno of onlineshopso_no if 1st insertion default to '000000000'
         $max_item_no = $this->getmax_itemno();
 
-        if ($getmax_itemno->num_rows() > 0){
+        if ($max_item_no->num_rows() > 0){
             $item_no = $max_item_no->row()->item_code;
 
-            if ($item_no == null || $item_no == "" || $item_no < 0){
+            if ($item_no == null || $item_no == "" || (int)$item_no < 0){
                 $item_no = '000000001';
             }else{
-                $item_no = substr($item_no, 4);
-                $item_no = str_pad($item_no + 1, 9, 0, STR_PAD_LEFT);
+			    try {
+			      	$item_no = substr($item_no, 4);
+                	$item_no = str_pad($item_no + 1, 9, 0, STR_PAD_LEFT);
+			    } catch (Exception $e) {
+			        $item_no = '000000001';
+			    }
+                
             }
         }else{
             //if the first time insertion
             $item_no = '000000001';
         }
-
+      
         $item_no = "ASS_".$item_no; //to add AO in the first 6 character
 
         return $item_no;
