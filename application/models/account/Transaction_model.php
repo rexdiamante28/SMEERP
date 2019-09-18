@@ -83,4 +83,10 @@ public function receive_payment()
 	}
 }
 
+
+public function load_transaction($or_number)
+{
+	$query = "";
+}
+
 }

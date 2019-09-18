@@ -196,6 +196,10 @@ $('#payment_trigger').click(function(){
 	$('#payment_modal').modal();
 });
 
+$('#return_trigger').click(function(){
+	$('#return_modal').modal();
+});
+
 
 $('#pay_order_form').submit(function(event){
 	event.preventDefault();
@@ -321,4 +325,25 @@ $('#pay_order_form').submit(function(event){
 		$('#payment_modal #error_message').html('Invalid amount due.');
 		$('#payment_modal #error_message').removeClass('hidden');
 	}
+});
+
+
+$('#r_load_transaction').click(function(e){
+	var or_number = $('#r_or_number').val();
+
+	$.ajax({				
+		url: $('#doc_body').data('base_url')+'transactions/load_transaction',
+	    type: 'get',
+		data: {'or_number':or_number},
+		success : function(response){
+			$('#return_item_body').html(response);
+		}
+	});
+});
+
+
+$(document).delegate('.item-return-btn','click',function(e){
+	var id = '#'+e.currentTarget.id;
+
+	alertify.error('Something went wrong. Please check data consistency');
 });

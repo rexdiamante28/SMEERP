@@ -81,4 +81,20 @@ class Transactions extends CI_Controller {
 		}
 	}
 
+
+	public function load_transaction()
+	{
+		$or_number = $this->input->get('or_number');
+		$this->load->model('account/stock_model');
+
+		$data['title'] = "Transaction Receipt";
+		//$data['view_data'] = $this->load->view('web/login','',TRUE);
+
+		$data['transaction'] = $this->stock_model->get_transaction_from_or($or_number)->row_array();
+
+		$data['transaction_items'] = $this->stock_model->get_transaction_item_from_or($or_number)->result_array();
+
+		$this->load->view('account/pos/return',$data);
+	}
+
 }

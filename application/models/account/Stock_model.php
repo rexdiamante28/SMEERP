@@ -261,10 +261,26 @@ function get_transaction($id)
 	return $this->_custom_query($query);
 }
 
+function get_transaction_from_or($or_number)
+{
+	$query="select a.or_number,a.total,a.amount_due,a.tax, a.balance, a.due_date, a.payment_change, a.date_time,
+	b.terminal_code,b.terminal_number, c.branch_name, d.first_name, d.last_name from
+	transactions as a left join terminals as b on a.terminal_id = b.id left join 
+	branches as c on b.branch_id = c.id left join users as d on a.user_id = d.id where
+	a.or_number = '$or_number'";
+	return $this->_custom_query($query);
+}
+
 
 function get_transaction_items($id)
 {
-	$query="select a.price,a.quantity,a.discount,a.row_total,a.row_total_discount, b.id as just_ignore, c.item_name,d.unit from transaction_items as a left join item_movement_items as b on a.item_movement_item_id = b.id left join items as c on b.item_id = c.id left join item_units as d on c.item_unit = d.id where a.transaction_id = '$id'";
+	$query="select a.price,a.quantity,a.discount,a.row_total,a.row_total_discount,a.unique_id, b.id as just_ignore, c.item_name,d.unit from transaction_items as a left join item_movement_items as b on a.item_movement_item_id = b.id left join items as c on b.item_id = c.id left join item_units as d on c.item_unit = d.id where a.transaction_id = '$id'";
+	return $this->_custom_query($query);
+}
+
+function get_transaction_item_from_or($or_number)
+{
+	$query="select a.id as transaction_item_id,a.price,a.quantity,a.discount,a.row_total,a.row_total_discount, a.unique_id, b.id as just_ignore, c.item_name,d.unit from transaction_items as a left join item_movement_items as b on a.item_movement_item_id = b.id left join items as c on b.item_id = c.id left join item_units as d on c.item_unit = d.id where a.transaction_id = (select id from transactions where or_number = '$or_number')";
 	return $this->_custom_query($query);
 }
 

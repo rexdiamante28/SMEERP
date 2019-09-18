@@ -18,7 +18,19 @@
                   echo $value['item_name'];
               }
           ?>
+          <?php
+            if(strlen($value['unique_id'])>0)
+            {
+              ?>
+                <br/><small>
+                  <?= $value['unique_id']; ?>
+                </small>
+              <?php
+            }
+          ?>
+          
           </label>
+          
           <label class="pull-right">
             P <?php
                 echo number_format($value['row_total'],2);
@@ -48,6 +60,6 @@
 
 <div class="top-10 padd-10">
     <label>Total</label> <label class="pull-right" id="left_pane_total">P <?= number_format($subtotal,2); ?></label><br/>
-    <small style="display:none">Total Taxes</small> <small class="pull-right" id="left_pane_tax" style="display:none">P <?= number_format($total_tax,2); ?></small><br/>
+    <small style="display:none">Total Taxes</small> <small class="pull-right" id="left_pane_tax" style="display:none">P <?= number_format($total_tax,2); ?></small>
     <small>Total Discounts</small> <small class="pull-right" id="left_pane_discount">P <?= number_format($total_discount,2); ?></small>
 </div>

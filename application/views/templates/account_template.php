@@ -38,7 +38,7 @@
 	}
 ?>
 </head>
-<body class="nav-md">
+<body class="nav-md" id="doc_body" data-base_url = "<?= base_url(); ?>">
 	<div class="container body">
 		<?php $this->load->view('common/cover'); ?>
 		<div class="main_container">

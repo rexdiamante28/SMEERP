@@ -1,4 +1,5 @@
 <div id="receipt_body">
+  <br/><br/>
     <div id="receipt_header" class="text-center" style="border-bottom:dotted 1px #F0EEEE;">
         <label class="bold">JSL Gadgets</label><br/>
         <small><?= $transaction['branch_name'];?></small>
@@ -29,22 +30,24 @@
                       }
                   ?>
 
-                   <?php
+                  <?php
                       if(strlen($value['unique_id'])>0)
                       {
                         ?>
-                          <br/><small>
+                          <br/><br/><small>
                             <?= $value['unique_id']; ?>
                           </small>
                         <?php
                       }
                     ?>
+
                   </small>
                   <small class="pull-right">
                     P <?php
                         echo number_format($value['row_total'],2);
                       ?>
                   </small>
+                  <br/>
                   <br/>
                   <small class="">
                     <b><?= $value['quantity']?> </b><?= $value['unit']?>
@@ -59,6 +62,7 @@
                         }
                     ?>
                   </small>
+                  <button class="pull-right btn btn-xs btn-primary item-return-btn" id="item_return_btn<?= $value['transaction_item_id']; ?>" data-itid="<?= $value['transaction_item_id']; ?>">Return</button>
                 </div>
             <?php
           }

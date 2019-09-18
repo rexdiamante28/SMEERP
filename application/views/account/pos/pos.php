@@ -29,7 +29,7 @@
     <link href="<?= base_url() ?>assets/css/pos.css" rel="stylesheet">
 
 </head>
-<body class="nav-md">
+<body class="nav-md" id="doc_body" data-base_url = "<?= base_url(); ?>">
 	<div class="container body">
 		<?php $this->load->view('common/cover'); ?>
 		<div id="main-content">
@@ -43,7 +43,8 @@
 					<?php $this->load->view('common/loading')?> 
 				</div>
 				<div id="bottom-controls">
-					<button id="payment_trigger" class="pull-right btn btn-block btn-default">Payment</button>
+					<button id="payment_trigger" class="pull-right btn btn-success">Proceed to Payment</button>
+					<button id="return_trigger" class="pull-right btn btn-default">Item Return</button>
 				</div>
 			</div>
 			<div id="right_pane">
@@ -65,6 +66,7 @@
     	$this->load->view('account/pos/order_modal');
     	$this->load->view('account/pos/unique_order_modal');
     	$this->load->view('account/pos/payment_modal');
+    	$this->load->view('account/pos/return_modal');
     ?>
 
 

@@ -25,7 +25,7 @@ date_default_timezone_set('Asia/Manila');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://35.173.0.77/dev/smeerp/';
+$config['base_url'] = 'http://localhost/smeerp/';
 // $config['base_url'] = 'http://localhost/von/';
 
 /*
