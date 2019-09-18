@@ -33,9 +33,7 @@ class Items extends CI_Controller {
 
 			// additional scripts
 			$data['add_js'] = array('assets/scripts/account/items.js');
-
 			$data['title'] = "Items";
-
 			$data['view_data'] = $this->load->view('common/loading','',TRUE);
 
 			// pass to the template
@@ -58,7 +56,7 @@ class Items extends CI_Controller {
 
 			// load the data to common views
 			$data['items'] = $this->item_model->get_items()->result_array();
-
+			$data['controller'] = $this; 
 			$data['table_content'] = $this->load->view('account/items/thumbnail_content',$data,TRUE);
 			
 			// print view
@@ -107,12 +105,12 @@ class Items extends CI_Controller {
     	if($this->input->post('id')==='')
 	    {
 	    	// $this->form_validation->set_rules('item_code', 'Item Code', 'trim|required|min_length[3]|max_length[45]|is_unique[items.item_code]');
-	    	$this->form_validation->set_rules('bar_code', 'Bar Code', 'trim|min_length[3]|max_length[150]|is_unique[items.bar_code]');
+	    	// $this->form_validation->set_rules('bar_code', 'Bar Code', 'trim|min_length[3]|max_length[150]|is_unique[items.bar_code]');
 	    }
 	    else
 	    {
 	    	// $this->form_validation->set_rules('item_code', 'Item Code', 'trim|required|min_length[3]|max_length[45]');
-	    	$this->form_validation->set_rules('bar_code', 'Bar Code', 'trim|min_length[3]|max_length[150]');
+	    	// $this->form_validation->set_rules('bar_code', 'Bar Code', 'trim|min_length[3]|max_length[150]');
 	    }
 
 
@@ -217,6 +215,16 @@ class Items extends CI_Controller {
 		}
 			
 	}
+
+	function print_barcode_process($code){
+
+		$this->load->library('Zend');
+		$this->zend->load('Zend/Barcode');
+		echo Zend_Barcode::render('code128', 'image', array('text'=>$code), array());
+	
+	}
+
+
 
 
 }

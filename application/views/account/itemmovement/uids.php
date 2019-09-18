@@ -1,6 +1,7 @@
 
 <div class="table-responsive">
 	<table class="table table-striped table-bordered">
+	<?php if(!empty($uids)):?>
 		<?php if($uids[0]['type'] == "Outbound"): ?>
 		<thead>
 			<tr>
@@ -49,5 +50,7 @@
 				}
 			?>
 		</tbody>
+	<?php endif; ?>
 	</table>
+
 </div>

@@ -64,7 +64,7 @@ function get_item($id)
 
 function get_all_stocks($branch_id)
 {
-	$query="select a.id as store_item_id, a.stock,a.threshold_min, a.threshold_max,
+	$query="SELECT a.id as store_item_id, a.stock,a.threshold_min, a.threshold_max,
 	b.item_code,b.bar_code,b.price,b.item_name,b.generic_name,b.item_description,b.item_image,
 	c.category_string, d.unit, e.branch_name from store_items as a left join items as b on a.item_id = b.id
 	left join item_categories as c on b.item_category = c.id left join item_units as d
@@ -633,7 +633,10 @@ function is_identifier_available($uid,$branch_id){
 	if($result->num_rows() > 0){
 		$result= $this->db->query($query)->row()->available;
 		return $result;
-	}else{ $result = 0;}
+	}else{ 
+		$result = 0;
+		return $result;
+	}
 
 }
 

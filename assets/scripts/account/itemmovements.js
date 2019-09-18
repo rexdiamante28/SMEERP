@@ -112,11 +112,11 @@ function set_handler()
 	$('.details').click(function(){
 
 		showCover("Fetching record...");
-		console.log(event);
+
 		$('#add_item_in_movement_details_form #movement_id').val(event.currentTarget.id);
 		$('#add_item_in_movement_details_form #movement_type').val(event.currentTarget.getAttribute('data-movement_type'));
-
-		$.ajax({				
+		
+ 		$.ajax({				
 			type : 'GET',
 			url  : 'get_stock_movement_items/'+event.currentTarget.id,
 			data : '',

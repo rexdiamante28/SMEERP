@@ -3,6 +3,7 @@ class Itemmovement_model extends CI_Model {
 
 function __construct() {
 	parent::__construct();
+	
 }
 
 function get_item_movements()
@@ -242,7 +243,7 @@ function get_stock_movement_items($id)
 		$id = $movement_info['outbound_id'];
 	}
 
-	$query="select a.id,a.item_id, a.quantity, a.remarks, a.stock, b.item_name, b.item_code,b.item_unit,
+	$query="SELECT a.id,a.item_id, a.quantity, a.remarks, a.stock, b.item_name, b.item_code,b.item_unit,
 			b.item_image, c.unit, 
 			(select count(*) from item_unique_identifiers where item_movement_items_id = a.id )
 			as id_not_set,
@@ -310,7 +311,8 @@ function add_item_in_movement()
 	$item = $this->item_model->get_item($item_id)->row_array();
 
 	//check the type of movement
-	//If if outbound,quarantine,damages check if item is avaliable in stocks and the quantity is sufficient. otherwise, show error
+	//If outbound,quarantine,damages check if item is avaliable in stocks and the quantity is sufficient. otherwise, show error
+
 	$query="select * from item_movements where id = '$item_movement_id'";
 	$item_movement = $this->_custom_query($query)->row();
 	
@@ -570,12 +572,12 @@ function add_item_in_movement()
 
 public function get_item_movement_item_uids($item_movement_id)
 {
-
 	$query = "SELECT a.*, c.from_outbound, c.is_accepted, c.type,c.id as im_id
-	from item_unique_identifiers a
-	left join item_movement_items b on a.item_movement_items_id = b.id
-	left join item_movements c on b.item_movement_id = c.id
-	where item_movement_items_id = '$item_movement_id' and available != '6' and available != '2'";
+				from item_unique_identifiers a
+				left join item_movement_items b on a.item_movement_items_id = b.id
+				left join item_movements c on b.item_movement_id = c.id
+				where item_movement_items_id = '$item_movement_id' and available != '2'";
+	// where item_movement_items_id = '$item_movement_id' and available != '6' and available != '2'";
 	return $this->db->query($query)->result_array();
 	
 }
@@ -600,9 +602,6 @@ public function update_uid()
 	$uid = $this->input->post('uid');
 	$color = $this->input->post('color');
 	
-
-
-
 	$query="SELECT * from  item_movements where id = (select item_movement_id from  item_movement_items where id = 
 		(select item_movement_items_id from item_unique_identifiers where id = '$id'))";
 
@@ -667,14 +666,14 @@ public function update_uid()
 		{
 			$response = array(
 				'success' => false,
-				'message' => 'Invalid UID / Color'
+				'message' => 'Invalid UID'
 			);
 
 			return $response;
 			die();
 		}
 
-		$query = "select * from item_unique_identifiers where identifier = '$uid' and id != '$id' and (available = '1' or available = '3' or available = '6') "; // 0 = not set yet 3 = returned 1 = available  2 = sold 4 = outbound | Damaged | Quarantined
+		$query = "SELECT * from item_unique_identifiers where identifier = '$uid' and id != '$id' and (available = '1' or available = '3' or available = '6') "; // 0 = not set yet 3 = returned 1 = available  2 = sold 4 = outbound | Damaged | Quarantined
 
 		$result = $this->db->query($query);
 
@@ -707,8 +706,7 @@ public function update_uid()
 					$this->db->query($query);
 
 					//add to stock
-					$query = "update item_movement_items set stock = stock + 1 where id =  (select item_movement_items_id from item_unique_identifiers
-					 where id = '$id')";
+					$query = "update item_movement_items set stock = stock + 1 where id =  (select item_movement_items_id from item_unique_identifiers where id = '$id')";
 
 					$this->db->query($query);
 				}
@@ -746,6 +744,9 @@ public function delete_uid()
 	$query="select * from item_unique_identifiers where id = '$id'";
 
 	$result = $this->db->query($query)->row_array();
+
+	//VARIABLES TO AVOID FLOATING STATUS
+	$imei = $result['identifier'];
 
 	if($result['available']=='2')
 	{
@@ -816,6 +817,26 @@ public function delete_uid()
 		$query="delete from item_unique_identifiers where id = '$id' ";
 		$this->db->query($query);
 
+
+		//NEW FUNCTIONS TO AVOID FLOATING 
+		// 1. GET THE ITEM_MOVEMENT_ITEM_ID
+		$sql = "SELECT * FROM item_unique_identifiers where identifier=? and available !=2";
+		$data = array($imei);
+		$result = $this->db->query($sql,$data)->row_array();
+
+		// 2. UPDATE STATUS AND STOCKS
+		if(!empty($result)){
+			$id = $result['id'];
+			$sql = "UPDATE item_unique_identifiers SET available=1 where id='$id'";
+			$this->db->query($sql);
+
+			$item_movement_items_id = $result['item_movement_items_id'];
+			$sql = "UPDATE item_movement_items SET stock=stock+1 where id='$item_movement_items_id'";
+			$this->db->query($sql);
+		}
+		else
+			die();
+
 		$response = array(
 			'success' => true,
 			'message' => 'Item Deleted'
@@ -861,8 +882,8 @@ function import_item_out_to_inbound(){
 		$item_id = $item['item_id'];
 		$price =  $item['price'];
 		$selling_price =  $item['selling_price'];
-		$quantity =  $item['quantity'];
-		$stock =  $item['stock'];
+		$quantity =  1;
+		$stock =  1;
 		$remarks =  $item['remarks'];
 		$item_imid = $item['id'];
 		$supplier = $item['supplier'];
@@ -976,7 +997,7 @@ function get_prices_for_outbound($item_id,$branch_id){
 
 function get_item_imei($branch_id,$item_id, $uid){
 
-	$query = "	SELECT * FROM item_unique_identifiers 
+	$query = "SELECT * FROM item_unique_identifiers 
 				WHERE item_movement_items_id in 
 				(select id from item_movement_items where item_movement_id in 
 					(select id from item_movements where branch_id = '$branch_id' and type ='Inbound') 

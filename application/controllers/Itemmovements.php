@@ -41,7 +41,7 @@ class Itemmovements extends CI_Controller {
 				// additional styles
 
 				// additional scripts
-				$data['add_js'] = array('assets/scripts/account/itemmovements.js','assets/scripts/account/itemMovementsItems.js');
+				$data['add_js'] = array('assets/scripts/account/itemmovements.js','assets/scripts/account/itemmovements_new.js');
 
 				$data['title'] = "Item Movements";
 
@@ -125,7 +125,6 @@ class Itemmovements extends CI_Controller {
 		{	
 			
 			$this->load->model('account/itemmovement_model');
-
 			echo json_encode($this->itemmovement_model->get_stock_movement($id)->row_array());
 		}
 	}
@@ -210,9 +209,7 @@ class Itemmovements extends CI_Controller {
 		$this->load->model('account/itemmovement_model');
 		$data['movement_info'] = $this->itemmovement_model->get_stock_movement($id)->row_array();
 		$data['item_movement_items'] = $this->itemmovement_model->get_stock_movement_items($id)->result_array();
-
 		$data['table_content'] = $this->load->view('account/itemmovement/items_table',$data,TRUE);
-			
 		echo ($this->load->view('common/table',$data,TRUE));
 	}
 
@@ -303,7 +300,6 @@ class Itemmovements extends CI_Controller {
 		$data['uids'] = $this->itemmovement_model->get_item_movement_item_uids($item_movement_id);
 		$data['branch_id'] = $branch_id;
 		$data['item_id'] = $item_id;
-		
 		// $data['available_imei'] = $this->itemmovement_model->get_item_imei($branch_id,$item_id);
 
 		$this->load->view('account/itemmovement/uids',$data);
@@ -335,5 +331,10 @@ class Itemmovements extends CI_Controller {
 		$this->load->model('account/itemmovement_model');
 		echo json_encode ($this->itemmovement_model->import_item_out_to_inbound());
 	}
+
+	public function add_item_in_movement_thru_scanning(){
+		$this->load->model('account/inventorymovement_model');
+		echo json_encode($this->inventorymovement_model->add_item_in_movement_thru_scanning());
+    }
 
 }
