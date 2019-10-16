@@ -555,7 +555,7 @@ function add_order($unique = false)
 			$row_total_discount = $t_quantity * $t_price;
 			$row_total_discount = $row_total_discount * ($t_discount/100);
 
-
+			
 			$query="update temp_orders set quantity = '$t_quantity', row_total = '$row_total', row_total_discount = '$row_total_discount' where
 			id = '".$order_row->id."'";
 
