@@ -150,6 +150,31 @@ class Pos extends CI_Controller {
 
 	}
 
+
+	public function add_order_from_imei()
+	{
+		$this->load->model('account/stock_model');
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('imei_barcode_scan', 'IMEI', 'trim|required|min_length[3]');
+
+		if ($this->form_validation->run() === FALSE)
+	    {
+	        $response['success'] = false;
+	        $response['message'] = validation_errors();
+	        $response['environment'] = ENVIRONMENT;
+
+	        echo json_encode($response);
+	    }
+	    else
+	    {
+	    	$imei = $this->input->post('imei_barcode_scan');
+
+	        echo json_encode($this->stock_model->add_order_from_imei($imei));
+	    }
+	}
+
+
 	public function remove_order($id)
 	{
 		$this->load->model('account/stock_model');

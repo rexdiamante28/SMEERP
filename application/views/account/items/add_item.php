@@ -48,7 +48,7 @@
 </div>
 
 
-<!-- <div class="col-lg-12 col-md-12" style="margin-bottom: 15px;" hidden>
+<!-- <div class="col-lg-12 col-md-12" style="margin-bottom: 15px;">
   <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
     <label for="subject_desc">Item Code :</label>
   </div>
@@ -57,16 +57,15 @@
     <input type="text" class="form-control" name="item_code" id="item_code" placeholder="Item Code" >
   </div>
 </div> -->
-<!-- 
 <div class="col-lg-12 col-md-12" style="margin-bottom: 15px;">
   <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
     <label for="subject_desc">Bar Code :</label>
-  </div> -->
-<!-- 
+  </div> 
   <div class="col-lg-8 col-md-8">
-    <input type="text" class="form-control" name="bar_code" id="bar_code" placeholder="Bar Code" >
+    <input type="text" class="form-control" name="bar_code" id="bar_code" placeholder="Bar Code" ><br/>
+    <button type="button" id="print_barcode">Print Barcode</button> <button type="button" id="generate_barcode">Generate Barcode</button>
   </div>
-</div> -->
+</div>
 
 <div class="col-lg-12 col-md-12" style="margin-bottom: 15px;">
   <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
@@ -78,13 +77,13 @@
   </div>
 </div>
 
-<div class="col-lg-12 col-md-12" style="margin-bottom: 15px;">
+<div class="col-lg-12 col-md-12 hidden" style="margin-bottom: 15px;">
   <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
     <label for="subject_desc">Item Price :</label>
   </div>
 
   <div class="col-lg-8 col-md-8">
-    <input type="text" class="form-control" name="price" id="price" placeholder="Item Price" >
+    <input type="text" class="form-control" name="price" id="price" value="0.00" placeholder="Item Price" >
   </div>
 </div>
 

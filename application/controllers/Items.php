@@ -42,6 +42,23 @@ class Items extends CI_Controller {
 			
 	}
 
+	public function generate_barcode()
+	{
+		$this->load->model('account/item_model');
+
+		$valid_barcode = false;
+
+		while($valid_barcode == false)
+		{
+			$barcode = $this->loginstate->generate_barcode();
+
+			$valid_barcode = $this->item_model->validate_barcode($barcode);
+		}
+
+		echo $barcode;
+
+	}
+
 
 	public function get_items()
 	{

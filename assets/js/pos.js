@@ -187,7 +187,7 @@ $('#unique_order_form').submit(function(event){
 })
 
 
-unique_order_form
+//unique_order_form
 
 $('#payment_trigger').click(function(){
 	$('#payment_modal #total').val($('#left_pane_total').html().replace('P ','').replace(',',''));
@@ -346,4 +346,41 @@ $(document).delegate('.item-return-btn','click',function(e){
 	var id = '#'+e.currentTarget.id;
 
 	alertify.error('Something went wrong. Please check data consistency');
+});
+
+
+$('#amount_due').blur(function(){
+
+	$paid = parseFloat($('#amount_due').val());
+	$total_bill = parseFloat($('#total').val());
+
+	$('#amount_balance').val($total_bill - $paid);
+	
+});
+
+
+$('#imei_barcode_scan_form').submit(function(e){
+	event.preventDefault();
+
+	var form = $(this);
+
+	$.ajax({				
+		url: form.attr('action'),
+	    type: form.attr('method'),
+		data: form.serialize(),
+		success : function(response){
+			var result = JSON.parse(response);
+
+			if(result.success===true)
+			{
+				get_temp_orders();
+				$('#imei_barcode_scan').val('');
+			}
+			else
+			{
+				alertify.error(result.message);
+			}
+			
+		}
+	});
 });

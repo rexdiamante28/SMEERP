@@ -49,6 +49,11 @@
 			</div>
 			<div id="right_pane">
 				<div id="top-controls_right">
+					<span class="pull-left" style="margin-left: 400px;">
+						<form id="imei_barcode_scan_form" method="post" action="<?= base_url('pos/add_order_from_imei'); ?>">
+							<input type="text" name="imei_barcode_scan" id="imei_barcode_scan" class="text-center" placeholder="IMEI / BARCODE">
+						</form>
+					</span>
 					<span class="pull-right">
 						<form id="search_form">
 							<input type="text" name="search" id="search" class="text-center" placeholder="Search item">

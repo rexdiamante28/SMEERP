@@ -1,3 +1,5 @@
+base_url = $('#doc_body').data('base_url');
+
 function showCover(message){
 
 	$('#current-activity').html(message);

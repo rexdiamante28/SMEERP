@@ -583,6 +583,176 @@ function add_order($unique = false)
 
 }
 
+
+function add_order_from_imei($imei = '')
+{
+	$user_id = $this->session->user_id;
+	$terminal_id = $this->session->terminal_id;
+	
+	//get the item_movement_item_id
+	$query = "select a.identifier, b.id from item_unique_identifiers as a left join item_movement_items as b on a.item_movement_items_id = b. id where a.available = 1 and a.identifier = ? ";
+
+	$result = $this->db->query($query,$imei);
+
+	if($result->num_rows()>1)
+	{
+		$response['success'] = false;
+		$response['message'] = 'Inventory Error. Duplicate IMEI available';
+		$response['environment'] = ENVIRONMENT;
+
+		return $response;
+	}
+	else if($result->num_rows()==0)
+	{
+		$response['success'] = false;
+		$response['message'] = 'IMEI not available. Please check and try again';
+		$response['environment'] = ENVIRONMENT;
+
+		return $response;
+	}
+	else
+	{
+		$item_movement_item_id = $result->row_array()['id'];
+
+		$query="select * from temp_orders where unique_id = '$imei' ";
+		$result = $this->db->query($query);
+
+		if($result->num_rows()>0)
+		{
+			$response['success'] = false;
+			$response['message'] = "Item has already been ordered.";
+
+			return $response;
+
+			die();
+		}
+
+		$branch_id = $this->get_branch_id($terminal_id)->row()->id;
+		$is_uid_available = $this->is_identifier_available($imei,$branch_id);
+
+
+		$discount=0.00;
+
+
+		$query="select  a.stock, a.id as item_movement_item_id, a.selling_price, b.item_code from item_movement_items as a 
+		left join items as b on a.item_id = b.id where a.id = '$item_movement_item_id'";
+
+		$result = $this->_custom_query($query)->row();
+
+
+		$query = "select sum(quantity) as total_order from temp_orders where item_movement_item_id = '$item_movement_item_id' and terminal_id 
+		= '$terminal_id' and user_id = '$user_id' ";
+
+		$total_order = floatval($this->_custom_query($query)->row()->total_order);
+		$quantity = 1;
+		$remaining_stock = floatval($result->stock);
+
+		if(($quantity+$total_order)>$remaining_stock)
+		{
+			$response['success'] = false;
+		    if($total_order>0.00)
+		    {
+		    	$response['message'] = "Insufficient stocks. Only $remaining_stock available. $total_order is already ordered.";
+		    }
+		    else
+		    {
+		    	$response['message'] = "Insufficient stocks. Only $remaining_stock available.";
+		    }
+		    $response['environment'] = ENVIRONMENT;
+
+			return $response;
+		}
+		else
+		{
+			//check if the item is in the order already. If it is, and the discount is the same, just add the quantity
+
+			$query="select * from temp_orders where item_movement_item_id = '$item_movement_item_id' and terminal_id 
+			= '$terminal_id' and user_id = '$user_id' and discount = '$discount'";
+			$result2 = $this->_custom_query($query);
+
+			if($result2->num_rows()===0)
+			{
+				$query="select max(id) as id from temp_orders";
+				$id = intval($this->_custom_query($query)->row()->id)+1;
+
+				//compute row total
+				$c_price =  doubleval(floatval($result->selling_price));
+				$c_discount = doubleval(floatval($discount));
+				$c_quantity = doubleval(floatval($quantity));
+
+
+				$row_total = $c_quantity * $c_price;
+				$row_total = $row_total - ($row_total * ($c_discount/100));
+
+				$row_total_discount = $c_quantity * $c_price;
+				$row_total_discount = $row_total_discount * ($c_discount/100);
+				
+
+				$query="insert into temp_orders (id,terminal_id,user_id,item_movement_item_id,unique_id,vat,price,quantity,discount,row_total,row_total_discount)
+				values ('$id','$terminal_id','$user_id','$item_movement_item_id','$imei','12.00','".$result->selling_price."','$quantity','$discount','$row_total',
+				'$row_total_discount')";
+
+				if($this->_custom_query($query))
+				{
+					$response['success'] = true;
+				    $response['message'] = 'Order added';
+				    $response['environment'] = ENVIRONMENT;
+
+					return $response;
+				}
+				else
+				{
+					$response['success'] = false;
+				    $response['message'] = 'error:';
+				    $response['environment'] = ENVIRONMENT;
+
+					return $response;
+				}
+			}
+			else
+			{
+				$order_row = $result2->row();
+
+				$t_quantity = floatval($order_row->quantity) + $quantity;
+				$t_price = floatval($result->selling_price);
+				$t_discount = floatval($discount);
+
+				$row_total = $t_quantity * $t_price;
+				$row_total = $row_total - ($row_total * ($t_discount/100));
+
+				$row_total_discount = $t_quantity * $t_price;
+				$row_total_discount = $row_total_discount * ($t_discount/100);
+
+				
+				$query="update temp_orders set quantity = '$t_quantity', row_total = '$row_total', row_total_discount = '$row_total_discount' where
+				id = '".$order_row->id."'";
+
+				if($this->_custom_query($query))
+				{
+					$response['success'] = true;
+				    $response['message'] = 'Order added';
+				    $response['environment'] = ENVIRONMENT;
+
+					return $response;
+				}
+				else
+				{
+					$response['success'] = false;
+				    $response['message'] = 'error:';
+				    $response['environment'] = ENVIRONMENT;
+
+					return $response;
+				}
+
+
+			}
+
+		}
+
+	}
+
+}
+
 //NEW FUNCTION TO RESTRICT PUNCHING WHEN NOT IN TERMINAL
 
 function get_unique_ids($id){

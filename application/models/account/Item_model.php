@@ -82,7 +82,7 @@ class Item_model extends CI_Model {
 		$id = $this->input->post('id');
 		// $item_code = $this->input->post('item_code');
 		$has_unique_identifier = $this->input->post('unique_identifier') !== null ? 1 : 0;
-		// $bar_code = $this->input->post('bar_code');
+		$bar_code = $this->input->post('bar_code');
 		$item_name = $this->input->post('item_name');
 		$price = $this->input->post('price');
 		$generic_name = $this->input->post('generic_name');
@@ -97,7 +97,7 @@ class Item_model extends CI_Model {
 			$image_name = 'default.png';
 		}
 
-		$query="UPDATE items set has_unique_identifier = '$has_unique_identifier', item_name = '$item_name',
+		$query="UPDATE items set has_unique_identifier = '$has_unique_identifier', bar_code = '$bar_code', item_name = '$item_name',
 			generic_name = '$generic_name', item_description = '$item_description', item_image = '$image_name',
 			item_category = '$item_category', item_unit = '$item_unit', status = '$status', price = '$price'
 			where id = '$id'";
@@ -137,7 +137,7 @@ class Item_model extends CI_Model {
  
 	function getmax_itemno(){
 
-		$sql = "SELECT max(item_code) as item_code FROM items";
+		$sql = "SELECT max(id) as item_code FROM items";
 		return $this->db->query($sql);
 	}
 
@@ -153,7 +153,6 @@ class Item_model extends CI_Model {
                 $item_no = '000000001';
             }else{
 			    try {
-			      	$item_no = substr($item_no, 4);
                 	$item_no = str_pad($item_no + 1, 9, 0, STR_PAD_LEFT);
 			    } catch (Exception $e) {
 			        $item_no = '000000001';
@@ -186,6 +185,23 @@ class Item_model extends CI_Model {
 	function _custom_query($mysql_query) {
 		$result = $this->db->query($mysql_query);
 		return $result;
+	}
+
+
+	public function validate_barcode($barcode='')
+	{
+		$query = "select * from items where bar_code = ? ";
+
+		$result = $this->db->query($query,$barcode);
+
+		if($result->num_rows()>0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 
 }

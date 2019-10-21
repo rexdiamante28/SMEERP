@@ -268,3 +268,22 @@ $('#add_record_trigger').click(function(){
 	$('#img_preview').attr('src', imgurl);
 	$('#upload-loading').addClass('hidden');
 });
+
+
+$('#generate_barcode').click(function(){
+	$.ajax({				
+			url: base_url+'items/generate_barcode',
+	       	type: 'post',
+			data: '',
+		success : function(data){
+			$('#bar_code').val(data);
+		},
+		error : function(error){
+			alertify.error(error);
+			$('#uploadbutton').addClass("hidden");
+	        $('#upload_image_form')[0].reset();
+	        $('#img_preview').attr('src', imgurl);
+	        $('#upload-loading').addClass('hidden');
+		}
+	});
+});
