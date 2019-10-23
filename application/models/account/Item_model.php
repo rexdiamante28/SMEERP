@@ -119,6 +119,51 @@ class Item_model extends CI_Model {
 		return $this->_custom_query($query);
 	}
 
+
+	function get_item_from_barcode($barcode)
+	{
+		$query="select * from items where bar_code = '$barcode' ";
+		$result = $this->_custom_query($query);
+
+		if($result->num_rows()<1)
+		{
+			$response = array(
+				'success' => false,
+				'message' => "Invalid bar code"
+			);
+
+			return $response;
+		}
+		else
+		{
+			$response = array(
+				'success' => true,
+				'message' => '',
+				'item' => $result->row_array(),
+				'unit_price' => '',
+				'market_price' => '',
+				'supplier' => '',
+				'incentives' => '',
+				'dr_no' => 'N/A'
+			);
+
+			//unit price
+			//market price
+			//supplier
+			//incentives
+
+			$query="select * from item_movement_items where id = '".$result->row_array()['id']."' order by id desc limit 1";
+			$result = $this->db->query($query)->row_array();
+
+			$response['unit_price'] = $result['selling_price'];
+			$response['market_price'] = $result['price'];
+			$response['supplier'] = $result['supplier'];
+			$response['incentives'] = $result['incentives'];
+
+			return $response;
+		}
+	}
+
 	function remove_item($id)
 	{
 		$query="delete from items where id = '$id' ";

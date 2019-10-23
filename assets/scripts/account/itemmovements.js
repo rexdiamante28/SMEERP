@@ -315,3 +315,49 @@ function get_facilitators(){
 		});
 	});
 
+
+	$('#add_item_in_movement_shortcut_form').submit(function(e){
+		e.preventDefault();
+		showCover('Loading item...');
+
+		var barcode = $('#item_movement_item_barcode').val();
+		$.ajax({				
+			type : 'POST',
+			url  : base_url+'items/get_item_from_barcode',
+			data : {'barcode': barcode},
+			success : function(response){
+				hideCover();
+
+				response = JSON.parse(response);
+
+				if(response.success == 'true' || response.success == true)
+				{
+					$('#add_item_in_movement_shortcut_form')[0].reset();
+					
+					$('#add_item_in_movement_details_modal').modal();
+
+					$('#add_item_in_movement_details_modal #item_id').val(response.item.id);
+
+					$('#add_item_in_movement_details_modal #buying_price').val(response.unit_price);
+					$('#add_item_in_movement_details_modal #selling_price').val(response.market_price);
+					$('#add_item_in_movement_details_modal #supplier').val(response.supplier);
+					$('#add_item_in_movement_details_modal #incentives').val(response.incentives);
+
+					$('#add_item_in_movement_details_modal #remarks').val(response.dr_no);
+					
+
+					$('#add_item_in_movement_details_modal #error_message').html('');
+
+					
+				}
+				else
+				{
+					alertify.error(response.message);
+				}
+
+				
+			}
+		});
+
+	});
+

@@ -304,7 +304,7 @@ function add_item_in_movement()
 	$selling_price = $this->input->post('selling_price');
 	$supplier = $this->input->post('supplier');
 	$incentives = $this->input->post('incentives');
-	$date_delivered = $this->input->post('date');
+	$date_delivered = date('Y-m-d');
 
 	$this->load->model('account/item_model');
 

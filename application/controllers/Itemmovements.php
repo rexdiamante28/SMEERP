@@ -254,7 +254,6 @@ class Itemmovements extends CI_Controller {
     		$this->form_validation->set_rules('selling_price', 'Selling Price', 'trim|max_length[8]|required|numeric');
     		$this->form_validation->set_rules('incentives', 'Incentives', 'trim|max_length[8]|required|numeric');
     		$this->form_validation->set_rules('supplier', 'Supplier', 'trim|max_length[2000]|required');
-    		$this->form_validation->set_rules('date_delivered', 'Date Delivered', 'trim|required');
 	    	$this->form_validation->set_rules('remarks', 'DRNO', 'trim|max_length[2000]|required');
     	}
     	else if($item_movement['type']=='Orders')

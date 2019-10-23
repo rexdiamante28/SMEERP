@@ -1,7 +1,7 @@
 <thead>
 	<tr>
 		<th></th>
-		<th>Itesssm</th>
+		<th>Items</th>
 		<th>Quantity</th>
 		<th>UID Encoding</th>
 		<th>Stock</th>

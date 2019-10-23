@@ -233,7 +233,7 @@ class Items extends CI_Controller {
 			
 	}
 
-	function print_barcode_process($code){
+	public function print_barcode_process($code){
 
 		$this->load->library('Zend');
 		$this->zend->load('Zend/Barcode');
@@ -241,6 +241,17 @@ class Items extends CI_Controller {
 	
 	}
 
+	public function get_item_from_barcode()
+	{
+		$barcode = $this->input->post('barcode');
+
+		if($this->loginstate->login_state_check())
+		{	
+			$this->load->model('account/item_model');
+
+			echo json_encode($this->item_model->get_item_from_barcode($barcode));
+		}
+	}
 
 
 

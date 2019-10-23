@@ -17,7 +17,7 @@
                 <label for="subject_code">id :</label>
               </div>
 
-              <div class="col-lg-8 col-md-8">
+              <div class="col-lg-8 col-md-8 ">
                 <div id="subject_combo">
                   <input type="text" class="form-control " readonly name="id" id="id" >
                 </div>
@@ -29,7 +29,7 @@
               </div>
 
               <div class="col-lg-8 col-md-8">
-                <div id="subject_combo">
+                <div id="subject_combo ">
                   <input type="text" class="form-control " readonly name="movement_id" id="movement_id" >
                   <input type="text" class="form-control " readonly name="movement_type" id="movement_type" >
                 </div>
@@ -107,18 +107,6 @@
                 </div>
               </div>
             </div>            
-
-            <div class="col-lg-12 col-md-12 " style="margin-bottom: 15px;" id="date_delivered-div">
-              <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
-                <label for="subject_code">Date Delivered :</label>
-              </div>
-
-              <div class="col-lg-8 col-md-8">
-                <div id="subject_combo">
-                  <input class="form-control" type="date" name="date_delivered" id="date_delivered" >
-                </div>
-              </div>
-            </div>
 
             <div class="col-lg-12 col-md-12 " style="margin-bottom: 15px;" id="remarks-div">
               <div class="col-lg-4 col-md-4" style="padding-top: 5px;">
