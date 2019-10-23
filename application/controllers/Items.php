@@ -241,6 +241,21 @@ class Items extends CI_Controller {
 	
 	}
 
+
+	public function print_barcode($code){
+		echo "
+			<!DOCTYPE html>
+			<html>
+			<head>
+			  <title>".$code."</title>
+			</head>
+			<body>
+				<img src='".base_url('items/print_barcode_process/').$code."''></img>
+			</body>
+			</html>
+			";
+	}
+
 	public function get_item_from_barcode()
 	{
 		$barcode = $this->input->post('barcode');

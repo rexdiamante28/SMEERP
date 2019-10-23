@@ -63,6 +63,7 @@
   </div> 
   <div class="col-lg-8 col-md-8">
     <input type="text" class="form-control" name="bar_code" id="bar_code" placeholder="Bar Code" ><br/>
+    <img id="barcode_image" src="" > <br/><br/>
     <button type="button" id="print_barcode">Print Barcode</button> <button type="button" id="generate_barcode">Generate Barcode</button>
   </div>
 </div>

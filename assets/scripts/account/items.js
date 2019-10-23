@@ -80,6 +80,7 @@ function set_handler()
 				$('#item_unit').val(result.item_unit).change();
 				$('#status').val(result.status).change();
 				$('#item_description').val(result.item_description);
+				$('#barcode_image').attr('src',base_url+'items/print_barcode_process/'+result.bar_code);
 
 				var url =  imgurl;
 				url = url.replace('default.png',result.item_image);
@@ -89,6 +90,12 @@ function set_handler()
 			}
 		});
 
+	});
+
+	$('#print_barcode').click(function(){
+		var barcode = $('#bar_code').val();
+
+		window.open(base_url+'items/print_barcode/'+barcode, '_blank');
 	});
 
 
