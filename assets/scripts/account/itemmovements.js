@@ -2,6 +2,116 @@
 $('document').ready(function(){
 	get_loading_content();
 	get_item_movements();
+
+
+
+	$(document).delegate("#imei_express_entry_form", "submit", function(e) {
+
+		e.preventDefault();
+
+		if($('#color_express_entry').val()!='' && $('#imei_express_entry').val()!='')
+		{
+			var trs = $('#identifiers_modal_body tbody tr');
+
+			var branch_id = 0;
+			var item_id = 0;
+			var uid = 0;
+			var inputval = "";
+			var index = 0;
+
+			for(var a = 0; a< trs.length; a++)
+			{
+				inputval = $('#'+trs[a].id+' td input')[0].value;
+
+				if(inputval=='0')
+				{
+					index = a;
+				}
+				
+			}
+
+			uid = trs[index].id;
+			uid = uid.replace('uid_tr','');
+
+			item_id = $('#'+trs[index].id+' td .update_uid_button').data('item_id');
+			branch_id = $('#'+trs[index].id+' td .update_uid_button').data('branch_id');
+
+			//alert(inputval+" - "+uid+" - "+item_id+" - "+branch_id+" - "+index);
+
+			showCover('Updating UID');
+
+
+			$.ajax({				
+				type : 'POST',
+				url  : 'update_uid',
+				data : {'id': uid, 'uid' : $('#imei_express_entry').val(), 'color': $('#color_express_entry').val(), item_id,branch_id},
+				success : function(response){
+					hideCover();
+
+					response = JSON.parse(response);
+
+					if(response.success == 'true' || response.success == true)
+					{
+						alertify.success(response.message);
+						
+						$('#'+trs[index].id+' td input')[0].value=$('#imei_express_entry').val();
+						$('#'+trs[index].id+' td input')[1].value=$('#color_express_entry').val();
+
+						$('#imei_express_entry').val('');
+					}
+					else
+					{
+						alertify.error(response.message);
+					}
+
+					
+				}
+			});
+
+		}
+		else
+		{
+			alertify.error('Please complete the form');
+		}
+
+
+	
+
+		//showCover('Updating UID');
+
+		//get the first id for uid update
+		/*var imei_rows = $('#identifiers_modal_body tbody tr');
+
+		var cur_id = e.currentTarget.id;
+		cur_id = cur_id.replace('uid_button','');
+		var cur_id_selector = '#uid'+cur_id;
+		var color_selector = '#cid'+cur_id;
+		var item_id = e.currentTarget.dataset.item_id;
+		var branch_id = e.currentTarget.dataset.branch_id;
+
+		$.ajax({				
+			type : 'POST',
+			url  : 'update_uid',
+			data : {'id': cur_id, 'uid' : $(cur_id_selector).val(), 'color': $(color_selector).val(), item_id,branch_id},
+			success : function(response){
+				hideCover();
+
+				response = JSON.parse(response);
+
+				if(response.success == 'true' || response.success == true)
+				{
+					alertify.success(response.message);
+				}
+				else
+				{
+					alertify.error(response.message);
+				}
+
+				
+			}
+		});*/
+	});
+
 });
 
 
